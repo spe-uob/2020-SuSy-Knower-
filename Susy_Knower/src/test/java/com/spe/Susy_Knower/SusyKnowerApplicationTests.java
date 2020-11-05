@@ -10,4 +10,9 @@ class SusyKnowerApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void firstTest() {
+		assert(WebController.nameShadow == "a");
+	}
+
 }
