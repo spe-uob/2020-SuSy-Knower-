@@ -24,9 +24,9 @@ public class UnitController {
    @Autowired
    UnitRepository unitrepository;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         SpringApplication.run(UnitController.class, args);
-    }
+    }*/
 
     @GetMapping("/")
     public String display() {
