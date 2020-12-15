@@ -27,13 +27,14 @@ public class UnitController {
     // @Autowired
     // UnitRepository unitRepository;
 
+    @Autowired
     private UnitService unitService;
 
     @PostMapping(path = "/add")//map the post request
-    public @ResponseBody String addProgramme (@RequestParam String name,
+    public @ResponseBody String addProgramme (@RequestParam int id, @RequestParam String name,
         @RequestParam String programme) {
             
-            Unit n = new Unit();
+            Unit n = new Unit(id, name, programme);
             unitService.addUnit(n);
             return "Saved";
         } 

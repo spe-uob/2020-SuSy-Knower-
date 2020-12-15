@@ -36,11 +36,11 @@ public class Unit {
         this.programme = programme;
     }
 
-    // public Unit(Integer id, String name, String programme) {
-    //     this.id = id;
-    //     this.name = name;
-    //     this.programme = programme;
-    // }
+    public Unit(Integer id, String name, String programme) {
+        this.id = id;
+        this.name = name;
+        this.programme = programme;
+    }
 
     @Override
     public String toString() {
