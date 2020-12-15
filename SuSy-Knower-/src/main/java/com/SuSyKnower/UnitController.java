@@ -31,10 +31,12 @@ public class UnitController {
     private UnitService unitService;
 
     @PostMapping(path = "/add")//map the post request
-    public @ResponseBody String addProgramme (@RequestParam int id, @RequestParam String name,
+    public @ResponseBody String addProgramme (@RequestParam String name,
         @RequestParam String programme) {
             
-            Unit n = new Unit(id, name, programme);
+            Unit n = new Unit();
+            n.setName(name);
+            n.setProgramme(programme);
             unitService.addUnit(n);
             return "Saved";
         } 
