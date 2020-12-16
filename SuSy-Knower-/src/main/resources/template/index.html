@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymelef.org"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuSy-Knower-</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>courseId</th>
+                <th>course name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="unit: ${unitList}">
+                <td th:text="${unit.id}"></td>
+                <td th:text="${unit.courseId}"></td>
+                <td th:text="${unit.name}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

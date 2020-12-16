@@ -1,9 +1,11 @@
 package com.SuSyKnower;
 
+import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,34 +18,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 //@SpringBootApplication
-@RestController
+@Controller
 @RequestMapping(path = "/test")
 public class UnitController {
-    // @Autowired
-    // UnitRepository unitRepository;
 
     @Autowired
     private UnitService unitService;
 
+    @ResponseBody
     @PostMapping(path = "/add")//map the post request
-    public @ResponseBody String addProgramme (@RequestParam String name,
-        @RequestParam String programme) {
+    public String addProgramme (@RequestParam String name,
+        @RequestParam String programme) {//requires updates, without responseBody
             
             Unit n = new Unit();
+            // n.setId(id);
             n.setName(name);
             n.setProgramme(programme);
             unitService.addUnit(n);
             return "Saved";
         } 
 
-    @GetMapping(path = "/display")
-    public @ResponseBody Iterable<Unit> displayAllUsers() {
-        return unitService.getAllUnits();
+    @GetMapping(path = "/index")
+    public String displayAllUsers(Model model) {
+        List<Unit> unitList = new ArrayList<Unit>();
+        unitList = unitService.getAllUnits();
+        model.addAttribute("unitList", unitList);
+        return "index";
+    }
 
+    @ResponseBody
+    @GetMapping(path="/index2")
+    public List<Unit> displayAllUnits() {
+        return unitService.getAllUnits();
     }
 }

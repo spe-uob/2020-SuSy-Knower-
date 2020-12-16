@@ -1,16 +1,19 @@
 package com.SuSyKnower;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "Units")
+@Table(name = "units")
 public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int id;
 
     private String name;
     private String programme;
+    // private List<Unit> preRequisites = new ArrayList<Unit>();
 
     public Integer getId() {
         return id;
@@ -24,6 +27,10 @@ public class Unit {
         return programme;
     }
 
+    // public void removeRequisite(Unit unit) {
+    //     preRequisites.remove(unit);
+    // }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -35,6 +42,10 @@ public class Unit {
     public void setProgramme(String programme) {
         this.programme = programme;
     }
+
+    // public void addRequisite(Unit unit) {
+    //     preRequisites.add(unit);
+    // }
 
     // public Unit(Integer id, String name, String programme) {
     //     this.id = id;
