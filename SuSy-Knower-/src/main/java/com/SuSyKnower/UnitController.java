@@ -20,12 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.Optional;
 
-//@SpringBootApplication
 @RestController
 @RequestMapping(path = "/test")
 public class UnitController {
-    // @Autowired
-    // UnitRepository unitRepository;
+
 
     @Autowired
     private UnitService unitService;
