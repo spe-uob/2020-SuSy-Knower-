@@ -35,7 +35,6 @@ public class UnitController {
         @RequestParam String programme) {//requires updates, without responseBody
             
             Unit n = new Unit();
-            // n.setId(id);
             n.setName(name);
             n.setProgramme(programme);
             unitService.addUnit(n);
