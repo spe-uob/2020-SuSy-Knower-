@@ -3,9 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SearchBarComponent,
+    NetworkGraphComponent
   ],
   imports: [
     BrowserModule
