@@ -7,8 +7,8 @@
   ></script>
   <style type="text/css">
     #mynetwork {
-      width: 600px;
-      height: 400px;
+      width: 90vw;
+      height: 90vh;
       border: 1px solid lightgray;
     }
   </style>
@@ -20,46 +20,7 @@
 
 
 <div id="mynetwork"></div>
-<script type="text/javascript">
-
-  // create an array with nodes
-  var nodes = new vis.DataSet([
-    { id: 1, label: "Algorithms 2" , color:"red", shape: "dot", size: 15},
-    { id: 2, label: "Mathematics for Computer Science", shape: "dot", size: 15 },
-    { id: 3, label: "Algorithms 1", color: "red", shape: "dot", size: 15 },
-    { id: 4, label: "Imperative Programming", shape: "dot", size: 15 },
-    { id: 5, label: "Advanced Algorithms", color: "red", shape: "dot", size: 15 },
-  ]);
-
-  nodes.add({id:7, label:"Computational Neuroscience",color: "cyan", shape: "dot", size: 15});
-
-  nodes.add({id:8, label:"Human Computer interaction",color: "orange", shape: "dot", size: 15});
-
-  var pres;
-  var pos;
-  //var courses = new vis.DataSet([]};
-
-
-
-  // create an array with edges
-  var edges = new vis.DataSet([
-    { from: 4, to: 1 },
-    { from: 3, to: 1 },
-    { from: 2, to: 1 },
-    { from: 5, to: 1},
-    { from: 6, to: 1 },
-    { from: 7, to: 1 },
-  ]);
-
-  // create a network
-  var container = document.getElementById("mynetwork");
-  var data = {
-    nodes: nodes,
-    edges: edges,
-  };
-  var options = {};
-  var network = new vis.Network(container, data, options);
-</script>
+<script src = "network.js" defer></script>
 <!-- Search form -->
 <form class="form-inline waves-light" mdbWavesEffect>
   <div class="md-form mt-0">
