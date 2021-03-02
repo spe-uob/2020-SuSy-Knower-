@@ -6,6 +6,7 @@
     { id: 3, label: "Algorithms 1",level:-3},
     { id: 4, label: "Imperative Programming",level:1},
     { id: 5, label: "Advanced Algorithms",level:2},
+    { id: 6, label: "Computer Vision", level:0}
   ]);
   nodes.add({id:7, label:"Computational Neuroscience",color: {background:"cyan"}});
   nodes.add({id:8, label:"Human Computer interaction",color: {background:"orange"}});
@@ -13,17 +14,17 @@
   // create an array with edges
   var edges = new vis.DataSet([
     { from: 4, to: 1, id:"4-1"},
-    { from: 1, to: 3, id:"1-3" },
+    { from: 3, to: 1, id:"3-1" },
     { from: 1, to: 2, id:"1-2" },
-    { from: 5, to: 1, id:"5-1" },
-    { from: 6, to: 1, id:"6-1" },
+    { from: 1, to: 5, id:"1-5" },
+    { from: 5, to: 6, id:"6-1" },
     { from: 7, to: 1, id:"7-1" },
-    { from: 9, to: 1, id: "9-1" },
+    { from: 9, to: 1, id:"9-1" },
   ]);
 
   var nodeSize=15;
   var targetNodeId=1;
-  var targetNodeLevel=0;
+  var targetRevertLevel=0;
 
   // create a network
   var container = document.getElementById("mynetwork");
@@ -38,6 +39,7 @@
         color:{border:"black",background:"white"},
         font:{face:"tahoma"},
         level:0,
+        chosen:true,
     },
     edges:{
         width:nodeSize/2,
@@ -56,20 +58,23 @@ var network = new vis.Network(container, data, options);
 
 //transforms style and properties of target node
 function styleTarget(){
-            nodes.update({id:targetNodeId,color:{border:'red'},fixed:true});
+            nodes.update({id:targetNodeId,fixed:true});
             setLevel(targetNodeId,0);
 }
 //turn previous target to regular node
-function revertFromTarget(prevId){
-    nodes.update({id:prevId,color:{border:'black'},fixed:false});
-    setLevel(prevId,1)
+function revertFromTarget(prevId,prevLevel){
+    nodes.update({id:prevId,fixed:false});
+    setLevel(prevId,prevLevel) //TODO: Change from '1' to previous level.
 }
 //assigns new target, styles it and reverts old target.
 function setTarget(newTargetId){
+    var newTarget = nodes.get(newTargetId);
     nodes.update({id:newTargetId,target:true});
-    revertFromTarget(targetNodeId);//revert old target node;
+    revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
     targetNodeId= newTargetId;
+    targetRevertLevel = newTarget.level;
     styleTarget();
+    makeParentsAndChildren(nodes.get(newTargetId));
 }
 //sets level of specific node
 function setLevel(nodeId,Nlev){
@@ -79,41 +84,60 @@ function setLevel(nodeId,Nlev){
 function displayLevels(){
     nodes.forEach(node =>{
         //nodes.update({id:node.id,level:node.id})
-        console.log(node.level)
+        console.log(node.label+" is at level "+node.level)
     });
 }
 
-//returns node object from given Id 
-function getNodeFromId(nodeId){
-    nodes.forEach(node => {
-        if(node.id == nodeId){
-            return node;
-        }
-    });
-    return console.error("no node found");
-}
-
-function makeParentsAndChildren(nodeId){
-    var edgeIds = network.getConnectedEdges(nodeId);
+function makeParentsAndChildren(node){
+    var edgeIds = network.getConnectedEdges(node.id);
     edgeIds.forEach(edgeId => {
         var edge = edges.get(edgeId);
         console.log("this is the edge id:"+edge.id)
-        if(edge.from == nodeId){
-            makeParentEdge(edge);
+        if(edge.from == node.id){
+            styleParent(edge,node.level);
         }
         else{
-            makeChildEdge(edge);
+            styleChild(edge,node.level);
         }
     });
 }
 
-function makeParentEdge(edge){
-    console.log("making edge parent with id:"+edge.id);
-    nodes.update({id:edge.to,level:-1});
+//COULD change to array of ids. aim is to work recursively.
+function makeParents(node){
+    var edgeIds = network.getConnectedEdges(node.id);
+    edgeIds.forEach(edgeId => {
+        var edge = edges.get(edgeId);
+        console.log("this is the edge id:"+edge.id)
+        if(edge.from == node.id){
+            styleParent(edge,node.level);
+        }
+    });
 }
-function makeChildEdge(edge){
-    console.log("making edge child with id:"+edge.id);
-    nodes.update({id:edge.to,level:1});
+function makeChildren(node){
+    var edgeIds = network.getConnectedEdges(node.id);
+    edgeIds.forEach(edgeId => {
+        var edge = edges.get(edgeId);
+        console.log("this is the edge id:"+edge.id)
+        if(edge.to == node.id){
+            styleChild(edge,node.level);
+        }
+    });
+}
+
+
+function styleParent(edge,level){
+    console.log("making edge PARENT with TO:"+edge.to);
+    edges.update({id:edge.id,label:"POST"});
+    node = nodes.get(edge.to);
+    nodes.update({id:node.id,level:level-1});
+    makeParents(node);
+}
+function styleChild(edge,level){
+    console.log("making edge CHILD with FROM:"+edge.from);
+    edges.update({id:edge.id,label:"PRE"});
+    node = nodes.get(edge.from);
+    nodes.update({id:node.id,level:level+1});
+    makeChildren(node);
 }
 
 //on double click sets the selected node to be target node
@@ -131,8 +155,4 @@ network.on('click', function(params){
     });
 });
 
-
-makeParentsAndChildren(1);
-
-//helloTarget();
 displayLevels();
