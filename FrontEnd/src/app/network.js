@@ -1,12 +1,12 @@
 
   // create an array with nodes
   var nodes = new vis.DataSet([
-    { id: 1, label: "Algorithms 2", level:-1},
-    { id: 2, label: "Mathematics for Computer Science",target:true,level:-2},
-    { id: 3, label: "Algorithms 1",level:-3},
-    { id: 4, label: "Imperative Programming",level:1},
-    { id: 5, label: "Advanced Algorithms",level:2},
-    { id: 6, label: "Computer Vision", level:0}
+    { id: 1, label: "Algorithms 2",group:"Alg"},
+    { id: 2, label: "Mathematics for Computer Science",group:"Maths"},
+    { id: 3, label: "Algorithms 1",group:"Alg"},
+    { id: 4, label: "Imperative Programming",group:"Prog"},
+    { id: 5, label: "Advanced Algorithms",group:"Alg"},
+    { id: 6, label: "Computer Vision",group:"Alg"}
   ]);
   nodes.add({id:7, label:"Computational Neuroscience",color: {background:"cyan"}});
   nodes.add({id:8, label:"Human Computer interaction",color: {background:"orange"}});
@@ -18,7 +18,7 @@
     { from: 1, to: 2, id:"1-2" },
     { from: 1, to: 5, id:"1-5" },
     { from: 5, to: 6, id:"6-1" },
-    { from: 7, to: 1, id:"7-1" },
+    { from: 1, to: 7, id:"1-7" },
     { from: 9, to: 1, id:"9-1" },
   ]);
 
@@ -41,10 +41,25 @@
         level:0,
         chosen:true,
     },
+    groups:{
+        Alg:{color:{border:"red"}},
+        Prog:{color:{border:"orange"}},
+        Maths:{color:{border:"green"}}
+    },
     edges:{
         width:nodeSize/2,
     },
-    physics:true,
+    physics:
+    {
+        hierarchicalRepulsion: {
+            centralGravity: 0.5,
+            springLength: 200,
+            springConstant: 0.01,
+            nodeDistance: 200,
+            damping: 0.09,
+            avoidOverlap: 0
+      }
+    },
     layout:{
         hierarchical:{enabled:true}
     }
@@ -155,4 +170,7 @@ network.on('click', function(params){
     });
 });
 
+nodes.forEach(node => {
+    setLevel(node.id,0);
+});
 displayLevels();
