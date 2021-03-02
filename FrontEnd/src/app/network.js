@@ -1,38 +1,29 @@
 
   // create an array with nodes
   var nodes = new vis.DataSet([
-    { id: 1, label: "Algorithms 2", level:-2},
-    { id: 2, label: "Mathematics for Computer Science",target:true,level:2},
-    { id: 3, label: "Algorithms 1",level:1},
-    { id: 4, label: "Imperative Programming",level:3},
-    { id: 5, label: "Advanced Algorithms",level:4},
+    { id: 1, label: "Algorithms 2", level:-1},
+    { id: 2, label: "Mathematics for Computer Science",target:true,level:-2},
+    { id: 3, label: "Algorithms 1",level:-3},
+    { id: 4, label: "Imperative Programming",level:1},
+    { id: 5, label: "Advanced Algorithms",level:2},
   ]);
-
-  
-
-
   nodes.add({id:7, label:"Computational Neuroscience",color: {background:"cyan"}});
   nodes.add({id:8, label:"Human Computer interaction",color: {background:"orange"}});
 
-  var pres;
-  var pos;
-
-
-
-
   // create an array with edges
   var edges = new vis.DataSet([
-    { from: 4, to: 1 },
-    { from: 3, to: 1 },
-    { from: 2, to: 1 },
-    { from: 5, to: 1 },
-    { from: 6, to: 1 },
-    { from: 7, to: 1 },
-    { from: 9, to: 1 },
+    { from: 4, to: 1, id:"4-1"},
+    { from: 1, to: 3, id:"1-3" },
+    { from: 1, to: 2, id:"1-2" },
+    { from: 5, to: 1, id:"5-1" },
+    { from: 6, to: 1, id:"6-1" },
+    { from: 7, to: 1, id:"7-1" },
+    { from: 9, to: 1, id: "9-1" },
   ]);
 
   var nodeSize=15;
-
+  var targetNodeId=1;
+  var targetNodeLevel=0;
 
   // create a network
   var container = document.getElementById("mynetwork");
@@ -43,48 +34,86 @@
   var options = {
     nodes:{shape: "dot",
         size:nodeSize,
-        borderWidth: 5,
-        color:{border:"black"},
+        borderWidth: nodeSize/4,
+        color:{border:"black",background:"white"},
         font:{face:"tahoma"},
         level:0,
     },
     edges:{
         width:nodeSize/2,
     },
-    physics:false,
+    physics:true,
     layout:{
         hierarchical:{enabled:true}
     }
   };
 
+var network = new vis.Network(container, data, options);
+// finished network creation
 
-  var network = new vis.Network(container, data, options);
 
-function helloTarget(){
-    nodes.forEach(node => {
-        if (node.target == true){
-            console.log(node.id+" : "+node.target)
-            nodes.update({id:node.id,label:"Target",color:"rgba(11, 200, 234, 0.6)"})
-            setLevel(node.id,0);
-        }
-    });
+// START OF FUNCTIONS
+
+//transforms style and properties of target node
+function styleTarget(){
+            nodes.update({id:targetNodeId,color:{border:'red'},fixed:true});
+            setLevel(targetNodeId,0);
 }
-
-function Levels(){
+//turn previous target to regular node
+function revertFromTarget(prevId){
+    nodes.update({id:prevId,color:{border:'black'},fixed:false});
+    setLevel(prevId,1)
+}
+//assigns new target, styles it and reverts old target.
+function setTarget(newTargetId){
+    nodes.update({id:newTargetId,target:true});
+    revertFromTarget(targetNodeId);//revert old target node;
+    targetNodeId= newTargetId;
+    styleTarget();
+}
+//sets level of specific node
+function setLevel(nodeId,Nlev){
+    nodes.update({id:nodeId,level:Nlev})
+}
+//logs levels of all nodes
+function displayLevels(){
     nodes.forEach(node =>{
         //nodes.update({id:node.id,level:node.id})
         console.log(node.level)
     });
 }
 
-function setLevel(Nid,Nlev){
-    nodes.update({id:Nid,level:Nlev})
+//returns node object from given Id 
+function getNodeFromId(nodeId){
+    nodes.forEach(node => {
+        if(node.id == nodeId){
+            return node;
+        }
+    });
+    return console.error("no node found");
 }
 
+function makeParentOrChild(nodeId){
+    var allEdges = network.getConnectedEdges(nodeId);
+    allEdges.forEach(edgeId => {
+        if(edge.from == nodeId){
+            makeParentEdge();
+        }
+        else{
+            makeChildEdge();
+        }
+    });
+}
+//on double click sets the selected node to be target node
+network.on('doubleClick', function(params){
+    selectedNodes = network.getSelectedNodes();
+    console.log(selectedNodes);
+    selectedNodes.forEach(nodeId => {
+        setTarget(nodeId);
+    });
+});
 
-var edgeWidth= options.nodes.size;
-console.log(options.edges.width)
-  console.log(edgeWidth)
 
-helloTarget();
-Levels();
+
+//helloTarget();
+displayLevels();
