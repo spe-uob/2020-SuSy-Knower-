@@ -93,17 +93,29 @@ function getNodeFromId(nodeId){
     return console.error("no node found");
 }
 
-function makeParentOrChild(nodeId){
-    var allEdges = network.getConnectedEdges(nodeId);
-    allEdges.forEach(edgeId => {
+function makeParentsAndChildren(nodeId){
+    var edgeIds = network.getConnectedEdges(nodeId);
+    edgeIds.forEach(edgeId => {
+        var edge = edges.get(edgeId);
+        console.log("this is the edge id:"+edge.id)
         if(edge.from == nodeId){
-            makeParentEdge();
+            makeParentEdge(edge);
         }
         else{
-            makeChildEdge();
+            makeChildEdge(edge);
         }
     });
 }
+
+function makeParentEdge(edge){
+    console.log("making edge parent with id:"+edge.id);
+    nodes.update({id:edge.to,level:-1});
+}
+function makeChildEdge(edge){
+    console.log("making edge child with id:"+edge.id);
+    nodes.update({id:edge.to,level:1});
+}
+
 //on double click sets the selected node to be target node
 network.on('doubleClick', function(params){
     selectedNodes = network.getSelectedNodes();
@@ -112,8 +124,15 @@ network.on('doubleClick', function(params){
         setTarget(nodeId);
     });
 });
+network.on('click', function(params){
+    selectedNodes = network.getSelectedNodes();
+    selectedNodes.forEach(nodeId => {
+        console.log(network.getConnectedEdges(nodeId));
+    });
+});
 
 
+makeParentsAndChildren(1);
 
 //helloTarget();
 displayLevels();
