@@ -1,27 +1,4 @@
 
-  // create an array with nodes
-  var nodes = new vis.DataSet([
-    { id: 1, label: "Algorithms 2",group:"Alg"},
-    { id: 2, label: "Mathematics for Computer Science",group:"Maths"},
-    { id: 3, label: "Algorithms 1",group:"Alg"},
-    { id: 4, label: "Imperative Programming",group:"Prog"},
-    { id: 5, label: "Advanced Algorithms",group:"Alg"},
-    { id: 6, label: "Computer Vision",group:"Alg"}
-  ]);
-  nodes.add({id:7, label:"Computational Neuroscience",color: {background:"cyan"}});
-  nodes.add({id:8, label:"Human Computer interaction",color: {background:"orange"}});
-
-  // create an array with edges
-  var edges = new vis.DataSet([
-    { from: 4, to: 1, id:"4-1"},
-    { from: 3, to: 1, id:"3-1" },
-    { from: 2, to: 1, id:"2-1" },
-    { from: 1, to: 5, id:"1-5" },
-    { from: 5, to: 6, id:"6-1" },
-    { from: 1, to: 7, id:"1-7" },
-    { from: 9, to: 1, id:"9-1" },
-  ]);
-
   var nodeSize=15;
   var targetNodeId=1;
   var targetRevertLevel=0;
@@ -49,10 +26,13 @@
     groups:{
         Alg:{color:{border:"red"}},
         Prog:{color:{border:"orange"}},
-        Maths:{color:{border:"green"}}
+        Maths:{color:{border:"green"}},
+        Neuro:{color:{border:"purple"}},
+        IDENT:{color:"grey"}
     },
     edges:{
         width:nodeSize/2,
+        //color:{inherit:"both"},
     },
     physics:
     {
@@ -71,6 +51,7 @@
   };
 
 var network = new vis.Network(container, data, options);
+
 // finished network creation
 
 
@@ -176,7 +157,9 @@ network.on('click', function(params){
 });
 
 nodes.forEach(node => {
-    setLevel(node.id,0);
+    if(node.group!="IDENT"){
+        setLevel(node.id,0);
+    }
 });
 
 function FadeNode(fnode){
@@ -196,7 +179,6 @@ function FadeAll(){
         FadeEdge(edge);
     });
 }
-
-
+console.log(nodes.get(1))
 displayLevels();
 FadeAll();
