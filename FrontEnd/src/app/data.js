@@ -24,5 +24,15 @@ function makeEdgeFromLabels(fromLabel,toLabel){
     console.log(toNodeArr);
     edges.add({from:fromNodeArr[0].id,to:toNodeArr[0].id,id:fromNodeArr[0].id+"-"+toNodeArr[0].id,})
 }
+function makeEdgeFromIds(fromId,toId){
+    //given 2 Ids make edge and appropriate label
+    edges.add({from:fromId,to:toId,id:fromId+"-"+toId});
+}
+function makeEdgeFromIdsArray(edgeArr){
+    edgeArr.forEach(edge => {
+        makeEdgeFromIds(edge[0],edge[1]);
+    });
+}
 
 makeEdgeFromLabels("Algorithms 1","Algorithms 2");
+makeEdgeFromIdsArray(edgesArray);

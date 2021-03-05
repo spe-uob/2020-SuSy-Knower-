@@ -2,7 +2,19 @@
   var nodeSize=15;
   var targetNodeId=1;
   var targetRevertLevel=0;
-  var initLevelNumber=3;
+  var initLevelNumber=4;
+  
+
+  class colour{
+      constructor(r = 255,g =255, b= 255,a =1){
+          this.r =r;
+          this.g =g;
+          this.b =b;
+          this.a =a;
+          this.c = "rgba("+r+","+g+","+b+","+a+")";
+      }
+  }
+  var testColour = new colour(50,68,187,1);
 
   // create a network
   var container = document.getElementById("mynetwork");
@@ -15,7 +27,7 @@
     nodes:{shape: "dot",
         size:nodeSize,
         borderWidth: nodeSize/4,
-        color:{ border:"black",
+        color:{ border:'black',
                 background:"white",
                 highlight: {
                     border: 'black',
@@ -31,10 +43,11 @@
         Maths:{color:{border:"green"}},
         Neuro:{color:{border:"purple"}},
         IDENT:{color:"grey"},
-        NOGROUP:{color:{border:"black"}}
+        NOGROUP:{color:{border:testColour.c}}
     },
     edges:{
         width:nodeSize/2,
+        arrows:{middle:{enabled:true, type:"arrow"}}
         //color:{inherit:"both"},
     },
     physics:
@@ -126,12 +139,12 @@ function makeChildren(node){
 
 function styleParent(edge,level){
     node = nodes.get(edge.to);
-    edges.update({id:edge.id,label:"POST"});
+    edges.update({id:edge.id,/*label:"POST"*/});
     nodes.update({id:node.id,level:level-1});
     makeParents(nodes.get(node.id));
 }
 function styleChild(edge,level){
-    edges.update({id:edge.id,label:"PRE"});
+    edges.update({id:edge.id,/*label:"PRE"*/});
     node = nodes.get(edge.from);
     nodes.update({id:node.id,level:level+1});
     makeChildren(nodes.get(node.id));
@@ -187,6 +200,8 @@ function setLevelForAll(nodes,levels){
 }
 console.log("length: "+nodes.length);
 console.log("length over 3: "+ nodes.length/3)
+
+
 
 
 setLevelForAll(nodes,initLevelNumber);

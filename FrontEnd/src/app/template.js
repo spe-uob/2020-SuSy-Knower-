@@ -17,13 +17,17 @@ var nodesArray = [
     new Node(6,"Computer Vision","Alg"),
     new Node(6,"Computational Neuroscience","Neuro"),
     new Node(7,"Human Computer interaction","Neuro"),
-    new Node(8),
-    new Node(9),
-    new Node(10),
-    new Node(11),
-    new Node(12),
-    new Node(13),
+    new Node(8,"Intro to Philosophy A"),
+    new Node(9,"Intro to Philosophy B"),
+    new Node(10,"Intro to Formal Logic"),
+    new Node(11,"Logic and Critical Thinking"),
+    new Node(12,"Knowledge and Reality"),
+    new Node(13,"Readings in Value Theory"),
     //new Node(-1,"LEVEL 0 INDICATOR"),
     //new Node(-2,"LEVEL 1 INDICATOR"),
     //new Node(-3,"LEVEL -1 INDICATOR"),
 ];
+
+var edgesArray = [
+  [8,9],[9,10],[11,12],[12,13]
+]
