@@ -2,6 +2,7 @@
   var nodeSize=15;
   var targetNodeId=1;
   var targetRevertLevel=0;
+  var initLevelNumber=3;
 
   // create a network
   var container = document.getElementById("mynetwork");
@@ -54,8 +55,7 @@
 
 var network = new vis.Network(container, data, options);
 
-// finished network creation
-
+// finish of network creation
 
 // START OF FUNCTIONS
 
@@ -84,7 +84,7 @@ function setLevel(nodeId,Nlev){
     nodes.update({id:nodeId,level:Nlev})
 }
 //logs levels of all nodes
-function displayLevels(){
+function displayLevels(nodes){
     nodes.forEach(node =>{
         console.log(node.label+" is at level "+node.level)
     });
@@ -148,15 +148,17 @@ network.on('doubleClick', function(params){
 network.on('click', function(params){
     selectedNodes = network.getSelectedNodes();
     selectedNodes.forEach(nodeId => {
-        //console.log(network.getConnectedEdges(nodeId));
+        logConnections(nodes.get(nodeId));
+        logLevel(nodes.get(nodeId));
     });
 });
 
-nodes.forEach(node => {
-    if(node.group!="IDENT"){
-        setLevel(node.id,0);
-    }
-});
+function logLevel(node){
+    console.log("Level of this node: "+node.level);
+}
+function logConnections(node){
+    console.log(network.getConnectedEdges(node.id))}
+
 
 function FadeNode(fnode){
     nodes.update({id:fnode.id,opacity:0.5});
@@ -167,7 +169,7 @@ function FadeNode(fnode){
 function FadeEdge(fedge){
     edges.update({id:fedge.id,opacity:0});
 }
-function FadeAll(){
+function FadeAll(nodes){
     nodes.forEach(node => {
         FadeNode(node);
     });
@@ -175,6 +177,19 @@ function FadeAll(){
         FadeEdge(edge);
     });
 }
+function setLevelForAll(nodes,levels){
+    nodes.forEach(node => {
+        if(node.group!="IDENT"){
+            console.log(node.id% levels)
+            setLevel(node.id,(node.id % levels)-Math.floor(levels/2));
+        }
+    });
+}
+console.log("length: "+nodes.length);
+console.log("length over 3: "+ nodes.length/3)
+
+
+setLevelForAll(nodes,initLevelNumber);
 console.log(nodes.get(1))
-//displayLevels();
-FadeAll();
+//displayLevels(nodes);
+FadeAll(nodes);
