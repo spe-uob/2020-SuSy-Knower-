@@ -1,27 +1,32 @@
 
-var nodes = new vis.DataSet([
-  { id: 0, label: "BUMBACLART"},
-  { id: 1, label: "Algorithms 2",group:"Alg"},
-  { id: 2, label: "Mathematics for Computer Science",group:"Maths"},
-  { id: 3, label: "Algorithms 1",group:"Alg"},
-  { id: 4, label: "Imperative Programming",group:"Prog"},
-  { id: 5, label: "Advanced Algorithms",group:"Alg"},
-  { id: 6, label: "Computer Vision",group:"Alg"},
-  { id:7, label:"Computational Neuroscience",group:"Neuro"},
-  { id:8, label:"Human Computer interaction",group:"Neuro"},
-  { id:-1, label:"LEVEL 0 INDICATOR",level:0,group:"IDENT"},
-  { id:-2, label:"LEVEL 1 INDICATOR",level:1,group:"IDENT"},
-  { id:-3, label:"LEVEL -1 INDICATOR",level:-1,group:"IDENT"},
-]);
-
-
-// create an array with edges
-var edges = new vis.DataSet([
-  { from: 4, to: 1, id:"4-1"},
-  { from: 3, to: 1, id:"3-1" },
-  { from: 2, to: 1, id:"2-1" },
-  { from: 1, to: 5, id:"1-5" },
-  { from: 5, to: 6, id:"6-1" },
-  { from: 1, to: 7, id:"1-7" },
-]);
-
+class Node {
+  constructor(id,label = "NOLABEL",group = "NOGROUP"){
+    this.id = id;
+    this.label=label;
+    this.group =group;
+  }
+}
+//Must be a better way to give ID's than manually typing in
+var nodesArray = [
+    new Node(0,"CELESTIAL","Alg"),
+    new Node(1,"Algorithms 2","Alg"),
+    new Node(2,"Mathematics for Computer Science","Maths"),
+    new Node(3,"Algorithms 1","Alg"),
+    new Node(4,"Imperative Programming","Prog"),
+    new Node(5,"Advanced Algorithms","Alg"),
+    new Node(6,"Computer Vision","Alg"),
+    new Node(6,"Computational Neuroscience","Neuro"),
+    new Node(7,"Human Computer interaction","Neuro"),
+    new Node(8),
+    new Node(9),
+    new Node(10),
+    new Node(11),
+    new Node(12),
+    new Node(13),
+    new Node(-1,"LEVEL 0 INDICATOR"),
+    new Node(-2,"LEVEL 1 INDICATOR"),
+    new Node(-3,"LEVEL -1 INDICATOR"),
+];
+nodesArray.forEach(element => {
+  console.log(element.label);
+});

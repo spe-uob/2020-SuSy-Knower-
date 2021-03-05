@@ -10,6 +10,7 @@
     edges: edges,
   };
   var options = {
+    interaction:{zoomSpeed:0.2},
     nodes:{shape: "dot",
         size:nodeSize,
         borderWidth: nodeSize/4,
@@ -28,7 +29,8 @@
         Prog:{color:{border:"orange"}},
         Maths:{color:{border:"green"}},
         Neuro:{color:{border:"purple"}},
-        IDENT:{color:"grey"}
+        IDENT:{color:"grey"},
+        NOGROUP:{color:{border:"black"}}
     },
     edges:{
         width:nodeSize/2,
@@ -93,11 +95,9 @@ function makeParentsAndChildren(node){
     edgeIds.forEach(edgeId => {
         var edge = edges.get(edgeId);
         if(edge.from == node.id){
-            console.log("making PARENTS of:"+node.label)
             styleParent(edge,node.level);
         }
         else if(edge.to==node.id){
-            console.log("making CHILDREN of:"+node.label)
             styleChild(edge,node.level);
         }
     });
@@ -109,7 +109,6 @@ function makeParents(node){
     edgeIds.forEach(edgeId => {
         var edge = edges.get(edgeId);
         if(edge.from == node.id){
-            console.log("making PARENTS of:"+node.label)
             styleParent(edge,node.level);
         }
     });
@@ -119,7 +118,6 @@ function makeChildren(node){
     edgeIds.forEach(edgeId => {
         var edge = edges.get(edgeId);
         if(edge.to == node.id){
-            console.log("making CHILDREN of:"+node.label)
             styleChild(edge,node.level);
         }
     });
@@ -128,13 +126,11 @@ function makeChildren(node){
 
 function styleParent(edge,level){
     node = nodes.get(edge.to);
-    console.log("making "+node.label+" a parent");
     edges.update({id:edge.id,label:"POST"});
     nodes.update({id:node.id,level:level-1});
     makeParents(nodes.get(node.id));
 }
 function styleChild(edge,level){
-    console.log("making edge CHILD with FROM:"+edge.from);
     edges.update({id:edge.id,label:"PRE"});
     node = nodes.get(edge.from);
     nodes.update({id:node.id,level:level+1});
@@ -165,7 +161,7 @@ nodes.forEach(node => {
 function FadeNode(fnode){
     nodes.update({id:fnode.id,opacity:0.5});
     nodes.forEach(node => {
-        console.log("opacity of "+node.label+" is: "+node.opacity);
+        //console.log("opacity of "+node.label+" is: "+node.opacity);
     });
 }
 function FadeEdge(fedge){
@@ -180,5 +176,5 @@ function FadeAll(){
     });
 }
 console.log(nodes.get(1))
-displayLevels();
+//displayLevels();
 FadeAll();
