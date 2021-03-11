@@ -25,5 +25,21 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
             </tr>
         </tbody>
     </table>
+    <table>
+        <thead>
+            <tr>
+                <th>requisiteID</th>
+                <th>pre-requisite</th>
+                <th>post-requisite</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="requisite: ${requisiteList}">
+                <td th:text="${requisite.relationID}"></td>
+                <td th:text="${requisite.preReqID}"></td>
+                <td th:text="${requisite.postReqID}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

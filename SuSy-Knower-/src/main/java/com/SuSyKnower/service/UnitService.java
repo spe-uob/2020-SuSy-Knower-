@@ -21,9 +21,7 @@ public class UnitService {
         return unitRepository.getAllUnits();
     }
 
-    public Optional<Unit> getUnit(int id) {
-        return unitRepository.findByID(id);
-    }
+    public Optional<Unit> getUnit(int id) {return unitRepository.findByID(id);}
 
     public void addUnit(Unit unit) {
         unitRepository.addUnit(unit);

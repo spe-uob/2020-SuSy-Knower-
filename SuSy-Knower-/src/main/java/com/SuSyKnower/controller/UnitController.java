@@ -1,6 +1,8 @@
 package com.SuSyKnower.controller;
 
+import com.SuSyKnower.model.Requisite;
 import com.SuSyKnower.model.Unit;
+import com.SuSyKnower.service.RequisiteService;
 import com.SuSyKnower.service.UnitService;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UnitController {
     @Autowired
     private UnitService unitService;
 
+    @Autowired
+    private RequisiteService requisiteService;
+
 //    @ResponseBody
 //    @PostMapping(path = "/add")//map the post request
 //    public String addProgramme (@RequestParam String name,
@@ -34,9 +39,12 @@ public class UnitController {
 
     @RequestMapping(path = "/index1")
     public String displayAllUsers(Model model) {
-        List<Unit> unitList = new ArrayList<Unit>();
-        unitList = unitService.getAllUnits();
+//        List<Unit> unitList = new ArrayList<Unit>();
+//        List<Requisite> requisiteList = new ArrayList<Requisite>();
+        var unitList = unitService.getAllUnits();
+        var requisiteList = requisiteService.getAllRequisite();
         model.addAttribute("unitList", unitList);
+        model.addAttribute("requisiteList", requisiteList);
         return "index";
     }
 
