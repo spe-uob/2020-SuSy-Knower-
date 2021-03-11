@@ -19,9 +19,9 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
         </thead>
         <tbody>
             <tr th:each="unit: ${unitList}">
-                <td th:text="${unit.id}"></td>
-                <td th:text="${unit.name}"></td>
-                <td th:text="${unit.programme}"></td>
+                <td th:text="${unit.unitID}"></td>
+                <td th:text="${unit.unitname}"></td>
+                <td th:text="${unit.unitprogramme}"></td>
             </tr>
         </tbody>
     </table>
