@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class RequisiteRepositoryImpl implements RequisiteRepository{
@@ -25,22 +24,24 @@ public class RequisiteRepositoryImpl implements RequisiteRepository{
     }
 
     @Override
-    public void addRequisite(Requisite requisite) {
+    public void addRequisite(String preReq, String postReq) {
 
     }
 
     @Override
-    public void deleteByID(int id) {
+    public void deleteRequisite(String preReq, String postReq) {
 
     }
 
     @Override
-    public void updateRequisite(Requisite requisite) {
-
-    }
-
-    @Override
-    public Optional<Requisite> findByID(int id) {
+    public List<Requisite> findRequisiteByPost(String postReq) {
         return null;
     }
+
+    @Override
+    public List<Requisite> findRequisiteByPre(String preReq) {
+        return null;
+    }
+
+
 }

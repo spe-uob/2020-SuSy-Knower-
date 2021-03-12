@@ -16,10 +16,7 @@ public class UnitService {
     @Autowired
     private UnitRepositoryImpl unitRepository;
 
-    public List<Unit> getAllUnits() {
-        System.out.println("UnitList:" + unitRepository.getAllUnits());
-        return unitRepository.getAllUnits();
-    }
+    public List<Unit> getAllUnits() {return unitRepository.getAllUnits();}
 
     public Optional<Unit> getUnit(int id) {return unitRepository.findByID(id);}
 

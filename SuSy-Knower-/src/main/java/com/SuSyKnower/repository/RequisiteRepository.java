@@ -9,11 +9,11 @@ public interface RequisiteRepository {
 
     public List<Requisite> getAllRequisites();
 
-    public void addRequisite(Requisite requisite);
+    void addRequisite(String preReq, String postReq);
 
-    public void deleteByID(int id);
+    void deleteRequisite(String preReq, String postReq);
 
-    public void updateRequisite(Requisite requisite);
+    List<Requisite> findRequisiteByPost(String postReq);
 
-    public Optional<Requisite> findByID(int id);
+    List<Requisite> findRequisiteByPre(String preReq);
 }

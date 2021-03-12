@@ -18,11 +18,11 @@ public class RequisiteService {
         return requisiteRepository.getAllRequisites();
     }
 
-    public void addRequisite(Requisite requisite) {requisiteRepository.addRequisite(requisite);}
+    public void addRequisite(String preReq, String postReq) {requisiteRepository.addRequisite(preReq, postReq);}
 
-    public void deleteRequisite(int id) {requisiteRepository.deleteByID(id);}
+    public void deleteRequisite(String preReq, String postReq) {requisiteRepository.deleteRequisite(preReq, postReq);}
 
-    public void updateRequisite(Requisite requisite) {requisiteRepository.updateRequisite(requisite);}
+    public List<Requisite> findRequisiteByPost(String postReq) {return requisiteRepository.findRequisiteByPost(postReq);}
 
-    public Optional<Requisite> findRequisite(int id) {return requisiteRepository.findByID(id);}
+    public List<Requisite> findRequisiteByPre(String preReq) {return requisiteRepository.findRequisiteByPre(preReq);}
 }
