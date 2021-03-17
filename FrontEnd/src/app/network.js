@@ -13,6 +13,9 @@
           this.a =a;
           this.c = "rgba("+r+","+g+","+b+","+a+")";
       }
+      setColour(){
+          this.c = "rgba("+r+","+g+","+b+","+a+")";
+      }
   }
   var testColour = new colour(50,68,187,1);
 
@@ -51,18 +54,18 @@
         //color:{inherit:"both"},
     },
     physics:
-    {
-        hierarchicalRepulsion: {
+    { enabled: false
+        /*xhierarchicalRepulsion: {
             centralGravity: 0.5,
             springLength: 200,
             springConstant: 0.01,
             nodeDistance: 200,
             damping: 0.2,
             avoidOverlap: 0.7
-      }
+      }*/
     },
     layout:{
-        hierarchical:{enabled:true}
+        hierarchical:{enabled:true,direction:"RL"}
     }
   };
 
@@ -75,7 +78,7 @@ var network = new vis.Network(container, data, options);
 //transforms style and properties of target node
 function styleTarget(){
             nodes.update({id:targetNodeId,fixed:true});
-            setLevel(targetNodeId,0);
+            //setLevel(targetNodeId,0);
 }
 //turn previous target to regular node
 function revertFromTarget(prevId,prevLevel){
@@ -140,13 +143,13 @@ function makeChildren(node){
 function styleParent(edge,level){
     node = nodes.get(edge.to);
     edges.update({id:edge.id,/*label:"POST"*/});
-    nodes.update({id:node.id,level:level-1});
+    nodes.update({id:node.id,level:level-1,color:{background:"red"}});
     makeParents(nodes.get(node.id));
 }
 function styleChild(edge,level){
     edges.update({id:edge.id,/*label:"PRE"*/});
     node = nodes.get(edge.from);
-    nodes.update({id:node.id,level:level+1});
+    nodes.update({id:node.id,level:level+1, color:{background:"green"}});
     makeChildren(nodes.get(node.id));
 }
 
