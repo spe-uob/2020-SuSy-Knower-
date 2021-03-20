@@ -23,7 +23,7 @@ var nodesArray = [
     new Node(11,"Logic and Critical Thinking"),
     new Node(12,"Knowledge and Reality"),
     new Node(13,"Readings in Value Theory"),
-    //new Node(-1,"LEVEL 0 INDICATOR"),
+    new Node(-1,"LEVEL 0 INDICATOR"),
     //new Node(-2,"LEVEL 1 INDICATOR"),
     //new Node(-3,"LEVEL -1 INDICATOR"),
 ];

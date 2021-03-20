@@ -36,7 +36,8 @@
                     border: 'black',
                     background: 'white'
                   },},
-        font:{face:"tahoma"},
+        font:{face:"tahoma",strokeWidth: 3,
+        strokeColor: "#ffffff"},
         level:0,
         chosen:true,
     },
@@ -45,12 +46,12 @@
         Prog:{color:{border:"orange"}},
         Maths:{color:{border:"green"}},
         Neuro:{color:{border:"purple"}},
-        IDENT:{color:"grey"},
-        NOGROUP:{color:{border:testColour.c}}
+        IDENT:{color:"grey",opacity:0.5},
+        NOGROUP:{opacity:0}
     },
     edges:{
         width:nodeSize/2,
-        arrows:{middle:{enabled:true, type:"arrow"}}
+        arrows:{middle:{enabled:true, type:"arrow"}},
         //color:{inherit:"both"},
     },
     physics:
