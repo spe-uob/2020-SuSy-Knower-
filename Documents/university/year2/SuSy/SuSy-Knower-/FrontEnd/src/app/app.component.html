@@ -1,0 +1,250 @@
+<html>
+<head>
+  <title> Network </title>
+  <h1 style="font-size:60px;">SuSy Knower - Knowledge Maps</h1>
+
+  <!-- Search form -->
+  <form class="form-inline waves-light" mdbWavesEffect>
+</form>
+
+  <script
+    type="text/javascript"
+    src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+  ></script>
+
+  <style type="text/css">
+    #mynetwork {
+      width: 1000px;
+      height: 600px;
+      border: 1px solid lightgray;
+    }
+  </style>
+  <link rel="stylesheet" href="./list.css">
+</head>
+<body>
+<!--<div id="searchCourse" class="instant-search">-->
+      <div id="searchUsers" class="instant-search instant-search--loading">
+<div style="text-align: center;">
+
+<!--Find a course : -->
+  <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
+  <button id='sb' class="circle"> </button>
+
+
+</div>
+  <script type="text/javascript" src="function.js"></script>
+<div id="mynetwork">
+
+</div>
+
+<script type="text/javascript" id="mynode">
+
+
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+
+    { id: 8,
+      label: "Mathematical Methods",
+      group: "source1",
+      x: 200  , y: 200,
+      shape: 'circle',
+      //level: 0,
+      url: "https://www.bris.ac.uk/unit-programme-catalogue/UnitDetails.jsa?ayrCode=21%2F22&unitCode=COMS10014",
+      title: "Computer science unit for beginners"},
+
+    { id: 1,
+      label: "Algorithms 2",
+      group: "source1",
+      shape: 'circle',
+      x: 0, y: 200,
+      //level: 2,
+      title: "Computer science unit for year 2 students"},
+
+    { id: 3,
+      label: "Algorithms 1",
+      group: "source1" ,
+      x: 0, y: 400,
+      //level: 1,
+      shape: 'circle',
+      title: "Computer science unit for year 1 students"},
+
+    { id: 4,
+      label: "Advanced Algorithms",
+      x: 0, y: -200,
+      shape: 'circle',
+      //level: 3,
+      group: "source1"},
+
+    { id: 2,
+      label: "Computer Systems",
+      shape: 'circle',
+      //level: 2,
+      group: "source2" },
+
+    { id: 9,
+      label: "Architecture",
+      shape: 'circle',
+      //level: 2,
+      group: "source2" },
+
+    { id: 10,
+      label: "Cloud-concepts",
+      shape: 'circle',
+      //level: 2,
+      group: "source2" },
+
+    { id: 5,
+      label: "Security",
+      shape: 'circle',
+      group: "source2"},
+
+    { id: 6,
+      label: "Security 2",
+      shape: 'circle',
+      group: "source3"},
+
+    { id: 7,
+      label: "Node 8",
+      shape: 'circle',
+      group: "source3"},
+
+
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    { from: 1,
+      to: 3,
+      label:"Prerequisite",
+      arrows:"from"},
+
+    { from: 1,
+      to: 2},
+      //arrows:"from"},
+
+    { from: 4,
+      to: 1,
+      label:"Postrequisite",
+      arrows:"from"},
+
+    { from: 2,
+      to: 9},
+      //arrows:"from"},
+
+    { from: 9,
+      to: 10,
+      url: "http://projects.flowingdata.com/tut/interactive_network_demo/"},
+      //arrows:"from"},
+
+    { from: 10,
+      to: 5},
+      //arrows:"from"},
+
+    { from: 5,
+      to: 6,
+      label:"Postrequisite",
+      arrows:"to"},
+
+    { from: 5,
+      to: 7,
+      label:"Prerequisite",
+      arrows:"from"},
+
+    { from: 8,
+      to: 3,
+      label:"Prerequisite",
+      arrows:"to",},
+  ]);
+
+  // create a network
+  var container = document.getElementById("mynetwork");
+  var data = {
+    nodes: nodes,
+    edges: edges,
+  };
+
+  var options = {
+
+    mass:3,
+    nodes: {
+      shape: 'circle',
+      size: 30,
+      font: {
+        size: 12,
+        color: '#ffffff'
+      },
+      borderWidth: 2
+    },
+
+    edges: {
+      width: 2
+    },
+
+    groups:{"source1":{
+        color:{
+          background:'red',
+          border:'maroon'
+        },
+        shadow:{enabled:true,
+          color:'rgba(0,0,0,0.5)',
+          x:6,
+          y:6
+        }
+
+      },
+
+      "source2":{
+        color:{background:'blue',
+          border:'navy'},
+        shadow:{enabled:true,
+          color:'rgba(0,0,0,0.5)',
+          x:6,
+          y:6
+        }
+
+      },
+
+      "source3":{
+        color:{background:'green',
+          border:'darkGreen'},
+        shadow:{enabled:true,
+          color:'rgba(0,0,0,0.5)',
+          x:6,
+          y:6
+        }
+
+      },
+    }
+  };
+
+  // this helped to notes not spread off vaguely and stay aligned and this is the reason you get same output all the time
+  options.layout = {
+    hierarchical: {
+      sortMethod: 'directed',  // hubsize, directed
+      shakeTowards: 'roots',  // roots, leaves
+      direction: 'RL'   // UD, DU, LR, RL
+    }
+  }
+
+  // used to access any url specified at some note/edge
+  var network = new vis.Network(container, data, options);
+  // after selecting the node, below statement was the reason all nodes were moving and you had to click out of the box to stop it
+  //    network.on('click',(obj)=>{document.querySelector('.report').innerHTML =obj.nodes[0]})
+  network.on("selectEdge", function(params) {
+    if (params.nodes.length == 1) {
+      var nodeId = params.nodes[0];
+      if (nodes.get(nodeId).url != null) {
+        window.open(nodes.get(nodeId).url, '_blank');
+      }
+
+    } else if ((params.edges.length == 1) && (params.nodes.length == 0)) {
+      var edgeId = params.edges[0];
+      window.open(edges.get(edgeId).url, '_blank');
+    }
+  });
+
+</script>
+      </div>>
+</body>
+</html>
+
