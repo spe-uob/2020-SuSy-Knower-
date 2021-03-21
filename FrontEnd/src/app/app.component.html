@@ -12,24 +12,30 @@
       border: 1px solid lightgray;
     }
   </style>
+  <link rel="stylesheet" href="./list.css">
 </head>
 <body>
 <div>
   <app-search-bar></app-search-bar>
+  <div id="searchUsers" class="instant-search instant-search--loading">
+    <div style="text-align: center;">
+    
+    <!--Find a course : -->
+      <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
+      <button id='sb' class="circle"> </button>
+    
+    
+    </div>
 </div>
 
-
 <div id="mynetwork"></div>
+
 <script src = "template.js"></script>
 <script src = "data.js"></script>
+<script type="text/javascript" src="function.js"></script>
 <script src = "network.js" defer> </script>
 
-<!-- Search form -->
-<form class="form-inline waves-light" mdbWavesEffect>
-  <div class="md-form mt-0">
-    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-  </div>
-</form>
+
 
 </body>
 </html>

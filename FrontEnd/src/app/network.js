@@ -1,5 +1,5 @@
 
-  var nodeSize=15;
+  var nodeSize=6;
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
@@ -29,14 +29,14 @@
     interaction:{zoomSpeed:0.2},
     nodes:{shape: "dot",
         size:nodeSize,
-        borderWidth: nodeSize/4,
+        borderWidth: nodeSize/3,
         color:{ border:'black',
                 background:"white",
                 highlight: {
                     border: 'black',
                     background: 'white'
                   },},
-        font:{face:"tahoma",strokeWidth: 3,
+        font:{face:"tahoma",size:5,strokeWidth: 1,
         strokeColor: "#ffffff"},
         level:0,
         chosen:true,
@@ -50,8 +50,8 @@
         NOGROUP:{opacity:0}
     },
     edges:{
-        width:nodeSize/2,
-        arrows:{middle:{enabled:true, type:"arrow"}},
+        width:nodeSize/5,
+        //arrows:{middle:{enabled:true, type:"arrow"}},
         //color:{inherit:"both"},
     },
     physics:
@@ -66,7 +66,7 @@
       }*/
     },
     layout:{
-        hierarchical:{enabled:true,direction:"RL"}
+        hierarchical:{enabled:true,direction:"LR"}
     }
   };
 
@@ -143,15 +143,20 @@ function makeChildren(node){
 
 function styleParent(edge,level){
     node = nodes.get(edge.to);
-    edges.update({id:edge.id,/*label:"POST"*/});
-    nodes.update({id:node.id,level:level-1,color:{background:"red"}});
+    edges.update({id:edge.id});
+    nodes.update({id:node.id,/*level:level+1,*/color:{background:"red"}});
     makeParents(nodes.get(node.id));
 }
 function styleChild(edge,level){
-    edges.update({id:edge.id,/*label:"PRE"*/});
+    edges.update({id:edge.id});
     node = nodes.get(edge.from);
-    nodes.update({id:node.id,level:level+1, color:{background:"green"}});
+    nodes.update({id:node.id,/*level:level-1, */color:{background:"green"}});
     makeChildren(nodes.get(node.id));
+}
+function resetNodes(nodes){
+    nodes.forEach(node => {
+        nodes.update({id:node.id,color:{background:"white"}});
+    });
 }
 
 //on double click sets the selected node to be target node
@@ -163,12 +168,26 @@ network.on('doubleClick', function(params){
     });
 });
 network.on('click', function(params){
+    resetNodes(nodes);
     selectedNodes = network.getSelectedNodes();
     selectedNodes.forEach(nodeId => {
         logConnections(nodes.get(nodeId));
         logLevel(nodes.get(nodeId));
+        setTarget(nodeId);
     });
 });
+network.on("selectEdge", function(params) {
+    if (params.nodes.length == 1) {
+      var nodeId = params.nodes[0];
+      if (nodes.get(nodeId).url != null) {
+        window.open(nodes.get(nodeId).url, '_blank');
+      }
+
+    } else if ((params.edges.length == 1) && (params.nodes.length == 0)) {
+      var edgeId = params.edges[0];
+      window.open(edges.get(edgeId).url, '_blank');
+    }
+  });
 
 function logLevel(node){
     console.log("Level of this node: "+node.level);
@@ -202,13 +221,12 @@ function setLevelForAll(nodes,levels){
         }
     });
 }
+
 console.log("length: "+nodes.length);
 console.log("length over 3: "+ nodes.length/3)
 
 
-
-
-setLevelForAll(nodes,initLevelNumber);
+//setLevelForAll(nodes,initLevelNumber);
 console.log(nodes.get(1))
 //displayLevels(nodes);
 FadeAll(nodes);
