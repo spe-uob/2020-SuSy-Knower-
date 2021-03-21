@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>Network</title>
+  <h2>SuSy Knower - Knowledge Maps</h2>
   <script
     type="text/javascript"
     src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
@@ -8,13 +9,15 @@
   <style type="text/css">
     #mynetwork {
       width: 90vw;
-      height: 90vh;
+      height: 70vh;
       border: 1px solid lightgray;
     }
   </style>
   <link rel="stylesheet" href="./list.css">
 </head>
 <body>
+<p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
+<P>Double clicking a node will take you to the unit website</P>
 <div>
   <app-search-bar></app-search-bar>
   <div id="searchUsers" class="instant-search instant-search--loading">

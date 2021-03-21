@@ -18,7 +18,6 @@
       }
   }
   var testColour = new colour(50,68,187,1);
-
   // create a network
   var container = document.getElementById("mynetwork");
   var data = {
@@ -36,22 +35,22 @@
                     border: 'black',
                     background: 'white'
                   },},
-        font:{face:"tahoma",size:5,strokeWidth: 1,
+        font:{face:"tahoma",size:7,strokeWidth: 2,
         strokeColor: "#ffffff"},
         level:0,
         chosen:true,
     },
     groups:{
-        Alg:{color:{border:"red"}},
+        Alg:{color:{border:"crimson"}},
         Prog:{color:{border:"orange"}},
-        Maths:{color:{border:"green"}},
+        Maths:{color:{border:"forestgreen"}},
         Neuro:{color:{border:"purple"}},
         IDENT:{color:"grey",opacity:0.5},
         NOGROUP:{opacity:0}
     },
     edges:{
-        width:nodeSize/5,
-        //arrows:{middle:{enabled:true, type:"arrow"}},
+        width:nodeSize/4,
+        arrows:{to:{enabled:true,scaleFactor:0.25}},
         //color:{inherit:"both"},
     },
     physics:
@@ -69,10 +68,10 @@
         hierarchical:{enabled:true,direction:"LR"}
     }
   };
-
 var network = new vis.Network(container, data, options);
-
 // finish of network creation
+
+
 
 // START OF FUNCTIONS
 
@@ -139,8 +138,6 @@ function makeChildren(node){
         }
     });
 }
-
-
 function styleParent(edge,level){
     node = nodes.get(edge.to);
     edges.update({id:edge.id});
@@ -153,30 +150,91 @@ function styleChild(edge,level){
     nodes.update({id:node.id,/*level:level-1, */color:{background:"green"}});
     makeChildren(nodes.get(node.id));
 }
-function resetNodes(nodes){
+//Perhaps make a default setting
+function resetNodeStyles(nodes){
     nodes.forEach(node => {
-        nodes.update({id:node.id,color:{background:"white"}});
+        nodes.update({id:node.id,color:{background:"white"},size:nodeSize,borderWidth:nodeSize/2});
     });
 }
 
-//on double click sets the selected node to be target node
-network.on('doubleClick', function(params){
-    selectedNodes = network.getSelectedNodes();
-    console.log(selectedNodes);
-    selectedNodes.forEach(nodeId => {
-        setTarget(nodeId);
+function highlightEdges(edges){
+    edges.forEach(edge => {
+        highlightEdge(edge);
     });
+}
+function highlightEdge(edge){
+    edges.update({id:edge.id,width:3});
+}
+function lowlightEdges(edges){
+    edges.forEach(edge => {
+        lowlightEdge(edge);
+    });
+}
+function lowlightEdge(edge){
+    edges.update({id:edge.id,width:1});
+}
+function highlightNode(node){
+    bigSize = nodeSize*2
+    nodes.update({id:node.id,size:bigSize,borderWidth:bigSize/2})
+}
+function lowlightNode(node){
+    nodes.update({id:node.id,size:nodeSize})
+}
+function lowlightNodes(nodes){
+    nodes.forEach(node => {
+        lowlightNode(node);
+    });
+}
+
+function FadeNode(fnode){
+    nodes.update({id:fnode.id,color:"lightgrey"});
+    nodes.forEach(node => {
+        //console.log("opacity of "+node.label+" is: "+node.opacity);
+    });
+}
+function FadeEdge(fedge){
+    edges.update({id:fedge.id,color:"lightgrey"});
+}
+function FadeAll(nodes){
+    nodes.forEach(node => {
+        FadeNode(node);
+    });
+    edges.forEach(edge =>{
+        FadeEdge(edge);
+    });
+}
+
+const edgesFilter = (edge) => {
+    return edgesFilterValues[edge.relation];
+  };
+
+/*var topicEdges = edges.get({
+  filter: function (edge) {
+    return (edge.label == 2);
+  }
+});*/
+
+
+
+//EVENT FUNCTIONS. PLACE ANY FUNCTION WHICH RELIES ON USER INPUT
+network.on('doubleClick', function(params){
+    var node = nodes.get(params.nodes[0]);
+  window.open(node.url, "_blank");
 });
 network.on('click', function(params){
-    resetNodes(nodes);
-    selectedNodes = network.getSelectedNodes();
-    selectedNodes.forEach(nodeId => {
+    console.log(params)
+    resetNodeStyles(nodes);
+    //console.log(node);
+    params.nodes.forEach(nodeId => {
+        console.log(nodes.get(nodeId));
+        lowlightEdges(edges);
         logConnections(nodes.get(nodeId));
         logLevel(nodes.get(nodeId));
         setTarget(nodeId);
     });
 });
 network.on("selectEdge", function(params) {
+    //highlightEdges(edges);
     if (params.nodes.length == 1) {
       var nodeId = params.nodes[0];
       if (nodes.get(nodeId).url != null) {
@@ -187,32 +245,19 @@ network.on("selectEdge", function(params) {
       var edgeId = params.edges[0];
       window.open(edges.get(edgeId).url, '_blank');
     }
+
+
   });
 
+//LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){
     console.log("Level of this node: "+node.level);
 }
 function logConnections(node){
-    console.log(network.getConnectedEdges(node.id))}
+    console.log(network.getConnectedEdges(node.id))
+}
 
 
-function FadeNode(fnode){
-    nodes.update({id:fnode.id,opacity:0.5});
-    nodes.forEach(node => {
-        //console.log("opacity of "+node.label+" is: "+node.opacity);
-    });
-}
-function FadeEdge(fedge){
-    edges.update({id:fedge.id,opacity:0});
-}
-function FadeAll(nodes){
-    nodes.forEach(node => {
-        FadeNode(node);
-    });
-    edges.forEach(edge =>{
-        FadeEdge(edge);
-    });
-}
 function setLevelForAll(nodes,levels){
     nodes.forEach(node => {
         if(node.group!="IDENT"){
@@ -222,11 +267,4 @@ function setLevelForAll(nodes,levels){
     });
 }
 
-console.log("length: "+nodes.length);
-console.log("length over 3: "+ nodes.length/3)
-
-
-//setLevelForAll(nodes,initLevelNumber);
-console.log(nodes.get(1))
-//displayLevels(nodes);
-FadeAll(nodes);
+//FadeAll(nodes);
