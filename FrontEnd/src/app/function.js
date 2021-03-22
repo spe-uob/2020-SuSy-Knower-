@@ -1,4 +1,3 @@
-var strings = ['Algorithm', 'Security', 'Architecture','Mathematical Methods']
 var keys = document.getElementById('myInput');
 var button = document.getElementById('sb');
 

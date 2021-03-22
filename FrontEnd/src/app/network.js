@@ -10,7 +10,7 @@
 
   console.log(fadeSelector);
 
-  
+
 
   class colour{
       constructor(r = 255,g =255, b= 255,a =1){
@@ -227,7 +227,7 @@ const edgesFilter = (edge) => {
 network.on('doubleClick', function(params){
     network.fit(nodes);
     var node = nodes.get(params.nodes[0]);
-  //window.open(node.url, "_blank");
+  window.open(node.url, "_blank");
 });
 network.on('click', function(params){
     console.log(params)
@@ -294,6 +294,3 @@ function setLevelForAll(nodes,levels){
 
 
 //FadeAll(nodes);
-
-
-//hello
