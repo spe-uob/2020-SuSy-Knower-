@@ -3,6 +3,13 @@
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
+
+  const fadeSelector = document.getElementById("FadeBox");
+  const fitButton = document.getElementById("FitButton");
+  const newFunction = document.getElementById("ClusterBox");
+
+  console.log(fadeSelector);
+
   
 
   class colour{
@@ -250,6 +257,20 @@ network.on("selectEdge", function(params) {
 
   });
 
+  fadeSelector.addEventListener("change", (e) => {
+    const { value, checked } = e.target;
+    if(checked){
+        console.log("Fading Nodes")
+        FadeAll(nodes);
+    }
+    else{
+        console.log("Ready to Unfade");
+    }
+  })
+  fitButton.addEventListener("click",(e) =>{
+      network.fit(nodes);
+    })
+
 //LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){
     console.log("Level of this node: "+node.level);
@@ -267,6 +288,8 @@ function setLevelForAll(nodes,levels){
         }
     });
 }
+
+
 
 
 
