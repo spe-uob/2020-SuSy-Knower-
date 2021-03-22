@@ -7,8 +7,7 @@
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
   const newFunction = document.getElementById("ClusterBox");
-
-  console.log(fadeSelector);
+  const outBox = document.getElementById("OutBox");
 
   
 
@@ -253,9 +252,10 @@ network.on("selectEdge", function(params) {
       var edgeId = params.edges[0];
       window.open(edges.get(edgeId).url, '_blank');
     }*/
-
-
   });
+  network.on("zoom",function(params){
+    outBox.value= params.scale;
+  })
 
   fadeSelector.addEventListener("change", (e) => {
     const { value, checked } = e.target;
