@@ -7,6 +7,10 @@ p {
     font-family: Tahoma, Verdana, sans-serif; 
     font-size: small;
 }
+label{
+  font-family: Tahoma, Verdana, sans-serif; 
+  font-size: small;
+}
 
 
 .instant-search {

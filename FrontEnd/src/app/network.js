@@ -218,8 +218,9 @@ const edgesFilter = (edge) => {
 
 //EVENT FUNCTIONS. PLACE ANY FUNCTION WHICH RELIES ON USER INPUT
 network.on('doubleClick', function(params){
+    network.fit(nodes);
     var node = nodes.get(params.nodes[0]);
-  window.open(node.url, "_blank");
+  //window.open(node.url, "_blank");
 });
 network.on('click', function(params){
     console.log(params)
@@ -235,7 +236,7 @@ network.on('click', function(params){
 });
 network.on("selectEdge", function(params) {
     //highlightEdges(edges);
-    if (params.nodes.length == 1) {
+    /*if (params.nodes.length == 1) {
       var nodeId = params.nodes[0];
       if (nodes.get(nodeId).url != null) {
         window.open(nodes.get(nodeId).url, '_blank');
@@ -244,7 +245,7 @@ network.on("selectEdge", function(params) {
     } else if ((params.edges.length == 1) && (params.nodes.length == 0)) {
       var edgeId = params.edges[0];
       window.open(edges.get(edgeId).url, '_blank');
-    }
+    }*/
 
 
   });
@@ -266,6 +267,8 @@ function setLevelForAll(nodes,levels){
         }
     });
 }
+
+
 
 //FadeAll(nodes);
 
