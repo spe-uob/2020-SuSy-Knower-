@@ -52,7 +52,7 @@
         Maths:{color:{border:"forestgreen"}},
         Neuro:{color:{border:"purple"}},
         IDENT:{color:"grey",opacity:0.5},
-        NOGROUP:{opacity:1}
+        NOGROUP:{opacity:0}
     },
     edges:{
         width:nodeSize/4,
@@ -279,7 +279,11 @@ clusterSelector.addEventListener("change", (e) => {
     const { value, checked } = e.target;
     if(checked){
         console.log("Clustering Nodes")
-        //network.clusterByConnection(selNodes,options:{label:"Computer Science"});
+        network.clusterByConnection(selNodes, {clusterNodeProperties: {
+            label: "Computer Science",
+            size: 15,
+            borderWidth:7.5,
+          }});
     }
     else{
         console.log("Ready to Uncluster");
