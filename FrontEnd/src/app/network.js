@@ -4,6 +4,9 @@
   var targetRevertLevel=0;
   var initLevelNumber=4;
 
+  const nodesView = new vis.DataView(nodes);
+  const edgesView = new vis.DataView(edges);
+
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
   const clusterSelector = document.getElementById("ClusterBox");
