@@ -10,6 +10,7 @@ class Node {
 }
 //Must be a better way to give ID's than manually typing in
 var nodesArray = [
+  new Node (-1,"Computer Science",-1),
   new Node(0,"Imperative and \nFunctional Programming",0,"Prog"),
   new Node(1,"Computer Architecture",0,"Hardware"),
   new Node(2,"Mathematics for Computer Science A",0,"Maths"),
@@ -34,3 +35,10 @@ var edgesArray = [
   [0,3],[0,15],[0,4],[0,7],[1,4],[2,5],[2,7],[2,12],[3,6],[3,9],[3,14],[4,8],[4,11],[5,6],[5,8],[5,9],
   [5,10],[5,14],[7,11],[8,11],[9,16],[9,17],[9,13],[11,17],[12,14],
 ]
+nodesArray.forEach(node => {
+  if(node.id != -1){
+    edgesArray.push([-1,node.id]);
+  }
+});
+
+console.log(edgesArray);

@@ -6,7 +6,7 @@
 
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
-  const newFunction = document.getElementById("ClusterBox");
+  const clusterSelector = document.getElementById("ClusterBox");
   const outBox = document.getElementById("OutBox");
 
   
@@ -52,7 +52,7 @@
         Maths:{color:{border:"forestgreen"}},
         Neuro:{color:{border:"purple"}},
         IDENT:{color:"grey",opacity:0.5},
-        NOGROUP:{opacity:0}
+        NOGROUP:{opacity:1}
     },
     edges:{
         width:nodeSize/4,
@@ -73,6 +73,8 @@
     layout:{
         hierarchical:{enabled:true,direction:"LR"}
     }
+    //joinC
+    
   };
 var network = new vis.Network(container, data, options);
 // finish of network creation
@@ -226,13 +228,15 @@ const edgesFilter = (edge) => {
 network.on('doubleClick', function(params){
     network.fit(nodes);
     var node = nodes.get(params.nodes[0]);
-  //window.open(node.url, "_blank");
+  window.open(node.url, "_blank");
 });
 network.on('click', function(params){
     console.log(params)
     resetNodeStyles(nodes);
     //console.log(node);
+    
     params.nodes.forEach(nodeId => {
+        logLevel(nodeId);
         console.log(nodes.get(nodeId));
         lowlightEdges(edges);
         logConnections(nodes.get(nodeId));
@@ -270,6 +274,22 @@ network.on("selectEdge", function(params) {
   fitButton.addEventListener("click",(e) =>{
       network.fit(nodes);
     })
+clusterSelector.addEventListener("change", (e) => {
+    selNodes = network.getSelectedNodes();
+    const { value, checked } = e.target;
+    if(checked){
+        console.log("Clustering Nodes")
+        //network.clusterByConnection(selNodes,options:{label:"Computer Science"});
+    }
+    else{
+        console.log("Ready to Uncluster");
+        selNodes.forEach(node => {
+            network.openCluster(node);
+        });
+        
+    }
+})
+
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){
