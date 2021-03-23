@@ -45,7 +45,7 @@ public class UnitController {
         var requisiteList = requisiteService.getAllRequisite();
         model.addAttribute("unitList", unitList);
         model.addAttribute("requisiteList", requisiteList);
-        return "index";
+        return "visual";
     }
 
 //    @ResponseBody
