@@ -15,6 +15,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
                 <th>id</th>
                 <th>name</th>
                 <th>programme</th>
+                <th>prereqs</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,7 @@ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
                 <td th:text="${unit.id}"></td>
                 <td th:text="${unit.name}"></td>
                 <td th:text="${unit.programme}"></td>
+                <td th:text="${unit.prereqs}"></td>
             </tr>
         </tbody>
     </table>

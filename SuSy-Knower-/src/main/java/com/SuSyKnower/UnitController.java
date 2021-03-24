@@ -29,6 +29,7 @@ public class UnitController {
     @Autowired
     private UnitService unitService;
 
+
     @ResponseBody
     @PostMapping(path = "/add")//map the post request
     public String addProgramme (@RequestParam String name,
@@ -53,5 +54,27 @@ public class UnitController {
     @GetMapping(path="/index2")
     public List<Unit> displayAllUnits() {
         return unitService.getAllUnits();
+    }
+
+    //display all the prerequisites in a separate tab given the unit id
+    @GetMapping(path="/prereqs")
+    public String displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> prerequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
+        }
+        model.addAttribute("prerequisites", prerequisites);
+        return "prereqs";
+    }
+
+    //do the same for postrequisites
+    @GetMapping(path="/postreqs")
+    public String displayAllPostreqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> postrequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            postrequisites = unitService.getPostreqs(unitService.getUnit(id).get());
+        }
+        model.addAttribute("postrequisites", postrequisites);
+        return "postreqs";
     }
 }

@@ -1,12 +1,11 @@
 package com.SuSyKnower;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "units")
-@SecondaryTable(name = "relations", pkJoinColumns = @PrimaryKeyJoinColumn(name = "unit") /*, pkJoinColumns = @PrimaryKeyJoinColumn(name = "prereq")*/)
 public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,7 +16,6 @@ public class Unit {
 
     public Unit() {
     }
-    //private List<Unit> preRequisites = new ArrayList<Unit>();
 
     public Integer getId() {
         return id;
@@ -43,16 +41,12 @@ public class Unit {
         this.programme = programme;
     }
 
-    @Embedded
-    Prerequisites prerequisites;
+    String prereqs;
 
-    public Prerequisites getPrerequisites(Prerequisites prerequisites) {
-        return prerequisites;
-    }
+    public String getPrereqs() { return prereqs; }
+    public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
 
-    public void setPrerequisites(Prerequisites prerequisites) {
-        this.prerequisites = prerequisites;
-    }
+
 
     @Override
     public String toString() {
@@ -60,12 +54,7 @@ public class Unit {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", programme='" + programme + '\'' +
+                "prerequisites=" + prereqs + '\'' +
                 '}';
     }
-}
-
-@Embeddable
-class Prerequisites {
-    private int unit;
-    private int prereq;
 }
