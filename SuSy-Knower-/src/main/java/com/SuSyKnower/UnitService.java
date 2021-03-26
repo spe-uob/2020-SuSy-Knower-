@@ -51,10 +51,19 @@ public class UnitService {
     //same but for postrequisites
     public List<Unit> getPostreqs(Unit unit) {
         List<Unit> postrequisites = new ArrayList<Unit>();
-        for(int i = 0; i < getNumberOfUnits(); i++) {
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
             List<Unit> currentPrereqs = new ArrayList<>();
-            currentPrereqs.addAll(getPrereqs(getUnit(i).get())); //might need to put it in a loop
-            if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());
+            //handling the no prereqs exception should probably be handled in the getprereqs function, via a separate error handling function, to be researched
+            if(getUnit(i).isPresent()) {
+                try {
+                    List<Unit> tryPrereqs = getPrereqs(getUnit(i).get());
+                    currentPrereqs.addAll(getPrereqs(getUnit(i).get()));
+                    if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());
+                }
+                catch(NullPointerException n) {
+                    i++;
+                }
+            }
         }
         return postrequisites;
     }
