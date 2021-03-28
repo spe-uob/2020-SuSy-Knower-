@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>Network</title>
+  <h2>SuSy Knower - Knowledge Maps</h2>
+  <script
+    type="text/javascript"
+    src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+  ></script>
+  <style type="text/css">
+    #mynetwork {
+      width: 90vw;
+      height: 70vh;
+      border: 1px solid lightgray;
+    }
+  </style>
+  <link rel="stylesheet" href="./list.css">
+</head>
+<body>
+<p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
+<P>Double clicking a node will take you to the unit website</P>
+<div>
+  <app-search-bar></app-search-bar>
+  <div id="searchUsers" class="instant-search instant-search--loading">
+    <div style="text-align: center;">
+    
+    <!--Find a course : -->
+      <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
+      <button id='sb' class="circle"> </button>
+    
+    
+    </div>
+</div>
+
+
+<div id="mynetwork"></div>
+
+
+<div>
+  <label>
+    <input type="checkbox" name="FadeBox" value="parent" id="FadeBox" unchecked />
+    Fade On/Off
+  </label>
+  <label>
+    <input type="button" name="FitButton" value="Fit function" id="FitButton" unchecked />
+  </label>
+  <label>
+    <input type="checkbox" name="ClusterBox" value="parent" unchecked />
+    New function
+  </label>
+</div>
+<div>
+  <label for="output">Zoom Level: </label><input type="textbox" name="output" id="OutBox"></input>
+</div>
+
+<script src = "template.js"></script>
+<script src = "data.js"></script>
+<script type="text/javascript" src="function.js"></script>
+<script src = "network.js" defer> </script>
+
+
+
+</body>
+</html>
