@@ -10,7 +10,7 @@ class Node {
 }
 //Must be a better way to give ID's than manually typing in
 var nodesArray = [
-  new Node (-1,"Computer Science",-1),
+  //new Node (-1,"Computer Science",-1),
   new Node(0,"Imperative and \nFunctional Programming",0,"Prog"),
   new Node(1,"Computer Architecture",0,"Hardware"),
   new Node(2,"Mathematics for Computer Science A",0,"Maths"),

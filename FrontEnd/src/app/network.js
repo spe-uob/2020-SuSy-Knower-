@@ -12,6 +12,11 @@
   const clusterSelector = document.getElementById("ClusterBox");
   const outBox = document.getElementById("OutBox");
 
+  var changeChosenNodeSize = function (values, id, selected, hovering) {
+    values.size = values.size*2;
+    values.borderWidth = values.borderWidth*2;
+  };
+
   
 
   class colour{
@@ -47,7 +52,7 @@
         font:{face:"tahoma",size:7,strokeWidth: 2,
         strokeColor: "#ffffff"},
         level:0,
-        chosen:true,
+        chosen:{label: false, node: changeChosenNodeSize},
     },
     groups:{
         Alg:{color:{border:"crimson"}},
@@ -60,6 +65,7 @@
     edges:{
         width:nodeSize/4,
         arrows:{to:{enabled:true,scaleFactor:0.25}},
+        chosen:false
         //color:{inherit:"both"},
     },
     physics:
@@ -75,6 +81,9 @@
     },
     layout:{
         hierarchical:{enabled:true,direction:"LR"}
+    },
+    interaction:{
+        //hover:true,
     }
     //joinC
     
