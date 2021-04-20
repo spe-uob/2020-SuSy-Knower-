@@ -25,7 +25,7 @@ class SuSyKnowerApplicationTests {
 	@Test
 	public void testGetUnit() {
 		Unit unit1 = testUnitService.getUnit(1).get();
-		assertEquals("Unit{id=1, name='Imperative and Functional Programming', programme='Computer Science (BSc)'prerequisites=null'}", unit1.toString());
+		assertEquals("Unit{id=1, name='Imperative and Functional Programming', programme='Computer Science (BSc)', faculty='null', topics='null', link='https://www.bris.ac.uk/unit-programme-catalogue/UnitDetails.jsa?ayrCode=21%2F22&unitCode=COMS10016', prerequisites=null'}", unit1.toString());
 	}
 
 	@Test
@@ -33,6 +33,8 @@ class SuSyKnowerApplicationTests {
 
 	}
 
+	//actualpostreqsstring is empty, but the getpostreqs function seems to work
+	//fix test
 	@Test
 	public void testGetPostreqs() {
 		Unit unit1 = testUnitService.getUnit(1).get();
@@ -48,6 +50,37 @@ class SuSyKnowerApplicationTests {
 			ActualPostreqsString.add(ActualPostreqs.get(i).toString());
 		}
 		assertEquals(ExpectedPostreqs.toString(), ActualPostreqsString.toString());
+	}
+
+	//make a universal function testGetAllBy
+	@Test
+	public void testGetAllByProgramme(){
+		List<String>ExpectedUnits = new ArrayList<>();
+		for (int i = 1; i < 14; i++) {
+			ExpectedUnits.add(testUnitService.getUnit(i).get().toString());
+		}
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllByProgramme("Computer Science (BSc)"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
+	public void testGetAllByFaculty(){
+		List<String>ExpectedUnits = new ArrayList<>();
+		for (int i = 1; i < 14; i++) {
+			ExpectedUnits.add(testUnitService.getUnit(i).get().toString());
+		}
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllByFaculty("Engineering"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
 }

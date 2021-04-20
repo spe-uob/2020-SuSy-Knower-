@@ -51,7 +51,6 @@ public class UnitService {
         return prerequisites;
     }
 
-    //same but for postrequisites
     public List<Unit> getPostreqs(Unit unit) {
         List<Unit> postrequisites = new ArrayList<Unit>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
@@ -70,5 +69,30 @@ public class UnitService {
         }
         return postrequisites;
     }
+
+    public List<Unit> getAllByProgramme(String theProgramme) {
+        List<Unit> unitsInProgramme = new ArrayList<Unit>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                    if(((getUnit(i).get()).getProgramme()).equals(theProgramme)) {
+                        unitsInProgramme.add(getUnit(i).get());
+                    }
+                }
+                catch(NullPointerException n) {
+                    i++;
+                }
+            }
+        }
+        return unitsInProgramme;
+    }
+/*
+    public List<Unit> getAllByFaculty(String faculty) {
+    }
+
+    //in the future Topic topic
+    public List<Unit> getAllByTopics(String topic) {
+
+    }*/
 
 }

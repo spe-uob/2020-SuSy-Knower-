@@ -15,6 +15,10 @@ public class Unit {
 
     private String name;
     private String programme;
+    private String faculty;
+    //a csv string, might be worth parsing not to separate strings but topic objects
+    private String topic;
+    private String url;
 
     public Unit() {
     }
@@ -31,6 +35,18 @@ public class Unit {
         return programme;
     }
 
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -43,12 +59,24 @@ public class Unit {
         this.programme = programme;
     }
 
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     String prereqs;
 
     public String getPrereqs() { return prereqs; }
     public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
 
-
+    //a toString function for postreqs might be useful too
 
     @Override
     public String toString() {
@@ -56,7 +84,11 @@ public class Unit {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", programme='" + programme + '\'' +
-                "prerequisites=" + prereqs + '\'' +
+                ", faculty='" + faculty + '\'' +
+                ", topics='" + topic + '\'' +
+                //make it an actual link in some layer
+                ", link='" + url + '\'' +
+                ", prerequisites=" + prereqs + '\'' +
                 '}';
     }
 }
