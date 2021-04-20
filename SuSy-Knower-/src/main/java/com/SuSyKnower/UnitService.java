@@ -86,10 +86,24 @@ public class UnitService {
         }
         return unitsInProgramme;
     }
-/*
-    public List<Unit> getAllByFaculty(String faculty) {
-    }
 
+    public List<Unit> getAllByFaculty(String theFaculty) {
+        List<Unit> unitsInFaculty = new ArrayList<Unit>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                    if(((getUnit(i).get()).getFaculty()).equals(theFaculty)) {
+                        unitsInFaculty.add(getUnit(i).get());
+                    }
+                }
+                catch(NullPointerException n) {
+                    i++;
+                }
+            }
+        }
+        return unitsInFaculty;
+    }
+/*
     //in the future Topic topic
     public List<Unit> getAllByTopics(String topic) {
 
