@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+//mainly for testing purposes
 @RequestMapping(path = "/test")
 public class UnitController {
 
@@ -57,6 +58,7 @@ public class UnitController {
     }
 
     //display all the prerequisites in a separate tab given the unit id
+    //the path is <server ip>:8080/test/prereqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/prereqs")
     public String displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
         List<Unit> prerequisites = new ArrayList<Unit>();
@@ -67,7 +69,8 @@ public class UnitController {
         return "prereqs";
     }
 
-    //do the same for postrequisites
+    //display all the postrequisites in a separate tab given the unit id
+    //the path is <server ip>:8080/test/postreqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/postreqs")
     public String displayAllPostreqs(Model model, @RequestParam(required = true) int id) {
         List<Unit> postrequisites = new ArrayList<Unit>();

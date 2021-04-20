@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.Arrays;
 
+//still to add: url, faculty and topic columns
+
 @Entity
 @Table(name = "units")
 public class Unit {

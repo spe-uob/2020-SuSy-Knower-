@@ -5,6 +5,8 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+//to add: getAllByProgramme, faculty and topic, probably to return a list of units each
+
 @Service
 public class UnitService {
     
@@ -33,6 +35,7 @@ public class UnitService {
         unitRepository.deleteById(id);
     }
 
+    //just for readability
     public int getNumberOfUnits() {
         return getAllUnits().size();
     }
