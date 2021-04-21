@@ -9,6 +9,7 @@
 
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
+  const FitButtonWithCondition = document.getElementById("FitButtonWithCondition");
   const ClusterButton = document.getElementById("ClusterButton");
   const UnClusterButton = document.getElementById("UnClusterButton");
   const outBox = document.getElementById("OutBox");
@@ -271,6 +272,22 @@ function Cluster(clusterLabel,joinCondition,clusterNodeProperties){
         clusterNodeProperties:clusterNodeProperties,
       });
 }
+function fitGroup(group){
+    fitOnCondition({filter:function(node){
+            return node.group = group }})
+}
+
+function fitOnCondition(condition){
+    nodes_to_fit = nodes.get( {filter: function (item) {
+        return item.group == "Alg";
+      }})
+    console.log(nodes_to_fit);
+    nodes_to_fit_IDs = []
+    nodes_to_fit.forEach(node => {
+        nodes_to_fit_IDs.push(node.id)
+    });
+    network.fit({nodes:nodes_to_fit_IDs});
+}
 
 
 
@@ -331,9 +348,13 @@ network.on("selectEdge", function(params) {
         console.log("Ready to Unfade");
     }
   })
-  fitButton.addEventListener("click",(e) =>{
-      network.fit(nodes);
-    })
+fitButton.addEventListener("click",(e) =>{
+    network.fit(nodes);
+})
+FitButtonWithCondition.addEventListener("click",(e) =>{
+    fitGroup("Alg");
+})
+
 
 
 ClusterButton.addEventListener("click", (e) => {
@@ -371,6 +392,8 @@ function setLevelForAll(nodes,levels){
         }
     });
 }
+
+
 
 //FadeAll(nodes);
 
