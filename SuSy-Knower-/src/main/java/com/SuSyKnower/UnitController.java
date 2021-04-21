@@ -80,4 +80,13 @@ public class UnitController {
         model.addAttribute("postrequisites", postrequisites);
         return "postreqs";
     }
+
+    @GetMapping(path="/topic")
+    public String displayAllPostreqs(Model model, @RequestParam(required = true) String topic) {
+        List<Unit> units = new ArrayList<Unit>();
+        units = unitService.getAllByTopic(topic);
+        model.addAttribute("topic", units);
+        return "topic";
+    }
+
 }

@@ -80,7 +80,7 @@ public class UnitService {
                     }
                 }
                 catch(NullPointerException n) {
-                    i++;
+                    //i++;
                 }
             }
         }
@@ -97,16 +97,30 @@ public class UnitService {
                     }
                 }
                 catch(NullPointerException n) {
-                    i++;
+                    //i++;
                 }
             }
         }
         return unitsInFaculty;
     }
-/*
-    //in the future Topic topic
-    public List<Unit> getAllByTopics(String topic) {
 
-    }*/
+    //in the future Topic topic
+    public List<Unit> getAllByTopic(String theTopic) {
+        List<Unit> unitsWithTopic = new ArrayList<Unit>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                    if(((getUnit(i).get()).getTopic()).equals(theTopic)) {
+                        unitsWithTopic.add(getUnit(i).get());
+                    }
+                }
+                catch(NullPointerException n) {
+                    //i++;
+                    //perhaps should be commented out in others too?
+                }
+            }
+        }
+        return unitsWithTopic;
+    }
 
 }
