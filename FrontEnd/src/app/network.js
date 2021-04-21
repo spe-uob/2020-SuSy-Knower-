@@ -9,7 +9,8 @@
 
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
-  const clusterSelector = document.getElementById("ClusterBox");
+  const ClusterButton = document.getElementById("ClusterButton");
+  const UnClusterButton = document.getElementById("UnClusterButton");
   const outBox = document.getElementById("OutBox");
 
   var changeChosenNodeSize = function (values, id, selected, hovering) {
@@ -228,6 +229,51 @@ const edgesFilter = (edge) => {
     return edgesFilterValues[edge.relation];
   };
 
+
+function ClusterByFacutly(clusterLabel,faculty){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.faculty == faculty;
+      },{
+        level:-3,
+        label: clusterLabel,
+        faculty: "ENGINEERING",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function ClusterBySchool(clusterLabel,school){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.school == school;
+      },{
+        level:-2,
+        label: clusterLabel,
+        faculty: "ENGINEERING",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function ClusterBySubject(clusterLabel,subject){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.subject == subject;
+      },{
+        level:-1,
+        label: clusterLabel,
+        school: "SCEEM",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function Cluster(clusterLabel,joinCondition,clusterNodeProperties){
+    network.cluster({joinCondition: joinCondition,
+        clusterNodeProperties:clusterNodeProperties,
+      });
+}
+
+
+
 /*var topicEdges = edges.get({
   filter: function (edge) {
     return (edge.label == 2);
@@ -244,7 +290,9 @@ network.on('doubleClick', function(params){
 });
 network.on('click', function(params){
     console.log(params)
+    /*
     resetNodeStyles(nodes);
+    
     //console.log(node);
     
     params.nodes.forEach(nodeId => {
@@ -254,7 +302,7 @@ network.on('click', function(params){
         logConnections(nodes.get(nodeId));
         logLevel(nodes.get(nodeId));
         setTarget(nodeId);
-    });
+    });*/
 });
 network.on("selectEdge", function(params) {
     //highlightEdges(edges);
@@ -286,26 +334,25 @@ network.on("selectEdge", function(params) {
   fitButton.addEventListener("click",(e) =>{
       network.fit(nodes);
     })
-clusterSelector.addEventListener("change", (e) => {
-    selNodes = network.getSelectedNodes();
-    const { value, checked } = e.target;
-    if(checked){
+
+
+ClusterButton.addEventListener("click", (e) => {
         console.log("Clustering Nodes")
-        network.clusterByConnection(selNodes, {clusterNodeProperties: {
-            label: "Computer Science",
-            size: 15,
-            borderWidth:7.5,
-          }});
-    }
-    else{
-        console.log("Ready to Uncluster");
-        selNodes.forEach(node => {
-            network.openCluster(node);
-        });
-        
-    }
+        ClusterBySubject("Computer Science","Computer Science")
+        ClusterBySchool("SCEEM","SCEEM")
+        ClusterByFacutly("ENGINEERING","ENGINEERING")
+        network.fit(nodes);
 })
 
+UnClusterButton.addEventListener("click", (e) => {
+    selNodes = network.getSelectedNodes();
+
+        console.log("Ready to Uncluster");
+        selNodes.forEach(node => {
+            network.openCluster(node); //Need to include release function
+    })
+    network.fit(nodes);
+})
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){
@@ -325,11 +372,6 @@ function setLevelForAll(nodes,levels){
     });
 }
 
-
-
-
-
 //FadeAll(nodes);
-
 
 //hello
