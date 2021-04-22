@@ -52,7 +52,8 @@ class SuSyKnowerApplicationTests {
 		}
 		assertEquals(ExpectedPostreqs.toString(), ActualPostreqsString.toString());
 	}
-
+	
+	//TO REFACTOR
 	//make a universal function testGetAllBy
 	@Test
 	public void testGetAllByProgramme(){
@@ -84,9 +85,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
-	//gets only 6 for maths (3, 6)
-	//only 1, 4, 5, 7 for programming (1, 4, 5, 7, 13)
-	//the browser testing shows the same
 	@Test
 	public void testGetAllByTopic(){
 		List<String>ExpectedUnits = new ArrayList<>();

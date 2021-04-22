@@ -5,8 +5,6 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//to add: getAllByProgramme, faculty and topic, probably to return a list of units each
-
 @Service
 public class UnitService {
     
@@ -69,6 +67,8 @@ public class UnitService {
         }
         return postrequisites;
     }
+
+    //the try catch blocks might not be neccessary ay all here
 
     public List<Unit> getAllByProgramme(String theProgramme) {
         List<Unit> unitsInProgramme = new ArrayList<Unit>();

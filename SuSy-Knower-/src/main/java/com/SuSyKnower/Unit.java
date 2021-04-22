@@ -77,8 +77,7 @@ public class Unit {
     public String getPrereqs() { return prereqs; }
     public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
 
-    //a toString function for postreqs might be useful too
-
+    //for testing purposes, different types of toString functions might be neccessary for the frontend integration
     @Override
     public String toString() {
         return "Unit{" +

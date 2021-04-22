@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-//mainly for testing purposes
+//for testing purposes
 @RequestMapping(path = "/test")
 public class UnitController {
 
