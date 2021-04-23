@@ -1,5 +1,6 @@
 
 class Node {
+  3
   constructor(id,label = "NOLABEL",level=0,group = "NOGROUP",url="https://www.bristol.ac.uk/study/undergraduate/2022/computer-science/meng-comp-sci/"){
     this.id = id;
     this.label=label;
