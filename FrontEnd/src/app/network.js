@@ -1,5 +1,5 @@
 
-  var nodeSize=6;
+  var nodeSize=8;
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
@@ -41,7 +41,7 @@
                     border: 'black',
                     background: 'white'
                   },},
-        font:{face:"tahoma",size:7,strokeWidth: 2,
+        font:{face:"tahoma",size:10,strokeWidth: 2,
         strokeColor: "#ffffff"},
         level:0,
         chosen:true,
@@ -55,7 +55,7 @@
         NOGROUP:{opacity:0}
     },
     edges:{
-        width:nodeSize/4,
+        width:nodeSize/8,
         arrows:{to:{enabled:true,scaleFactor:0.25}},
         //color:{inherit:"both"},
     },
@@ -75,6 +75,11 @@
     }
   };
 var network = new vis.Network(container, data, options);
+var canvas = network.canvas.frame.canvas;
+/** @type {CanvasRenderingContext2D} */
+var c = canvas.getContext('2d');
+
+
 // finish of network creation
 
 
@@ -89,7 +94,7 @@ function styleTarget(){
 //turn previous target to regular node
 function revertFromTarget(prevId,prevLevel){
     nodes.update({id:prevId,fixed:false});
-    setLevel(prevId,prevLevel) //TODO: Change from '1' to previous level.
+    setLevel(prevId,prevLevel); //TODO: Change from '1' to previous level.
 }
 //assigns new target, styles it and reverts old target.
 function setTarget(newTargetId){
@@ -103,12 +108,12 @@ function setTarget(newTargetId){
 }
 //sets level of specific node
 function setLevel(nodeId,Nlev){
-    nodes.update({id:nodeId,level:Nlev})
+    nodes.update({id:nodeId,level:Nlev});
 }
 //logs levels of all nodes
 function displayLevels(nodes){
     nodes.forEach(node =>{
-        console.log(node.label+" is at level "+node.level)
+        console.log(node.label+" is at level "+node.level);
     });
 }
 
@@ -181,10 +186,10 @@ function lowlightEdge(edge){
 }
 function highlightNode(node){
     bigSize = nodeSize*2
-    nodes.update({id:node.id,size:bigSize,borderWidth:bigSize/2})
+    nodes.update({id:node.id,size:bigSize,borderWidth:bigSize/2});
 }
 function lowlightNode(node){
-    nodes.update({id:node.id,size:nodeSize})
+    nodes.update({id:node.id,size:nodeSize});
 }
 function lowlightNodes(nodes){
     nodes.forEach(node => {
@@ -223,13 +228,37 @@ const edgesFilter = (edge) => {
 
 
 //EVENT FUNCTIONS. PLACE ANY FUNCTION WHICH RELIES ON USER INPUT
+
+network.on("beforeDrawing", function(ctx) {		
+    c.fillStyle = 'rgba(0,0,0,0)'
+    c.fillRect(0,0-(innerHeight/2),150,innerHeight);
+    c.fillStyle = 'rgba(0,0,0,0.05)'
+    c.fillRect(-150,0-(innerHeight/2),150,innerHeight);
+    c.fillStyle = 'rgba(0,0,0,0.05)'
+    c.fillRect(150,0-(innerHeight/2),150,innerHeight);
+    c.fillStyle = 'rgba(0,0,0,0)'
+    c.fillRect(-300,0-(innerHeight/2),150,innerHeight);
+    c.fillStyle = 'rgba(0,0,0,0.05'
+    c.fillRect(-450,0-(innerHeight/2),150,innerHeight);
+
+    // c.beginPath();
+    // c.moveTo(50,300);
+    // c.lineTo(300,100);
+    // c.lineTo(400,300);
+    // c.strokeStyle = "#fa34a3";
+    // c.stroke();
+    // c.beginPath();
+    // c.arc(0,0,30,0,Math.PI*2,false);
+    // c.stroke();
+});
+
 network.on('doubleClick', function(params){
     network.fit(nodes);
     var node = nodes.get(params.nodes[0]);
   window.open(node.url, "_blank");
 });
 network.on('click', function(params){
-    console.log(params)
+    console.log(params);
     resetNodeStyles(nodes);
     //console.log(node);
     params.nodes.forEach(nodeId => {
@@ -260,7 +289,7 @@ network.on("selectEdge", function(params) {
   fadeSelector.addEventListener("change", (e) => {
     const { value, checked } = e.target;
     if(checked){
-        console.log("Fading Nodes")
+        console.log("Fading Nodes");
         FadeAll(nodes);
     }
     else{
@@ -276,14 +305,14 @@ function logLevel(node){
     console.log("Level of this node: "+node.level);
 }
 function logConnections(node){
-    console.log(network.getConnectedEdges(node.id))
+    console.log(network.getConnectedEdges(node.id));
 }
 
 
 function setLevelForAll(nodes,levels){
     nodes.forEach(node => {
         if(node.group!="IDENT"){
-            console.log(node.id% levels)
+            console.log(node.id% levels);
             setLevel(node.id,(node.id % levels)-Math.floor(levels/2));
         }
     });
