@@ -1,5 +1,5 @@
 
-  var nodeSize=8;
+  var nodeSize=10;
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
@@ -34,14 +34,14 @@
     interaction:{zoomSpeed:0.2},
     nodes:{shape: "dot",
         size:nodeSize,
-        borderWidth: nodeSize/3,
+        borderWidth: nodeSize/2,
         color:{ border:'black',
                 background:"white",
                 highlight: {
                     border: 'black',
                     background: 'white'
                   },},
-        font:{face:"tahoma",size:10,strokeWidth: 2,
+        font:{face:"tahoma",size:10,strokeWidth: 3,
         strokeColor: "#ffffff"},
         level:0,
         chosen:true,
@@ -56,7 +56,7 @@
     },
     edges:{
         width:nodeSize/8,
-        arrows:{to:{enabled:true,scaleFactor:0.25}},
+        arrows:{to:{enabled:true,scaleFactor:0.5}},
         //color:{inherit:"both"},
     },
     physics:
@@ -92,30 +92,25 @@ function styleTarget(){
             //setLevel(targetNodeId,0);
 }
 //turn previous target to regular node
-function revertFromTarget(prevId,prevLevel){
-    nodes.update({id:prevId,fixed:false});
-    setLevel(prevId,prevLevel); //TODO: Change from '1' to previous level.
-}
+// function revertFromTarget(prevId,prevLevel){
+//     nodes.update({id:prevId,fixed:false});
+//     setLevel(prevId,prevLevel); //TODO: Change from '1' to previous level.
+// }
 //assigns new target, styles it and reverts old target.
 function setTarget(newTargetId){
     var newTarget = nodes.get(newTargetId);
-    nodes.update({id:newTargetId,target:true});
-    revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
+    //nodes.update({id:newTargetId,target:true});
+    //revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
     targetNodeId= newTargetId;
     targetRevertLevel = newTarget.level;
-    styleTarget();
+    //styleTarget();
     makeParentsAndChildren(nodes.get(newTargetId));
 }
 //sets level of specific node
 function setLevel(nodeId,Nlev){
     nodes.update({id:nodeId,level:Nlev});
 }
-//logs levels of all nodes
-function displayLevels(nodes){
-    nodes.forEach(node =>{
-        console.log(node.label+" is at level "+node.level);
-    });
-}
+
 
 function makeParentsAndChildren(node){
     var edgeIds = network.getConnectedEdges(node.id);
@@ -151,20 +146,24 @@ function makeChildren(node){
 }
 function styleParent(edge,level){
     node = nodes.get(edge.to);
-    edges.update({id:edge.id});
-    nodes.update({id:node.id,/*level:level+1,*/color:{background:"red"}});
+    node.color = {background:"red"}
+    nodes.update(node);
     makeParents(nodes.get(node.id));
 }
 function styleChild(edge,level){
     edges.update({id:edge.id});
     node = nodes.get(edge.from);
-    nodes.update({id:node.id,/*level:level-1, */color:{background:"green"}});
+    node.color = {background:"green"}
+    nodes.update(node);
     makeChildren(nodes.get(node.id));
 }
 //Perhaps make a default setting
 function resetNodeStyles(nodes){
     nodes.forEach(node => {
-        nodes.update({id:node.id,color:{background:"white"},size:nodeSize,borderWidth:nodeSize/2});
+        node.size = nodeSize;
+        node.borderWidth = nodeSize/2;
+        node.color = {background: 'white'} //pass a color object!
+        nodes.update(node);
     });
 }
 
@@ -174,7 +173,8 @@ function highlightEdges(edges){
     });
 }
 function highlightEdge(edge){
-    edges.update({id:edge.id,width:3});
+    edge.width = 3
+    edges.update(edge);
 }
 function lowlightEdges(edges){
     edges.forEach(edge => {
@@ -182,11 +182,14 @@ function lowlightEdges(edges){
     });
 }
 function lowlightEdge(edge){
-    edges.update({id:edge.id,width:1});
+    edge.width = 1
+    edges.update(edge);
 }
-function highlightNode(node){
-    bigSize = nodeSize*2
-    nodes.update({id:node.id,size:bigSize,borderWidth:bigSize/2});
+function highlightNode(node,sf,ratio){
+    highlighted_size = nodeSize*sf;
+    node.size = highlighted_size;
+    node.borderWidth = highlighted_size*ratio
+    nodes.update(node);
 }
 function lowlightNode(node){
     nodes.update({id:node.id,size:nodeSize});
@@ -197,14 +200,21 @@ function lowlightNodes(nodes){
     });
 }
 
-function FadeNode(fnode){
-    nodes.update({id:fnode.id,color:"lightgrey"});
+function FadeNode(node){
+    node.color={background: 'white',border:"lightgrey"}
+    nodes.update(node)
     nodes.forEach(node => {
         //console.log("opacity of "+node.label+" is: "+node.opacity);
     });
 }
-function FadeEdge(fedge){
-    edges.update({id:fedge.id,color:"lightgrey"});
+function UnfadeNode(node){
+    //node.color = node.group.color
+}
+
+
+function FadeEdge(edge){
+    edge.color = "lightgrey"
+    edges.update(edge);
 }
 function FadeAll(nodes){
     nodes.forEach(node => {
@@ -301,12 +311,9 @@ network.on("selectEdge", function(params) {
     })
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
-function logLevel(node){
-    console.log("Level of this node: "+node.level);
-}
-function logConnections(node){
-    console.log(network.getConnectedEdges(node.id));
-}
+function logLevel(node){console.log("Level of this node: "+node.level);}
+
+function logConnections(node){console.log(network.getConnectedEdges(node.id));}
 
 
 function setLevelForAll(nodes,levels){
@@ -318,8 +325,24 @@ function setLevelForAll(nodes,levels){
     });
 }
 
+function spaceNodesVertical(nodes_to_space,factor){
+    nodes_to_space.forEach(node => {
+        pos = network.getPosition(node.id);
+        network.moveNode(node.id,pos.x,pos.y*factor);
+    });
+    
+}
 
+function TestOnNodes(nodes_to_test){
+    nodes_to_test.forEach(node => {
+        console.log(node.group);
+    });
+}
 
+spaceNodesVertical(nodes,1.5);
+//TestOnNodes(nodes)
+console.log(options.groups.Alg.color.border);
+//console.log(options.groups);
 
 
 //FadeAll(nodes);
