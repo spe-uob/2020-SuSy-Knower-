@@ -300,26 +300,41 @@ function fitOnCondition(condition){
 
 
 //EVENT FUNCTIONS. PLACE ANY FUNCTION WHICH RELIES ON USER INPUT
+
 network.on('doubleClick', function(params){
-    network.fit(nodes);
-    var node = nodes.get(params.nodes[0]);
-  window.open(node.url, "_blank");
+    if(network.isCluster(params.nodes[0])){
+        clusterId = params.nodes[0]
+        nodes_to_fit_IDs = network.getNodesInCluster(clusterId)
+        network.openCluster(clusterId)
+        network.fit({nodes:nodes_to_fit_IDs})
+    }
+    else{
+        var node = nodes.get(params.nodes[0]);
+        window.open(node.url, "_blank");
+    }
+
+
 });
 network.on('click', function(params){
     console.log(params)
-    /*
-    resetNodeStyles(nodes);
+    if(network.isCluster(params.nodes[0])){
+
+    }
+    else{
+        resetNodeStyles(nodes);
     
-    //console.log(node);
-    
-    params.nodes.forEach(nodeId => {
-        logLevel(nodeId);
-        console.log(nodes.get(nodeId));
-        lowlightEdges(edges);
-        logConnections(nodes.get(nodeId));
-        logLevel(nodes.get(nodeId));
-        setTarget(nodeId);
-    });*/
+        //console.log(node);
+        
+        params.nodes.forEach(nodeId => {
+            logLevel(nodeId);
+            console.log(nodes.get(nodeId));
+            lowlightEdges(edges);
+            logConnections(nodes.get(nodeId));
+            logLevel(nodes.get(nodeId));
+            setTarget(nodeId);
+        });
+    }
+
 });
 network.on("selectEdge", function(params) {
     //highlightEdges(edges);
@@ -369,10 +384,14 @@ UnClusterButton.addEventListener("click", (e) => {
     selNodes = network.getSelectedNodes();
 
         console.log("Ready to Uncluster");
-        selNodes.forEach(node => {
-            network.openCluster(node); //Need to include release function
+        selNodes.forEach(cluster => {
+            nodes_to_fit_IDs = network.getNodesInCluster(cluster)
+            nodes_to_fit = nodes_to_fit_IDs.forEach(Id => {nodes.get(Id) });
+            console.log(nodes_to_fit_IDs);
+            network.openCluster(cluster);//Need to include release function
+            network.fit(nodes_to_fit)
     })
-    network.fit(nodes);
+    //network.fit(nodes);
 })
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
@@ -392,6 +411,11 @@ function setLevelForAll(nodes,levels){
         }
     });
 }
+
+ClusterBySubject("Computer Science","Computer Science")
+ClusterBySchool("SCEEM","SCEEM")
+ClusterByFacutly("ENGINEERING","ENGINEERING")
+network.fit(nodes)
 
 
 
