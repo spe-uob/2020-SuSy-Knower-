@@ -335,16 +335,18 @@ function DrawGreyRectangle(ctx,x,y,width,height){
     ctx.fillRect(x-width/2,y-(height/2),width,height);
 }
 
+var deficit = -245
+var xi = 150
 network.on("beforeDrawing", function(ctx) {		
 
     ctx.font = "italic 10px Arial";
     ctx.fillStyle = 'rgba(0,0,0,0.9)'
-    ctx.fillText("Year 3 TB2",300+5,80-innerHeight/2);
-    ctx.fillText("Year 3 TB1",150+5,80-innerHeight/2);
-    ctx.fillText("Year 2 TB2",0+5,80-innerHeight/2);
-    ctx.fillText("Year 2 TB1",-150+5,80-innerHeight/2);
-    ctx.fillText("Year 1 TB2",-300+5,80-innerHeight/2);
-    ctx.fillText("Year 1 TB1",-450+5,80-innerHeight/2);
+    ctx.fillText("Year 3 TB2",xi*2+5,deficit);
+    ctx.fillText("Year 3 TB1",xi*1+5,deficit);
+    ctx.fillText("Year 2 TB2",xi*0+5,deficit);
+    ctx.fillText("Year 2 TB1",xi*-1+5,deficit);
+    ctx.fillText("Year 1 TB2",xi*-2+5,deficit);
+    ctx.fillText("Year 1 TB1",xi*-3+5,deficit);
 
     DrawGreyRectangle(ctx,75+450,0,150,innerHeight);
     DrawGreyRectangle(ctx,75+150,0,150,innerHeight);
