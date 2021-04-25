@@ -3,6 +3,8 @@
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
+  var hlsf = 2
+  var bdr_ratio =0.5
 
   const nodesView = new vis.DataView(nodes);
   const edgesView = new vis.DataView(edges);
@@ -43,17 +45,11 @@
   };
   var options = {
     interaction:{zoomSpeed:0.2},
-    nodes:{shape: "dot",
-        size:nodeSize,
+    nodes:{shape: "dot", size:nodeSize,
         borderWidth: nodeSize/2,
-        color:{ border:'black',
-                background:"white",
-                highlight: {
-                    border: 'black',
-                    background: 'white'
-                  },},
-        font:{face:"tahoma",size:12,strokeWidth: 3,
-        strokeColor: "#ffffff"},
+        color:{ border:'black',background:"white",
+                highlight: {border: 'black',background: 'white'},},
+        font:{face:"tahoma",size:12,strokeWidth: 3,strokeColor: "#ffffff"},
         level:0,
         chosen:{label: false, node: changeChosenNodeSize},
     },
@@ -104,9 +100,8 @@ var c = canvas.getContext('2d');
 // START OF FUNCTIONS
 
 //transforms style and properties of target node
-function styleTarget(){
-            nodes.update({id:targetNodeId,fixed:true});
-            //setLevel(targetNodeId,0);
+function styleTarget(node){
+    //highlightNode(node,hlsf,bdr_ratio);
 }
 //turn previous target to regular node
 // function revertFromTarget(prevId,prevLevel){
@@ -120,7 +115,7 @@ function setTarget(newTargetId){
     //revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
     targetNodeId= newTargetId;
     targetRevertLevel = newTarget.level;
-    //styleTarget();
+    styleTarget(newTarget);
     makeParentsAndChildren(nodes.get(newTargetId));
 }
 //sets level of specific node
@@ -418,7 +413,6 @@ network.on('click', function(params){
         resetNodeStyles(nodes);
     
         //console.log(node);
-        
         params.nodes.forEach(nodeId => {
             logLevel(nodeId);
             console.log(nodes.get(nodeId));
