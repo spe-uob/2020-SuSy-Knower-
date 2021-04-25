@@ -3,6 +3,8 @@
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
+  var highlight_scale_factor = 2;
+  var border_ratio = 0.5;
 
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
@@ -26,21 +28,18 @@
   var testColour = new colour(50,68,187,1);
   // create a network
   var container = document.getElementById("mynetwork");
-  var data = {
-    nodes: nodes,
-    edges: edges,
-  };
+
+  var data = {nodes: nodes,edges: edges,};
+
+  var defaultColouring = {border:"black",background:"white",highlight: {border: 'black',background: 'white',}}
+  var defaultChosen = {borderWidth:highlight_scale_factor*border_ratio*nodeSize,size:nodeSize*highlight_scale_factor,
+                        shadow:true, color:'red'}
+
   var options = {
     interaction:{zoomSpeed:0.2},
-    nodes:{shape: "dot",
-        size:nodeSize,
-        borderWidth: nodeSize/2,
-        color:{ border:'black',
-                background:"white",
-                highlight: {
-                    border: 'black',
-                    background: 'white'
-                  },},
+    nodes:{shape: "dot",size:nodeSize,borderWidth: nodeSize*border_ratio,
+        color:defaultColouring,
+        chosen:defaultChosen,
         font:{face:"tahoma",size:10,strokeWidth: 3,
         strokeColor: "#ffffff"},
         level:0,
@@ -56,23 +55,9 @@
     },
     edges:{
         width:nodeSize/8,
-        arrows:{to:{enabled:true,scaleFactor:0.5}},
-        //color:{inherit:"both"},
-    },
-    physics:
-    { enabled: false
-        /*xhierarchicalRepulsion: {
-            centralGravity: 0.5,
-            springLength: 200,
-            springConstant: 0.01,
-            nodeDistance: 200,
-            damping: 0.2,
-            avoidOverlap: 0.7
-      }*/
-    },
-    layout:{
-        hierarchical:{enabled:true,direction:"LR"}
-    }
+        arrows:{to:{enabled:true,scaleFactor:0.5}},},
+    physics:{ enabled: false},
+    layout:{hierarchical:{enabled:true,direction:"LR"}}
   };
 var network = new vis.Network(container, data, options);
 var canvas = network.canvas.frame.canvas;
@@ -87,8 +72,8 @@ var c = canvas.getContext('2d');
 // START OF FUNCTIONS
 
 //transforms style and properties of target node
-function styleTarget(){
-            nodes.update({id:targetNodeId,fixed:true});
+function styleTarget(node){
+            highlightNode(node,highlight_scale_factor,border_ratio)
             //setLevel(targetNodeId,0);
 }
 //turn previous target to regular node
@@ -103,7 +88,7 @@ function setTarget(newTargetId){
     //revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
     targetNodeId= newTargetId;
     targetRevertLevel = newTarget.level;
-    //styleTarget();
+    styleTarget(newTarget);
     makeParentsAndChildren(nodes.get(newTargetId));
 }
 //sets level of specific node
@@ -325,10 +310,10 @@ function setLevelForAll(nodes,levels){
     });
 }
 
-function spaceNodesVertical(nodes_to_space,factor){
+function spaceNodesVertical(nodes_to_space,scale_factor){
     nodes_to_space.forEach(node => {
         pos = network.getPosition(node.id);
-        network.moveNode(node.id,pos.x,pos.y*factor);
+        network.moveNode(node.id,pos.x,pos.y*scale_factor);
     });
     
 }
@@ -340,6 +325,7 @@ function TestOnNodes(nodes_to_test){
 }
 
 spaceNodesVertical(nodes,1.5);
+network.fit(nodes);
 //TestOnNodes(nodes)
 console.log(options.groups.Alg.color.border);
 //console.log(options.groups);
