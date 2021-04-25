@@ -3,15 +3,27 @@
   var targetNodeId=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
-  var highlight_scale_factor = 2;
-  var border_ratio = 0.5;
+
+  const nodesView = new vis.DataView(nodes);
+  const edgesView = new vis.DataView(edges);
 
   const fadeSelector = document.getElementById("FadeBox");
   const fitButton = document.getElementById("FitButton");
-  const newFunction = document.getElementById("ClusterBox");
+  const FitButtonWithCondition = document.getElementById("FitButtonWithCondition");
+  const ClusterButton = document.getElementById("ClusterButton");
+  const UnClusterButton = document.getElementById("UnClusterButton");
   const outBox = document.getElementById("OutBox");
 
+<<<<<<< Front-End-Main
 
+=======
+  var changeChosenNodeSize = function (values, id, selected, hovering) {
+    values.size = values.size*2;
+    values.borderWidth = values.borderWidth*2;
+  };
+
+  
+>>>>>>> Front-End-Clustering
 
   class colour{
       constructor(r = 255,g =255, b= 255,a =1){
@@ -28,22 +40,25 @@
   var testColour = new colour(50,68,187,1);
   // create a network
   var container = document.getElementById("mynetwork");
-
-  var data = {nodes: nodes,edges: edges,};
-
-  var defaultColouring = {border:"black",background:"white",highlight: {border: 'black',background: 'white',}}
-  var defaultChosen = {borderWidth:highlight_scale_factor*border_ratio*nodeSize,size:nodeSize*highlight_scale_factor,
-                        shadow:true, color:'red'}
-
+  var data = {
+    nodes: nodes,
+    edges: edges,
+  };
   var options = {
     interaction:{zoomSpeed:0.2},
-    nodes:{shape: "dot",size:nodeSize,borderWidth: nodeSize*border_ratio,
-        color:defaultColouring,
-        chosen:defaultChosen,
+    nodes:{shape: "dot",
+        size:nodeSize,
+        borderWidth: nodeSize/2,
+        color:{ border:'black',
+                background:"white",
+                highlight: {
+                    border: 'black',
+                    background: 'white'
+                  },},
         font:{face:"tahoma",size:10,strokeWidth: 3,
         strokeColor: "#ffffff"},
         level:0,
-        chosen:true,
+        chosen:{label: false, node: changeChosenNodeSize},
     },
     groups:{
         Alg:{color:{border:"crimson"}},
@@ -54,10 +69,35 @@
         NOGROUP:{opacity:0}
     },
     edges:{
+<<<<<<< Front-End-Main
         width:nodeSize/8,
-        arrows:{to:{enabled:true,scaleFactor:0.5}},},
-    physics:{ enabled: false},
-    layout:{hierarchical:{enabled:true,direction:"LR"}}
+        arrows:{to:{enabled:true,scaleFactor:0.5}},
+=======
+        width:nodeSize/4,
+        arrows:{to:{enabled:true,scaleFactor:0.25}},
+        chosen:false
+>>>>>>> Front-End-Clustering
+        //color:{inherit:"both"},
+    },
+    physics:
+    { enabled: false
+        /*xhierarchicalRepulsion: {
+            centralGravity: 0.5,
+            springLength: 200,
+            springConstant: 0.01,
+            nodeDistance: 200,
+            damping: 0.2,
+            avoidOverlap: 0.7
+      }*/
+    },
+    layout:{
+        hierarchical:{enabled:true,direction:"LR"}
+    },
+    interaction:{
+        //hover:true,
+    }
+    //joinC
+    
   };
 var network = new vis.Network(container, data, options);
 var canvas = network.canvas.frame.canvas;
@@ -72,8 +112,8 @@ var c = canvas.getContext('2d');
 // START OF FUNCTIONS
 
 //transforms style and properties of target node
-function styleTarget(node){
-            highlightNode(node,highlight_scale_factor,border_ratio)
+function styleTarget(){
+            nodes.update({id:targetNodeId,fixed:true});
             //setLevel(targetNodeId,0);
 }
 //turn previous target to regular node
@@ -88,7 +128,7 @@ function setTarget(newTargetId){
     //revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
     targetNodeId= newTargetId;
     targetRevertLevel = newTarget.level;
-    styleTarget(newTarget);
+    //styleTarget();
     makeParentsAndChildren(nodes.get(newTargetId));
 }
 //sets level of specific node
@@ -214,6 +254,67 @@ const edgesFilter = (edge) => {
     return edgesFilterValues[edge.relation];
   };
 
+
+function ClusterByFacutly(clusterLabel,faculty){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.faculty == faculty;
+      },{
+        level:-3,
+        label: clusterLabel,
+        faculty: "ENGINEERING",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function ClusterBySchool(clusterLabel,school){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.school == school;
+      },{
+        level:-2,
+        label: clusterLabel,
+        faculty: "ENGINEERING",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function ClusterBySubject(clusterLabel,subject){
+    Cluster(clusterLabel,function (nodeOptions) {
+        return nodeOptions.subject == subject;
+      },{
+        level:-1,
+        label: clusterLabel,
+        school: "SCEEM",
+        size: 15,
+        borderWidth:7.5,
+    })
+}
+
+function Cluster(clusterLabel,joinCondition,clusterNodeProperties){
+    network.cluster({joinCondition: joinCondition,
+        clusterNodeProperties:clusterNodeProperties,
+      });
+}
+function fitGroup(group){
+    fitOnCondition({filter:function(node){
+            return node.group = group }})
+}
+
+function fitOnCondition(condition){
+    nodes_to_fit = nodes.get( {filter: function (item) {
+        return item.group == "Alg";
+      }})
+    console.log(nodes_to_fit);
+    nodes_to_fit_IDs = []
+    nodes_to_fit.forEach(node => {
+        nodes_to_fit_IDs.push(node.id)
+    });
+    network.fit({nodes:nodes_to_fit_IDs});
+}
+
+
+
 /*var topicEdges = edges.get({
   filter: function (edge) {
     return (edge.label == 2);
@@ -224,6 +325,7 @@ const edgesFilter = (edge) => {
 
 //EVENT FUNCTIONS. PLACE ANY FUNCTION WHICH RELIES ON USER INPUT
 
+<<<<<<< Front-End-Main
 network.on("beforeDrawing", function(ctx) {		
     c.fillStyle = 'rgba(0,0,0,0)'
     c.fillRect(0,0-(innerHeight/2),150,innerHeight);
@@ -263,6 +365,42 @@ network.on('click', function(params){
         logLevel(nodes.get(nodeId));
         setTarget(nodeId);
     });
+=======
+network.on('doubleClick', function(params){
+    if(network.isCluster(params.nodes[0])){
+        clusterId = params.nodes[0]
+        nodes_to_fit_IDs = network.getNodesInCluster(clusterId)
+        network.openCluster(clusterId)
+        network.fit({nodes:nodes_to_fit_IDs})
+    }
+    else{
+        var node = nodes.get(params.nodes[0]);
+        window.open(node.url, "_blank");
+    }
+
+
+});
+network.on('click', function(params){
+    console.log(params)
+    if(network.isCluster(params.nodes[0])){
+
+    }
+    else{
+        resetNodeStyles(nodes);
+    
+        //console.log(node);
+        
+        params.nodes.forEach(nodeId => {
+            logLevel(nodeId);
+            console.log(nodes.get(nodeId));
+            lowlightEdges(edges);
+            logConnections(nodes.get(nodeId));
+            logLevel(nodes.get(nodeId));
+            setTarget(nodeId);
+        });
+    }
+
+>>>>>>> Front-End-Clustering
 });
 network.on("selectEdge", function(params) {
     //highlightEdges(edges);
@@ -291,9 +429,36 @@ network.on("selectEdge", function(params) {
         console.log("Ready to Unfade");
     }
   })
-  fitButton.addEventListener("click",(e) =>{
-      network.fit(nodes);
+fitButton.addEventListener("click",(e) =>{
+    network.fit(nodes);
+})
+FitButtonWithCondition.addEventListener("click",(e) =>{
+    fitGroup("Alg");
+})
+
+
+
+ClusterButton.addEventListener("click", (e) => {
+        console.log("Clustering Nodes")
+        ClusterBySubject("Computer Science","Computer Science")
+        ClusterBySchool("SCEEM","SCEEM")
+        ClusterByFacutly("ENGINEERING","ENGINEERING")
+        network.fit(nodes);
+})
+
+UnClusterButton.addEventListener("click", (e) => {
+    selNodes = network.getSelectedNodes();
+
+        console.log("Ready to Uncluster");
+        selNodes.forEach(cluster => {
+            nodes_to_fit_IDs = network.getNodesInCluster(cluster)
+            nodes_to_fit = nodes_to_fit_IDs.forEach(Id => {nodes.get(Id) });
+            console.log(nodes_to_fit_IDs);
+            network.openCluster(cluster);//Need to include release function
+            network.fit(nodes_to_fit)
     })
+    //network.fit(nodes);
+})
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){console.log("Level of this node: "+node.level);}
@@ -310,10 +475,11 @@ function setLevelForAll(nodes,levels){
     });
 }
 
-function spaceNodesVertical(nodes_to_space,scale_factor){
+<<<<<<< Front-End-Main
+function spaceNodesVertical(nodes_to_space,factor){
     nodes_to_space.forEach(node => {
         pos = network.getPosition(node.id);
-        network.moveNode(node.id,pos.x,pos.y*scale_factor);
+        network.moveNode(node.id,pos.x,pos.y*factor);
     });
     
 }
@@ -323,12 +489,22 @@ function TestOnNodes(nodes_to_test){
         console.log(node.group);
     });
 }
+=======
+ClusterBySubject("Computer Science","Computer Science")
+ClusterBySchool("SCEEM","SCEEM")
+ClusterByFacutly("ENGINEERING","ENGINEERING")
+network.fit(nodes)
+>>>>>>> Front-End-Clustering
 
 spaceNodesVertical(nodes,1.5);
-network.fit(nodes);
 //TestOnNodes(nodes)
 console.log(options.groups.Alg.color.border);
 //console.log(options.groups);
 
 
 //FadeAll(nodes);
+<<<<<<< Front-End-Main
+=======
+
+//hello
+>>>>>>> Front-End-Clustering

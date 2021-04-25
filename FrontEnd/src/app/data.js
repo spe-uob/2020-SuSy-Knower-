@@ -19,7 +19,7 @@ var edges = new vis.DataSet([
 ]); // sample edges as have yet to make edge creation function. Need to discuss how edges will be passed over from back end
 
 function makeNode(node){
-    nodes.update({id:node.id,label:node.label,level:node.level,group:node.group,url:node.url});
+    nodes.update({id:node.id,subject:node.subject,school:node.school,faculty:node.faculty,label:node.label,level:node.level,group:node.group,url:node.url});
 }
 function makeEdgeFromLabels(fromLabel,toLabel){
     fromNodeArr =nodes.get({ filter: function (node) {return (node.label == fromLabel);} });// returns array
