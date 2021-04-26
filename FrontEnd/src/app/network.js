@@ -1,15 +1,25 @@
 
-  var nodeSize=10;
-  var targetNodeId=1;
+  var node_size=10;
+  var target_node_id=1;
   var targetRevertLevel=0;
   var initLevelNumber=4;
-  var hlsf = 2
-  var bdr_ratio =0.5
+  var hlsf = 2;
+  var bdr_ratio =0.5;
+  var should_draw = true;
+
+  var prev_cluster_zoom_level = 0;
+  var unit_zoom_level,subject_zoom_level,school_zoom_level,faculty_zoom_level =0;
+
+  var clusters = [];
+  var subjects = [];
+  var schools = [];
+  var faculties = [];
 
   const nodesView = new vis.DataView(nodes);
   const edgesView = new vis.DataView(edges);
 
   const fadeSelector = document.getElementById("FadeBox");
+  const DrawBox = document.getElementById("DrawBox");
   const fitButton = document.getElementById("FitButton");
   const FitButtonWithCondition = document.getElementById("FitButtonWithCondition");
   const ClusterButton = document.getElementById("ClusterButton");
@@ -44,9 +54,9 @@
     edges: edges,
   };
   var options = {
-    interaction:{zoomSpeed:0.2},
-    nodes:{shape: "dot", size:nodeSize,
-        borderWidth: nodeSize/2,
+    interaction:{zoomSpeed:0.1},
+    nodes:{shape: "dot", size:node_size,
+        borderWidth: node_size/2,
         color:{ border:'black',background:"white",
                 highlight: {border: 'black',background: 'white'},},
         font:{face:"tahoma",size:12,strokeWidth: 3,strokeColor: "#ffffff"},
@@ -62,28 +72,14 @@
         NOGROUP:{opacity:0}
     },
     edges:{
-        width:nodeSize/8,
+        width:node_size/8,
         arrows:{to:{enabled:true,scaleFactor:0.5}},
-        //color:{inherit:"both"},
     },
     physics:
-    { enabled: false
-        /*xhierarchicalRepulsion: {
-            centralGravity: 0.5,
-            springLength: 200,
-            springConstant: 0.01,
-            nodeDistance: 200,
-            damping: 0.2,
-            avoidOverlap: 0.7
-      }*/
-    },
+    { enabled: false},
     layout:{
         hierarchical:{enabled:true,direction:"LR"}
     },
-    interaction:{
-        //hover:true,
-    }
-    //joinC
     
   };
 var network = new vis.Network(container, data, options);
@@ -113,7 +109,7 @@ function setTarget(newTargetId){
     var newTarget = nodes.get(newTargetId);
     //nodes.update({id:newTargetId,target:true});
     //revertFromTarget(targetNodeId,targetRevertLevel);//revert old target node;
-    targetNodeId= newTargetId;
+    target_node_id= newTargetId;
     targetRevertLevel = newTarget.level;
     styleTarget(newTarget);
     makeParentsAndChildren(nodes.get(newTargetId));
@@ -172,8 +168,8 @@ function styleChild(edge,level){
 //Perhaps make a default setting
 function resetNodeStyles(nodes){
     nodes.forEach(node => {
-        node.size = nodeSize;
-        node.borderWidth = nodeSize/2;
+        node.size = node_size;
+        node.borderWidth = node_size/2;
         node.color = {background: 'white'} //pass a color object!
         nodes.update(node);
     });
@@ -194,16 +190,16 @@ function lowlightEdges(){
     });
 }
 function lowlightEdge(edge){
-    edge.width = nodeSize/8;
+    edge.width = node_size/8;
 }
 function highlightNode(node,sf,ratio){
-    highlighted_size = nodeSize*sf;
+    highlighted_size = node_size*sf;
     node.size = highlighted_size;
     node.borderWidth = highlighted_size*ratio
     nodes.update(node);
 }
 function lowlightNode(node){
-    node.size = nodeSize;
+    node.size = node_size;
     nodes.update(node);
 }
 function lowlightNodes(nodes){
@@ -233,7 +229,7 @@ function FadeAll(nodes){
         FadeNode(node);
     });
     edges.forEach(edge =>{
-        FadeEdge(edge);
+        //FadeEdge(edge);
     });
 }
 
@@ -332,24 +328,28 @@ function DrawGreyRectangle(ctx,x,y,width,height){
 
 var deficit = -245
 var xi = 150
-network.on("beforeDrawing", function(ctx) {		
+network.on("beforeDrawing", function(ctx) {	
 
-    ctx.font = "italic 10px Arial";
-    ctx.fillStyle = 'rgba(0,0,0,0.9)'
-    ctx.fillText("Year 3 TB2",xi*2+5,deficit);
-    ctx.fillText("Year 3 TB1",xi*1+5,deficit);
-    ctx.fillText("Year 2 TB2",xi*0+5,deficit);
-    ctx.fillText("Year 2 TB1",xi*-1+5,deficit);
-    ctx.fillText("Year 1 TB2",xi*-2+5,deficit);
-    ctx.fillText("Year 1 TB1",xi*-3+5,deficit);
+    if(should_draw){
+        c.clearRect(0,0,innerWidth,innerHeight);
+        ctx.font = "bold italic 10px Arial";
+        ctx.fillStyle = 'rgba(0,0,0,0.9)'
+        ctx.fillText("Year 3 TB2",xi*2+5,deficit);
+        ctx.fillText("Year 3 TB1",xi*1+5,deficit);
+        ctx.fillText("Year 2 TB2",xi*0+5,deficit);
+        ctx.fillText("Year 2 TB1",xi*-1+5,deficit);
+        ctx.fillText("Year 1 TB2",xi*-2+5,deficit);
+        ctx.fillText("Year 1 TB1",xi*-3+5,deficit);
 
-    DrawGreyRectangle(ctx,75+450,0,150,innerHeight);
-    DrawGreyRectangle(ctx,75+150,0,150,innerHeight);
-    DrawGreyRectangle(ctx,75-150,0,150,innerHeight);
-    DrawGreyRectangle(ctx,75-450,0,150,innerHeight);
-    
+        DrawGreyRectangle(ctx,75+3*xi,0,xi,innerHeight);
+        DrawGreyRectangle(ctx,75+xi,0,xi,innerHeight);
+        DrawGreyRectangle(ctx,75-xi,0,xi,innerHeight);
+        DrawGreyRectangle(ctx,75-3*xi,0,xi,innerHeight);
+        DrawGreyRectangle(ctx,75-5*xi,0,xi,innerHeight);
+        
 
-    ctx.fillStyle = 'rgba(255,0,0,0.9)'
+        ctx.fillStyle = 'rgba(255,0,0,0.9)'
+    }
     
     //DrawGreyRectangle()
 
@@ -441,7 +441,7 @@ network.on("selectEdge", function(params) {
     outBox.value= params.scale;
   })
 
-  fadeSelector.addEventListener("change", (e) => {
+fadeSelector.addEventListener("change", (e) => {
     const { value, checked } = e.target;
     if(checked){
         console.log("Fading Nodes");
@@ -449,6 +449,17 @@ network.on("selectEdge", function(params) {
     }
     else{
         console.log("Ready to Unfade");
+    }
+  })
+DrawBox.addEventListener("change", (e) => {
+    const { value, checked } = e.target;
+    if(checked){
+        shouldDraw = true;
+        network.redraw();
+    }
+    else{
+        shouldDraw = false;
+        network.redraw();
     }
   })
 fitButton.addEventListener("click",(e) =>{
