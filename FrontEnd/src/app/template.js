@@ -1,5 +1,5 @@
 
-class Node {
+class NodeTemplate {
   constructor(id, label = "NOLABEL",level=0,group = "NOGROUP",subject = "Computer Science",school = "SCEEM",faculty = "ENGINEERING",url="https://www.bristol.ac.uk/study/undergraduate/2022/computer-science/meng-comp-sci/"){
     this.id = id;
     this.faculty = faculty
@@ -28,24 +28,24 @@ var nodesArray = [
 
   // new Node(-11,"ENGINEERING",-3,undefined,"ENGINEERING","ENGINEERING","ENGINEERING"),
 
-  new Node(0,"Imperative and \nFunctional Programming",0,"Prog"),
-  new Node(1,"Computer Architecture",0,"Hardware"),
-  new Node(2,"Mathematics for Computer Science A",0,"Maths"),
-  new Node(3,"Object-Orientated Programming\n and Algorithms 1",1,"Alg"),
-  new Node(4,"Software Tools",1,"Prog"),
-  new Node(5,"Mathematics for Computer Science B",1,"Maths"),
-  new Node(6,"Software Engineering \nProject",2,"Prog"),
-  new Node(7,"Programming Languages and \nComputation",2,"Maths"),
-  new Node(8,"Computer Systems A",2,"Prog"),
-  new Node(9,"Algorithms 2",2,"Alg"),
-  new Node(10,"Interaction and Society",3),
-  new Node(11,"Computer Systems B",3),
-  new Node(12,"Data-Driven Computer Science",3),
-  new Node(13,"Advanced Algorithms",4,"Alg"),
-  new Node(14,"Artificial Inteligence",4),
-  new Node(15,"Computational Neuroscience",4),
-  new Node(16,"Computer Graphics",4),
-  new Node(17,"Advanced Computer Architecture",5),
+  new NodeTemplate(0,"Imperative and \nFunctional Programming",0,"Prog"),
+  new NodeTemplate(1,"Computer Architecture",0,"Hardware"),
+  new NodeTemplate(2,"Mathematics for Computer Science A",0,"Maths"),
+  new NodeTemplate(3,"Object-Orientated Programming\n and Algorithms 1",1,"Alg"),
+  new NodeTemplate(4,"Software Tools",1,"Prog"),
+  new NodeTemplate(5,"Mathematics for Computer Science B",1,"Maths"),
+  new NodeTemplate(6,"Software Engineering \nProject",2,"Prog"),
+  new NodeTemplate(7,"Programming Languages and \nComputation",2,"Maths"),
+  new NodeTemplate(8,"Computer Systems A",2,"Prog"),
+  new NodeTemplate(9,"Algorithms 2",2,"Alg"),
+  new NodeTemplate(10,"Interaction and Society",3),
+  new NodeTemplate(11,"Computer Systems B",3),
+  new NodeTemplate(12,"Data-Driven Computer Science",3),
+  new NodeTemplate(13,"Advanced Algorithms",4,"Alg"),
+  new NodeTemplate(14,"Artificial Inteligence",4),
+  new NodeTemplate(15,"Computational Neuroscience",4),
+  new NodeTemplate(16,"Computer Graphics",4),
+  new NodeTemplate(17,"Advanced Computer Architecture",5),
   
 ];
 

@@ -7,10 +7,14 @@
   var bdr_ratio =0.5;
   var should_draw = true;
 
+  var focus_levels = ["UNIT","SUBJECT","SCHOOL","FACULTY"];
+  var focus_level = "UNIT";
+
   var prev_cluster_zoom_level = 0;
+  var cluster_factor = 1.5;
   var unit_zoom_level,subject_zoom_level,school_zoom_level,faculty_zoom_level =0;
 
-  var clusters = [];
+  var clusterIds = [];
   var subjects = [];
   var schools = [];
   var faculties = [];
@@ -268,16 +272,19 @@ function ClusterBySubject(clusterLabel,subject){
       },{
         level:-1,
         label: clusterLabel,
+        id:100,
         school: "SCEEM",
-        size: 15,
-        borderWidth:7.5,
+        size: node_size*cluster_factor,
+        borderWidth:node_size*cluster_factor*bdr_ratio,
     })
+    clusterIds.push()
 }
 
 function Cluster(joinCondition,clusterNodeProperties){
     network.cluster({joinCondition: joinCondition,
         clusterNodeProperties:clusterNodeProperties,
       });
+    clusters.push();
 }
 function fitGroup(group){
     fitOnCondition({filter:function(node){
@@ -341,11 +348,11 @@ network.on("beforeDrawing", function(ctx) {
         ctx.fillText("Year 1 TB2",xi*-2+5,deficit);
         ctx.fillText("Year 1 TB1",xi*-3+5,deficit);
 
-        DrawGreyRectangle(ctx,75+3*xi,0,xi,innerHeight);
-        DrawGreyRectangle(ctx,75+xi,0,xi,innerHeight);
-        DrawGreyRectangle(ctx,75-xi,0,xi,innerHeight);
-        DrawGreyRectangle(ctx,75-3*xi,0,xi,innerHeight);
-        DrawGreyRectangle(ctx,75-5*xi,0,xi,innerHeight);
+        DrawGreyRectangle(ctx,75+3*xi,0,xi,innerHeight*2);
+        DrawGreyRectangle(ctx,75+xi,0,xi,innerHeight*2);
+        DrawGreyRectangle(ctx,75-xi,0,xi,innerHeight*2);
+        DrawGreyRectangle(ctx,75-3*xi,0,xi,innerHeight*2);
+        DrawGreyRectangle(ctx,75-5*xi,0,xi,innerHeight*2);
         
 
         ctx.fillStyle = 'rgba(255,0,0,0.9)'
@@ -404,6 +411,19 @@ network.on('doubleClick', function(params){
 
 
 });
+
+network.once("initRedraw", function () {
+    console.log("SETTING ZOOM LEVELS");
+    if (prev_cluster_zoom_level === 0) {
+        var s = network.getScale();
+        prev_cluster_zoom_level = s;
+        faculty_zoom_level = s;
+        school_zoom_level = s * cluster_factor;
+        subject_zoom_level = s*cluster_factor**2;
+        unit_zoom_level = s* cluster_factor**3;
+    }
+  });
+
 network.on('click', function(params){
     console.log(params)
     if(network.isCluster(params.nodes[0])){
@@ -437,9 +457,70 @@ network.on("selectEdge", function(params) {
       window.open(edges.get(edgeId).url, '_blank');
     }*/
   });
-  network.on("zoom",function(params){
+
+network.on("zoom", function (params) {
     outBox.value= params.scale;
-  })
+    if (params.direction == "-") {
+        switch(focus_level){
+            case "UNIT":
+                console.log("UNIT LEVEL");
+                if (params.scale < prev_cluster_zoom_level / cluster_factor) {
+                    ClusterBySubject("Computer Science","Computer Science");
+                    should_draw = false;
+                    //prev_cluster_zoom_level = params.scale;
+                    focus_level= "SUBJECT"
+                  }
+                  break;
+            case "SUBJECT":
+                console.log("SUBJECT LEVEL");
+                if (params.scale < prev_cluster_zoom_level / cluster_factor**2) {
+                    ClusterBySchool("SCEEM","SCEEM");
+                    should_draw = false;
+                    //prev_cluster_zoom_level = params.scale;
+                    focus_level= "SCHOOL"
+                }
+                break;
+            case "SCHOOL":
+                console.log("SCHOOL LEVEL");
+                break;
+            case "FACULTY":
+                console.log("FACULTY LEVEL");
+                break;
+        }
+
+    } else {
+        switch(focus_level){
+            case "UNIT":
+                console.log("UNIT LEVEL");
+                break;
+            case "SUBJECT":
+                console.log("SUBJECT LEVEL");
+                if (params.scale > prev_cluster_zoom_level) {
+                        network.openCluster(100);//Need to include release function
+                        spaceNodesVertical(nodes,1.5);
+                        should_draw = true;
+                    focus_level = "UNIT"
+                    //prev_cluster_zoom_level = params.scale;
+                  }
+                break;
+            case "SCHOOL":
+                console.log("SCHOOL LEVEL");
+                if (params.scale > prev_cluster_zoom_level**2) {
+                    //network.openCluster(100);//Need to include release function
+                    //spaceNodesVertical(nodes,1.5);
+                focus_level = "SUBJECT"
+                //prev_cluster_zoom_level = params.scale;
+                }
+                
+                break;
+            case "FACULTY":
+                console.log("FACULTY LEVEL");
+                break;
+        }
+
+    }
+});
+  
 
 fadeSelector.addEventListener("change", (e) => {
     const { value, checked } = e.target;
@@ -454,11 +535,13 @@ fadeSelector.addEventListener("change", (e) => {
 DrawBox.addEventListener("change", (e) => {
     const { value, checked } = e.target;
     if(checked){
-        shouldDraw = true;
+        should_draw = true;
+        console.log("HELLO");
         network.redraw();
     }
     else{
-        shouldDraw = false;
+        should_draw = false;
+        console.log("GOODBYE");
         network.redraw();
     }
   })
