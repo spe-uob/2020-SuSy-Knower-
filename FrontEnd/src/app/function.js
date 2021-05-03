@@ -1,4 +1,3 @@
-var strings = ['Algorithm', 'Security', 'Architecture','Mathematical Methods']
 var keys = document.getElementById('myInput');
 var button = document.getElementById('sb');
 
@@ -11,7 +10,7 @@ function searchfun() {
       console.log("found!")
       console.log(node)
       found = true;
-      highlightNode(node);
+      highlightNode(node,hlsf,bdr_ratio);
       //setTarget(node.id)
     }
   });

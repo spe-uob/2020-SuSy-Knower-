@@ -9,59 +9,74 @@
   <style type="text/css">
     #mynetwork {
       width: 90vw;
-      height: 70vh;
+      height: 90vh;
       border: 1px solid lightgray;
     }
+    #infoPanel {
+      float: right;
+      width: 320px;
+      padding: 10px;
+      border: 5px solid gray;
+      margin: 0;
+    }
   </style>
-  <link rel="stylesheet" href="./list.css">
+  <link rel="stylesheet" href="/src/app/list.css">
 </head>
 <body>
-<p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
-<P>Double clicking a node will take you to the unit website</P>
-<div>
-  <app-search-bar></app-search-bar>
-  <div id="searchUsers" class="instant-search instant-search--loading">
-    <div style="text-align: center;">
-    
-    <!--Find a course : -->
-      <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
-      <button id='sb' class="circle"> </button>
-    
-    
+  <p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
+  <P>Double clicking a node will take you to the unit website</P>
+
+  <div>
+    <app-search-bar></app-search-bar>
+    <div id="searchUsers" class="instant-search instant-search--loading">
+      <div style="text-align: center;">
+      
+      <!--Find a course : -->
+        <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
+        <button id='sb' class="circle"> </button>
+      
+      
+      </div>
     </div>
-</div>
+  </div>
 
 
-<div id="mynetwork"></div>
+  <div id="mynetwork"></div>
 
 
-<div>
-  <label>
-    <input type="checkbox" name="InBox" value="parent" id="FadeBox" unchecked />
-    Fade On/Off
-  </label>
-  <label>
-    <input type="button" name="InButton" value="Fit" id="FitButton" unchecked />
-  </label>
-  <label>
-    <input type="button" name="InButton" value="Fit Condition" id="FitButtonWithCondition" unchecked />
-  </label>
-  <label>
-    <input type="button" name="ClusterButton" value="Cluster" id="ClusterButton" unchecked />
-  </label>
-  <label>
-    <input type="button" name="UnClusterButton" value="UnCluster" id="UnClusterButton" unchecked />
-  </label>
-</div>
-<div>
-  <label for="output">Zoom Level: </label><input type="textbox" name="output" id="OutBox"></input>
-</div>
+  <div>
+    <label>
+      <input type="checkbox" name="InBox" value="parent" id="FadeBox" unchecked />
+      Fade On/Off
+    </label>
+    <label>
+      <input type="checkbox" name="InBox" value="parent" id="DrawBox" checked />
+      Drawing On/Off
+    </label>
+    <label>
+      <input type="button" name="InButton" value="Fit" id="FitButton" unchecked />
+    </label>
+    <label>
+      <input type="button" name="InButton" value="Fit Condition" id="FitButtonWithCondition" unchecked />
+    </label>
+    <label>
+      <input type="button" name="ClusterButton" value="Cluster" id="ClusterButton" unchecked />
+    </label>
+    <label>
+      <input type="button" name="UnClusterButton" value="UnCluster" id="UnClusterButton" unchecked />
+    </label>
+    <label>
+      <input type="button" name="RedrawButton" value="Redraw" id="RedrawButton" unchecked />
+    </label>
+  </div>
+  <div>
+    <label for="output">Zoom Level: </label><input type="textbox" name="output" id="OutBox">
+  </div>
 
-<script src = "template.js"></script>
-<script src = "data.js"></script>
-<script type="text/javascript" src="function.js"></script>
-<script src = "network.js" defer> </script>
-
+  <script src = "template.js"></script>
+  <script src = "data.js"></script>
+  <script type="text/javascript" src="function.js"></script>
+  <script src = "network.js" defer> </script>
 
 
 </body>
