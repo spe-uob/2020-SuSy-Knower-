@@ -10,7 +10,7 @@ function searchfun() {
       console.log("found!")
       console.log(node)
       found = true;
-      highlightNode(node);
+      highlightNode(node,hlsf,bdr_ratio);
       //setTarget(node.id)
     }
   });

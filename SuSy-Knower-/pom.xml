@@ -47,11 +47,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
+		</dependency>-->
 		<dependency>
     		<groupId>org.thymeleaf</groupId>
     		<artifactId>thymeleaf</artifactId>
@@ -89,9 +89,9 @@
 
 	</dependencies>
 
-<!--	<build>
+	<build>
 		<plugins>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.0.0</version>
@@ -110,14 +110,14 @@
 						<argument>build</argument>
 					</arguments>
 				</configuration>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>-->
-	<build>
+	</build>
+	<!--<build>
   <resources>
     <resource>
       <directory>${project.basedir}/src/main/resources</directory>
@@ -135,8 +135,6 @@
       <artifactId>maven-resources-plugin</artifactId>
       <executions>
         <execution>
-          <!-- Serves *only* to filter the wro.xml so it can get an absolute 
-            path for the project -->
           <id>copy-resources</id>
           <phase>validate</phase>
           <goals>
@@ -193,6 +191,6 @@
       </dependencies>
     </plugin>
   </plugins>
-</build>
+</build>-->
 
 </project>
