@@ -10,8 +10,8 @@
   var focus_levels = ["UNIT","SUBJECT","SCHOOL","FACULTY"];
   var focus_level = "UNIT";
 
-  var prev_cluster_zoom_level = 0;
-  var cluster_factor = 1.5;
+  var unit_zoom = 0;
+  var cluster_factor = 0.6;
   var unit_zoom_level,subject_zoom_level,school_zoom_level,faculty_zoom_level =0;
 
   var clusterIds = [];
@@ -93,6 +93,14 @@ var canvas = network.canvas.frame.canvas;
 var c = canvas.getContext('2d');
 
 
+
+
+
+
+
+
+
+
 // finish of network creation
 
 
@@ -122,6 +130,7 @@ function setTarget(newTargetId){
 function setLevel(nodeId,Nlev){
     nodes.update({id:nodeId,level:Nlev});
 }
+
 
 
 function makeParentsAndChildren(node){
@@ -242,6 +251,10 @@ const edgesFilter = (edge) => {
   };
 
 
+
+
+
+
 function ClusterByFacutly(clusterLabel,faculty){
     Cluster(function (nodeOptions) {
         return nodeOptions.faculty == faculty;
@@ -274,8 +287,9 @@ function ClusterBySubject(clusterLabel,subject){
         label: clusterLabel,
         id:100,
         school: "SCEEM",
-        size: node_size*cluster_factor,
-        borderWidth:node_size*cluster_factor*bdr_ratio,
+        size: node_size/cluster_factor**2,
+        borderWidth:(node_size/cluster_factor)*bdr_ratio,
+        font:{size:12/cluster_factor}
     })
     clusterIds.push()
 }
@@ -284,8 +298,13 @@ function Cluster(joinCondition,clusterNodeProperties){
     network.cluster({joinCondition: joinCondition,
         clusterNodeProperties:clusterNodeProperties,
       });
-    clusters.push();
+    //clusters.push();
 }
+
+
+
+
+
 function fitGroup(group){
     fitOnCondition({filter:function(node){
             return node.group = group }})
@@ -311,6 +330,12 @@ function fitOnCondition(condition){
     return (edge.label == 2);
   }
 });*/
+
+
+
+
+
+
 
 
 
@@ -414,9 +439,9 @@ network.on('doubleClick', function(params){
 
 network.once("initRedraw", function () {
     console.log("SETTING ZOOM LEVELS");
-    if (prev_cluster_zoom_level === 0) {
+    if (unit_zoom === 0) {
         var s = network.getScale();
-        prev_cluster_zoom_level = s;
+        unit_zoom = s;
         faculty_zoom_level = s;
         school_zoom_level = s * cluster_factor;
         subject_zoom_level = s*cluster_factor**2;
@@ -464,7 +489,7 @@ network.on("zoom", function (params) {
         switch(focus_level){
             case "UNIT":
                 console.log("UNIT LEVEL");
-                if (params.scale < prev_cluster_zoom_level / cluster_factor) {
+                if (params.scale < unit_zoom * cluster_factor) {
                     ClusterBySubject("Computer Science","Computer Science");
                     should_draw = false;
                     //prev_cluster_zoom_level = params.scale;
@@ -473,7 +498,7 @@ network.on("zoom", function (params) {
                   break;
             case "SUBJECT":
                 console.log("SUBJECT LEVEL");
-                if (params.scale < prev_cluster_zoom_level / cluster_factor**2) {
+                if (params.scale < unit_zoom * cluster_factor**2) {
                     ClusterBySchool("SCEEM","SCEEM");
                     should_draw = false;
                     //prev_cluster_zoom_level = params.scale;
@@ -482,6 +507,12 @@ network.on("zoom", function (params) {
                 break;
             case "SCHOOL":
                 console.log("SCHOOL LEVEL");
+                if (params.scale < unit_zoom * cluster_factor**3) {
+                    ClusterByFacutly("ENGINEERING","ENGINEERING");
+                    should_draw = false;
+                    //prev_cluster_zoom_level = params.scale;
+                    focus_level= "FACULTY"
+                }
                 break;
             case "FACULTY":
                 console.log("FACULTY LEVEL");
@@ -495,7 +526,7 @@ network.on("zoom", function (params) {
                 break;
             case "SUBJECT":
                 console.log("SUBJECT LEVEL");
-                if (params.scale > prev_cluster_zoom_level) {
+                if (params.scale > unit_zoom) {
                         network.openCluster(100);//Need to include release function
                         spaceNodesVertical(nodes,1.5);
                         should_draw = true;
@@ -505,7 +536,7 @@ network.on("zoom", function (params) {
                 break;
             case "SCHOOL":
                 console.log("SCHOOL LEVEL");
-                if (params.scale > prev_cluster_zoom_level**2) {
+                if (params.scale > unit_zoom* cluster_factor) {
                     //network.openCluster(100);//Need to include release function
                     //spaceNodesVertical(nodes,1.5);
                 focus_level = "SUBJECT"
@@ -515,6 +546,12 @@ network.on("zoom", function (params) {
                 break;
             case "FACULTY":
                 console.log("FACULTY LEVEL");
+                if (params.scale > unit_zoom *cluster_factor**2) {
+                    //network.openCluster(100);//Need to include release function
+                    //spaceNodesVertical(nodes,1.5);
+                focus_level = "SCHOOL"
+                //prev_cluster_zoom_level = params.scale;
+                }
                 break;
         }
 
@@ -579,6 +616,17 @@ UnClusterButton.addEventListener("click", (e) => {
     })
     //network.fit(nodes);
 })
+
+
+
+
+
+
+
+
+
+
+
 
 //LOG FUNCTIONS. USED FOR DEBUGGING.
 function logLevel(node){console.log("Level of this node: "+node.level);}
