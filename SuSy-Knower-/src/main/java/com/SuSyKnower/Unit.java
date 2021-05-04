@@ -1,12 +1,13 @@
 package com.SuSyKnower;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Arrays;
+
+//still to add: url, faculty and topic columns
 
 @Entity
 @Table(name = "units")
-@SecondaryTable(name = "relations", pkJoinColumns = @PrimaryKeyJoinColumn(name = "unit") /*, pkJoinColumns = @PrimaryKeyJoinColumn(name = "prereq")*/)
 public class Unit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,10 +15,14 @@ public class Unit {
 
     private String name;
     private String programme;
+    private String faculty;
+    //temporarily only one topic per unit allowed
+    //a csv string, might be worth parsing not to separate strings but topic objects
+    private String topic;
+    private String url;
 
     public Unit() {
     }
-    //private List<Unit> preRequisites = new ArrayList<Unit>();
 
     public Integer getId() {
         return id;
@@ -29,6 +34,18 @@ public class Unit {
 
     public String getProgramme() {
         return programme;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public void setId(Integer id) {
@@ -43,29 +60,35 @@ public class Unit {
         this.programme = programme;
     }
 
-    @Embedded
-    Prerequisites prerequisites;
-
-    public Prerequisites getPrerequisites(Prerequisites prerequisites) {
-        return prerequisites;
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 
-    public void setPrerequisites(Prerequisites prerequisites) {
-        this.prerequisites = prerequisites;
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    String prereqs;
+
+    public String getPrereqs() { return prereqs; }
+    public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
+
+    //for testing purposes, different types of toString functions might be neccessary for the frontend integration
     @Override
     public String toString() {
         return "Unit{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", programme='" + programme + '\'' +
+                ", faculty='" + faculty + '\'' +
+                ", topics='" + topic + '\'' +
+                //make it an actual link in some layer
+                ", link='" + url + '\'' +
+                ", prerequisites=" + prereqs + '\'' +
                 '}';
     }
-}
-
-@Embeddable
-class Prerequisites {
-    private int unit;
-    private int prereq;
 }

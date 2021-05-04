@@ -23,11 +23,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
+//for testing purposes
 @RequestMapping(path = "/test")
 public class UnitController {
 
     @Autowired
     private UnitService unitService;
+
 
     @ResponseBody
     @PostMapping(path = "/add")//map the post request
@@ -54,4 +56,37 @@ public class UnitController {
     public List<Unit> displayAllUnits() {
         return unitService.getAllUnits();
     }
+
+    //display all the prerequisites in a separate tab given the unit id
+    //the path is <server ip>:8080/test/prereqs?id=<the id of a unit whose prereqs you want to see>
+    @GetMapping(path="/prereqs")
+    public String displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> prerequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
+        }
+        model.addAttribute("prerequisites", prerequisites);
+        return "prereqs";
+    }
+
+    //display all the postrequisites in a separate tab given the unit id
+    //the path is <server ip>:8080/test/postreqs?id=<the id of a unit whose prereqs you want to see>
+    @GetMapping(path="/postreqs")
+    public String displayAllPostreqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> postrequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            postrequisites = unitService.getPostreqs(unitService.getUnit(id).get());
+        }
+        model.addAttribute("postrequisites", postrequisites);
+        return "postreqs";
+    }
+
+    @GetMapping(path="/topic")
+    public String displayAllPostreqs(Model model, @RequestParam(required = true) String topic) {
+        List<Unit> units = new ArrayList<Unit>();
+        units = unitService.getAllByTopic(topic);
+        model.addAttribute("topic", units);
+        return "topic";
+    }
+
 }
