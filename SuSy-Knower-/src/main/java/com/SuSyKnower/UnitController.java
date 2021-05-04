@@ -17,44 +17,57 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-//for testing purposes
-@RequestMapping(path = "/test")
+@RestController
+@RequestMapping(path = "/unit")
 public class UnitController {
 
     @Autowired
-    private UnitService unitService;
+    private final UnitService unitService;
+
+    public  UnitController(UnitService unitService){
+      this.unitService =unitService;
+    }
 
 
     @ResponseBody
     @PostMapping(path = "/add")//map the post request
     public String addProgramme (@RequestParam String name,
         @RequestParam String programme) {//requires updates, without responseBody
-            
+
             Unit n = new Unit();
             n.setName(name);
             n.setProgramme(programme);
             unitService.addUnit(n);
             return "Saved";
-        } 
+        }
 
     @GetMapping(path = "/index")
     public String displayAllUsers(Model model) {
         List<Unit> unitList = new ArrayList<Unit>();
-        unitList = unitService.getAllUnits();
+        unitList = unitService.findAllUnits();
         model.addAttribute("unitList", unitList);
         return "index";
     }
 
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<Unit>> getAllUnits (){
+      List<Unit> units = unitService.findAllUnits();
+      return new ResponseEntity<>(units, HttpStatus.OK);
+    }
+
+
     @ResponseBody
     @GetMapping(path="/index2")
     public List<Unit> displayAllUnits() {
-        return unitService.getAllUnits();
+        return unitService.findAllUnits();
     }
 
     //display all the prerequisites in a separate tab given the unit id

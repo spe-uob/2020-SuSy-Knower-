@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UnitService {
-    
+
     @Autowired
     private UnitRepository unitRepository;
 
-    public List<Unit> getAllUnits() {
+    public List<Unit> findAllUnits() {
         List<Unit> units = new ArrayList<>();
         unitRepository.findAll().forEach(units::add);
         return units;
@@ -35,7 +35,7 @@ public class UnitService {
 
     //just for readability
     public int getNumberOfUnits() {
-        return getAllUnits().size();
+        return findAllUnits().size();
     }
 
     //get the prerequisites in a list form from the prereqs string in the Unit class

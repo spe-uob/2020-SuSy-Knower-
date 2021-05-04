@@ -15,6 +15,7 @@ public class Unit {
 
     private String name;
     private String programme;
+    private String school;
     private String faculty;
     //temporarily only one topic per unit allowed
     //a csv string, might be worth parsing not to separate strings but topic objects

@@ -2,6 +2,9 @@
 <html>
 <head>
   <title>Network</title>
+  <div *ngFor="let unit of units">
+    <div>{{unit.id}}</div>
+  </div>
   <h2>SuSy Knower - Knowledge Maps</h2>
   <script
     type="text/javascript"
@@ -21,7 +24,7 @@
       margin: 0;
     }
   </style>
-  <link rel="stylesheet" href="./list.css">
+  <!--<link rel="stylesheet" href="FrontEnd/src/app/list.css">-->
 </head>
 <body>
 <p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
