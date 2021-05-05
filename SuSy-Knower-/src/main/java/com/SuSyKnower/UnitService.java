@@ -61,7 +61,7 @@ public class UnitService {
                     if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());
                 }
                 catch(NullPointerException n) {
-                    i++;
+                    //i++;
                 }
             }
         }
