@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppComponent } from './app.component';
 
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
-import { NetworkGraphComponent } from './components/network-graph/network-graph.component';
+import { NetworkComponent } from './network/network.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchBarComponent,
-    NetworkGraphComponent
+    NetworkComponent,
   ],
   imports: [
     BrowserModule,

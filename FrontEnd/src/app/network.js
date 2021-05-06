@@ -1,3 +1,4 @@
+
 var node_size=10;
 var target_node_id=1;
 var targetRevertLevel=0;
@@ -18,8 +19,7 @@ var subjects = [];
 var schools = [];
 var faculties = [];
 
-const nodesView = new vis.DataView(nodes);
-const edgesView = new vis.DataView(edges);
+console.log("RUNNING")
 
 const fadeSelector = document.getElementById("FadeBox");
 const DrawBox = document.getElementById("DrawBox");
