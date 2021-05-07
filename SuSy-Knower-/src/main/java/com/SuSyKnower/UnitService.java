@@ -81,7 +81,6 @@ public class UnitService {
                     }
                 }
                 catch(NullPointerException n) {
-                    //i++;
                 }
             }
         }
@@ -98,7 +97,6 @@ public class UnitService {
                     }
                 }
                 catch(NullPointerException n) {
-                    //i++;
                 }
             }
         }
@@ -116,12 +114,113 @@ public class UnitService {
                     }
                 }
                 catch(NullPointerException n) {
-                    //i++;
-                    //perhaps should be commented out in others too?
                 }
             }
         }
         return unitsWithTopic;
+    }
+    
+    public List<Unit> getAllBySchool(String theSchool) {
+        List<Unit> unitsWithSchool = new ArrayList<Unit>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                     if(((getUnit(i).get()).getSchool()).equals(theSchool)) {
+                        unitsWithSchool.add(getUnit(i).get());
+                    }
+                }
+                catch(NullPointerException n) {
+                }
+            }
+        }
+        return unitsWithSchool;
+    }
+
+    public List<String> getAllProgrammesInSchool(String theSchool) {
+        List<String> programmesInSchool = new ArrayList<String>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                     if(((getUnit(i).get()).getSchool()).equals(theSchool)) {
+                        programmesInSchool.add((getUnit(i).get()).getProgramme());
+                    }
+                }
+                catch(NullPointerException n) {
+                }
+            }
+        }
+        return programmesInSchool;
+    }
+
+    public List<String> getAllSchoolsInFaculty(String theFaculty) {
+        List<String> schoolsInFaculty = new ArrayList<String>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                     if(((getUnit(i).get()).getFaculty()).equals(theFaculty)) {
+                         boolean tempIsPresent = false;
+                         for(int j = 0; j < schoolsInFaculty.size(); j++) {
+                             if(schoolsInFaculty.get(j).equals((getUnit(i).get()).getSchool()) ) {
+                                tempIsPresent = true;
+                             }
+                         }
+                         if(!tempIsPresent) {
+                            schoolsInFaculty.add((getUnit(i).get()).getSchool());
+                         }
+                    }
+                }
+                catch(NullPointerException n) {
+                }
+            }
+        }
+        return schoolsInFaculty;
+    }
+
+    public List<String> getAllFaculties() {
+        List<String> allFaculties = new ArrayList<String>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                    boolean tempIsPresent = false;
+                    for(int j = 0; j < allFaculties.size(); j++) {
+                        if(allFaculties.get(j).equals((getUnit(i).get()).getFaculty()) ) {
+                            tempIsPresent = true;
+                        }
+                    }
+                    if(!tempIsPresent) {
+                        allFaculties.add((getUnit(i).get()).getFaculty());
+                    }
+                }
+                catch(NullPointerException n) {
+                }
+            }
+        }
+        return allFaculties;
+    }
+    
+    //getalltopicsinaprogramme
+    public List<String> getAllTopicsInPrograme(String theProgramme) {
+        List<String> topicsInProgramme = new ArrayList<String>();
+        for(int i = 1; i <= getNumberOfUnits(); i++) {
+            if(getUnit(i).isPresent()) {
+                try {
+                     if(((getUnit(i).get()).getProgramme()).equals(theProgramme)) {
+                         boolean tempIsPresent = false;
+                         for(int j = 0; j < topicsInProgramme.size(); j++) {
+                             if(topicsInProgramme.get(j).equals((getUnit(i).get()).getTopic()) ) {
+                                tempIsPresent = true;
+                             }
+                         }
+                         if(!tempIsPresent) {
+                            topicsInProgramme.add((getUnit(i).get()).getTopic());
+                         }
+                    }
+                }
+                catch(NullPointerException n) {
+                }
+            }
+        }
+        return topicsInProgramme;
     }
 
 }
