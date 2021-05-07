@@ -4,5 +4,7 @@ export interface Unit{
     programme: string;
     school: string;
     topic: string;
-    unit_url: string; 
+    url: string; 
+    prereqs:string;
+    tb: number;
 }

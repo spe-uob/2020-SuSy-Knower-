@@ -41,7 +41,8 @@ public class UnitService {
     //get the prerequisites in a list form from the prereqs string in the Unit class
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
-        String[] elements = unit.prereqs.split(",");
+        String prereqStr = unit.getPrereqs();
+        String[] elements =prereqStr.split(",");
         if (elements.length == 0) return null; //handle it better, you cant just have NullPointerException
         for (int i = 0; i < elements.length; i++) {
             prerequisites.add(getUnit(Integer.parseInt(elements[i])).get()); //will throw NullPointerElement Exception when there are no prereqs

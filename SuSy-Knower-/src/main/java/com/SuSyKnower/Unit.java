@@ -21,6 +21,8 @@ public class Unit {
     //a csv string, might be worth parsing not to separate strings but topic objects
     private String topic;
     private String url;
+    private String prereqs;
+    private int tb;
 
     public Unit() {
     }
@@ -49,6 +51,8 @@ public class Unit {
         return url;
     }
 
+    public int getTb(){return tb;}
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -73,7 +77,7 @@ public class Unit {
         this.url = url;
     }
 
-    String prereqs;
+    public void setTb(int tb) { this.tb = tb; }
 
     public String getPrereqs() { return prereqs; }
     public void setPrereqs(String prereqs) { this.prereqs = prereqs; }

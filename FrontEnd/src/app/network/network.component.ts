@@ -1,3 +1,4 @@
+
 import { Observable } from 'rxjs';
 import { Label } from './../../../../vis-network/lib/network/modules/components/edges/util/types';
 
@@ -30,7 +31,6 @@ export class NetworkComponent implements OnInit {
     this.unitService.getUnits().subscribe(
       (response: Unit[]) => {
           this.units = response;
-          console.log(this.units);
           var network_data = this.Get_Network_Data(response);
           this.Load_Vis_Network(network_data);},
 
@@ -47,12 +47,12 @@ export class NetworkComponent implements OnInit {
 				enabled: true
 			}
     }
-    var node_size =15
+    var node_size =10
     
 
     var options = {
 
-      interaction:{zoomSpeed: 0.1},
+      interaction:{zoomSpeed: 0.2},
 
       nodes:{shape: "dot", size:node_size, borderWidth: node_size/2,
             color:{ border:'green',background:"white",
@@ -65,9 +65,9 @@ export class NetworkComponent implements OnInit {
               arrows:{to:{enabled:true,scaleFactor:0.5}},
             },
       physics:
-              { enabled: true},
+              { enabled: false},
       layout:{
-              hierarchical:{enabled:false,direction:"LR"}
+              hierarchical:{enabled:true,direction:"LR"}
             }
     };
 
@@ -89,12 +89,15 @@ export class NetworkComponent implements OnInit {
       console.log('blurNode event:', params);
       that.popOver.hide();
     });
+    this.network.on('click', function(params){
+      console.log(params);
+      var clicked_node_id = params.nodes[0];
+      console.log(clicked_node_id);
+    })
 
   }
 
   public Get_Network_Data(units: Unit[]){
-
-
   var nodes =[
       // {id: 1, label: 'Node 1', title: 'I am node 1!'},
       // {id: 2, label: 'Node 2', title: 'I am node 2!'},
@@ -102,27 +105,89 @@ export class NetworkComponent implements OnInit {
       // {id: 4, label: 'Node 4'},
       // {id: 5, label: 'Node 5'}
   ];
+  var edges = [
+    // {from: 1, to: 3},
+    // {from: 1, to: 2},
+    // {from: 2, to: 4},
+    // {from: 2, to: 5}
+  ];
 
   console.log(units);
 
   units.forEach(unit => {
-    nodes.push({id:unit.id, label: unit.name, subject:unit.programme})
+    nodes.push({id:unit.id, label: unit.name, subject:unit.programme, topic: unit.topic, level: this.Find_Level(unit)})
+    var prerequisites = this.Find_Prerequisites(unit);
+    prerequisites.forEach(prereq => {
+      edges.push({from: prereq ,to: unit.id})
+    });
   });
-      
 
-    
-
-  var edges = [
-      {from: 1, to: 3},
-      {from: 1, to: 2},
-      {from: 2, to: 4},
-      {from: 2, to: 5}
-  ];
   var network_data = {
     nodes: nodes,
     edges: edges
   };
     return network_data;
   }
+
+  public Find_Prerequisites(unit: Unit): number[]{
+    var prereqStr = unit.prereqs;
+    var prereqChar = [];
+    var prereqs = []
+    console.log(unit.prereqs);
+    if(prereqStr != null){
+      prereqChar = prereqStr.split(',')
+      prereqChar.forEach(char => {prereqs.push(parseInt(char))});
+    }
+    return prereqs;
+    return [1,2,3];
+  }
+  public Find_Level(unit: Unit): number{
+    return unit.tb;
+  }
+  public Get_Subject_List(){
+
+  }
+  public Get_School_List(){
+
+  }
+  public Get_Faculty_List(){
+    
+  }
+  public Find_School(){
+
+  }
+  public Find_Faculty(){
+
+  }
+  public Get_Parents(node){
+
+  }
+  public Get_Children(node){
+
+  }
+  public Style_Parents(parents){
+    
+  }
+  public Style_Children(children){
+
+  }
+  public Style_Node(node,style){
+
+  }
+  public Reset_Style(topic){
+
+  }
+  public Resize_Label(label): String{
+
+    return "";
+  }
+
+  
+
+
+
+
+
+
 
 }
