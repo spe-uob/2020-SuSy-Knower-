@@ -1,7 +1,7 @@
-import { UnitService } from './unit.service';
+//import { UnitService } from './unit.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Unit } from './unit';
+//mport { Unit } from './unit';
 
 @Component({
   selector: 'app-root',
@@ -10,27 +10,28 @@ import { Unit } from './unit';
 })
 
 export class AppComponent implements OnInit {
-  public units: Unit[];
-  public editEmployee: Unit;
-  public deleteEmployee: Unit;
+  //public units: Unit[];
+  //public editEmployee: Unit;
+  //public deleteEmployee: Unit;
+  title: String = "Front End";
 
-  constructor(private employeeService: UnitService){}
+  constructor(/*private employeeService: UnitService*/){}
 
   ngOnInit() {
    // this.getUnits();
   }
 
-  public getUnits(): void {
-    this.employeeService.getUnits().subscribe(
-      (response: Unit[]) => {
-        this.units = response;
-        console.log(this.units);
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message);
-      }
-    );
-  }
+  // public getUnits(): void {
+  //   this.employeeService.getUnits().subscribe(
+  //     (response: Unit[]) => {
+  //       this.units = response;
+  //       console.log(this.units);
+  //     },
+  //     (error: HttpErrorResponse) => {
+  //       alert(error.message);
+  //     }
+  //   );
+  // }
 
 
 

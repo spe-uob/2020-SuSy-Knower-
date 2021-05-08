@@ -1,14 +1,18 @@
-
-import { Observable } from 'rxjs';
-import { Label } from './../../../../vis-network/lib/network/modules/components/edges/util/types';
-
+import { UnitService } from './../services/unit.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ElementRef, Renderer2 } from '@angular/core';
 import { Unit } from '../unit';
-import { UnitService } from '../unit.service';
+import { Network } from 'vis';
 
 declare var vis:any;
+
+enum Mode {
+  UNIT = 1,
+  SUBJECT,
+  SCHOOL,
+  FACULTY,
+}
 
 @Component({
   selector: 'app-network',
@@ -18,6 +22,8 @@ declare var vis:any;
 export class NetworkComponent implements OnInit {
   @ViewChild("siteConfigNetwork") networkContainer: ElementRef;
   @ViewChild("pop") popOver: any;
+
+
   public network: any;
 
   public units: Unit[];
@@ -32,13 +38,13 @@ export class NetworkComponent implements OnInit {
       (response: Unit[]) => {
           this.units = response;
           var network_data = this.Get_Network_Data(response);
-          this.Load_Vis_Network(network_data);},
+          this.Load_Vis_Network(network_data,this);},
 
       (error: HttpErrorResponse) => {alert(error.message); }
     );
   }
 
-  Load_Vis_Network(network_data){
+  public Load_Vis_Network(network_data,that){
     var net_options = {
       interaction: {
         hover: true,
@@ -47,17 +53,18 @@ export class NetworkComponent implements OnInit {
 				enabled: true
 			}
     }
+
     var node_size =10
     
 
     var options = {
 
-      interaction:{zoomSpeed: 0.2},
+      interaction:{/*zoomSpeed: 0.2*/},
 
       nodes:{shape: "dot", size:node_size, borderWidth: node_size/2,
             color:{ border:'green',background:"white",
                   highlight: {border: 'black',background: 'white'},},
-            font:{face:"tahoma",size:12,strokeWidth: 3,strokeColor: "#ffffff"},
+            font:{face:"tahoma",size:9,strokeWidth: 3,strokeColor: "#ffffff"},
             level:0,
             },
       edges:{
@@ -78,39 +85,28 @@ export class NetworkComponent implements OnInit {
     var canvas = this.network.canvas.frame.canvas;
     /** @type {CanvasRenderingContext2D} */
     var c = canvas.getContext('2d');
+    this.network.on("beforeDrawing", function(ctx) {})
+    this.network.on("initRedraw", function(){})
 
-    var that = this;
-    this.network.on("hoverNode", function (params) {      
-      //popOver.nativeElement.show();
-      that.popOver.show();
-      console.log('hoverNode Event:', params);
-    });
-    this.network.on("blurNode", function(params){
-      console.log('blurNode event:', params);
-      that.popOver.hide();
-    });
     this.network.on('click', function(params){
       console.log(params);
       var clicked_node_id = params.nodes[0];
       console.log(clicked_node_id);
     })
+    this.network.on('doubleClick', function(params){
+      var label = that.Resize_Label("hello");
+      console.log(label);
+      that.Toggle_Physics(this.options);
+      console.log(this.options);
+    })
+    this.network.on("zoom", function (params) {})
 
+  
   }
 
   public Get_Network_Data(units: Unit[]){
-  var nodes =[
-      // {id: 1, label: 'Node 1', title: 'I am node 1!'},
-      // {id: 2, label: 'Node 2', title: 'I am node 2!'},
-      // {id: 3, label: 'Node 3'},
-      // {id: 4, label: 'Node 4'},
-      // {id: 5, label: 'Node 5'}
-  ];
-  var edges = [
-    // {from: 1, to: 3},
-    // {from: 1, to: 2},
-    // {from: 2, to: 4},
-    // {from: 2, to: 5}
-  ];
+  var nodes =[];
+  var edges = [];
 
   console.log(units);
 
@@ -133,7 +129,6 @@ export class NetworkComponent implements OnInit {
     var prereqStr = unit.prereqs;
     var prereqChar = [];
     var prereqs = []
-    console.log(unit.prereqs);
     if(prereqStr != null){
       prereqChar = prereqStr.split(',')
       prereqChar.forEach(char => {prereqs.push(parseInt(char))});
@@ -145,13 +140,13 @@ export class NetworkComponent implements OnInit {
     return unit.tb;
   }
   public Get_Subject_List(){
-
+    return ["Computer Science","Aerospace Engineering"]
   }
   public Get_School_List(){
-
+    return ["SCEEM","SAME"]
   }
   public Get_Faculty_List(){
-    
+    return ["Engineering"]
   }
   public Find_School(){
 
@@ -179,8 +174,30 @@ export class NetworkComponent implements OnInit {
   }
   public Resize_Label(label): String{
 
-    return "";
+    return "NEED TO WRITE FUNCTION";
   }
+  public Cluster_One_Subject(network,subject){
+
+  }
+  public Cluster_Sujects(network,subjects){
+    subjects.forEach(subject => {
+      this.Cluster_One_Subject(network,subject);
+    });
+  }
+  public Cluster_One_School(network,school){
+
+  }
+  public Cluster_All_School(network,schools){
+    schools.forEach(school => {
+      this.Cluster_One_School(network,school);
+    });
+  
+  }
+  public Toggle_Physics(options){
+    options.physics = !options.physics;
+    this.network.setOptions(options);
+  }
+  
 
   
 
