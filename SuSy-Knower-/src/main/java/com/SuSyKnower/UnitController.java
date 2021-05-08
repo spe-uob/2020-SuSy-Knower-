@@ -95,7 +95,7 @@ public class UnitController {
     }
 
     @GetMapping(path="/by_topic")
-    public String displayAllPostreqs(Model model, @RequestParam(required = true) String topic) {
+    public String displayAllByTopic(Model model, @RequestParam(required = true) String topic) {
         List<Unit> units = new ArrayList<Unit>();
         units = unitService.getAllByTopic(topic);
         model.addAttribute("topic", units);
@@ -103,7 +103,7 @@ public class UnitController {
     }
     //for everything add a default option: if there's no argument provided, all of the units/schools/topics etc. are returned
     @GetMapping(path="/by_programme")
-    public String displayAllPostreqs(Model model, @RequestParam(required = true) String programme) {
+    public String displayAllByProgramme(Model model, @RequestParam(required = true) String programme) {
         List<Unit> units = new ArrayList<Unit>();
         units = unitService.getAllByProgramme(programme);
         model.addAttribute("by_programme", units);
@@ -112,7 +112,7 @@ public class UnitController {
 
 
     @GetMapping(path="/programmes_by_school")
-    public String displayAllPostreqs(Model model, @RequestParam(required = true) String school) {
+    public String displayAllBySchool(Model model, @RequestParam(required = true) String school) {
         List<String> programmes = new ArrayList<String>();
         programmes = unitService.getAllProgrammesInSchool(school);
         model.addAttribute("by_school", programmes);
@@ -120,16 +120,16 @@ public class UnitController {
     }
 
     @GetMapping(path="/schools_by_faculty")
-    public String displayAllPostreqs(Model model, @RequestParam(required = true) String faculty) {
+    public String displayAllByFaculty(Model model, @RequestParam(required = true) String faculty) {
         List<String> schools = new ArrayList<String>();
         schools = unitService.getAllSchoolsInFaculty(faculty);
         model.addAttribute("by_faculty", schools);
         return "by_faculty";
     }
-//programmes, schools, faculties, topics, 
+//programmes, schools, faculties, topics,
 
     @GetMapping(path="/topics_by_programme")
-    public String displayAllPostreqs(Model model, @RequestParam(required = true) String programme) {
+    public String displayAllTopicsByProgramme(Model model, @RequestParam(required = true) String programme) {
         List<String> topics = new ArrayList<String>();
         topics = unitService.getAllTopicsInPrograme(programme);
         model.addAttribute("topics_by_programme", topics);
