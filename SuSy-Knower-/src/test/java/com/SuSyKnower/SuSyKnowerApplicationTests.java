@@ -3,6 +3,9 @@ package com.SuSyKnower;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import jdk.jfr.Timestamp;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
@@ -100,6 +103,43 @@ class SuSyKnowerApplicationTests {
 			ActualUnitsString.add(ActualUnits.get(i).toString());
 		}
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
+	public void testGetAllBySchool() {
+		List<String>ExpectedUnits = new ArrayList<>();
+		for (int i = 1; i < 14; i++) {
+			ExpectedUnits.add(testUnitService.getUnit(i).get().toString());
+		}
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllBySchool("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
+	public void testGetAllProgrammesInSchool() {
+		List<String>ExpectedProgrammes = new ArrayList<String>();
+		
+
+	}
+
+	@Test
+	public void testGetAllSchoolsInFaculty() {
+
+	}
+
+	@Test
+	public void testGetAllTopicsInProgramme() {
+
+	}
+
+	@Test
+	public void testGetAllFaculties() {
+
 	}
 
 }

@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.Arrays;
 
-//still to add: url, faculty and topic columns
 
 @Entity
 @Table(name = "units")
@@ -47,6 +46,10 @@ public class Unit {
         return topic;
     }
 
+    public String getSchool() {
+        return school;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -79,6 +82,10 @@ public class Unit {
 
     public void setTb(int tb) { this.tb = tb; }
 
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
     public String getPrereqs() { return prereqs; }
     public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
 
@@ -90,6 +97,7 @@ public class Unit {
                 ", name='" + name + '\'' +
                 ", programme='" + programme + '\'' +
                 ", faculty='" + faculty + '\'' +
+                ", school='" + school + '\'' +
                 ", topics='" + topic + '\'' +
                 //make it an actual link in some layer
                 ", link='" + url + '\'' +
