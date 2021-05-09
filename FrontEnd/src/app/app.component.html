@@ -13,28 +13,17 @@
       border: 5px solid gray;
       margin: 0;
     }
+
   </style>
-  <!--- <link rel="stylesheet" href="FrontEnd/src/app/list.css"> -->
 </head>
 <body>
-<p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
-<P>Double clicking a node will take you to the unit website</P>
-<div>
-  <app-search-bar></app-search-bar>
-  <div id="searchUsers" class="instant-search instant-search--loading">
-    <div style="text-align: center;">
-
-      <!--- Find a course : -->
-      <br>  <input type='text' placeholder="Search Bar" id="myInput" onkeyup="searchCourse()" class="instant-search__input" spellcheck="false">
-      <button id='sb' class="circle"> </button>
-
-
-    </div>
-  </div>
-</div>
 
 <app-network></app-network>
-
+<app-search-bar></app-search-bar>
+<div>
+  <p>Clicking on a node will highlight its prerequisites(green) and the future courses it is required for (red)</p>
+  <P>Double clicking a node will take you to the unit website</P>
+</div>
 <div>
   <label>
     <input type="checkbox" name="InBox" value="parent" id="FadeBox" unchecked />
@@ -66,6 +55,7 @@
 
 <script src = "template.js"></script>
 <script src = "data.js"></script>
+<script src = "network.js"></script>
 <script type="text/javascript" src="function.js"></script>
 
 
