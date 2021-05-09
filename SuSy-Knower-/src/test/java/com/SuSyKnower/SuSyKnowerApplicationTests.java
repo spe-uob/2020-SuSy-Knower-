@@ -142,4 +142,19 @@ class SuSyKnowerApplicationTests {
 
 	}
 
+	@Test
+	public void testGetAllSchools() {
+
+	}
+
+	@Test
+	public void testGetAllProgrammes() {
+
+	}
+
+	@Test
+	public void testGetAllTopics() {
+
+	}
+
 }

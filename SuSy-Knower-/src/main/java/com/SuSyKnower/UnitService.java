@@ -37,7 +37,6 @@ public class UnitService {
     public int getNumberOfUnits() {
         return findAllUnits().size();
     }
-
     //get the prerequisites in a list form from the prereqs string in the Unit class
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
@@ -68,9 +67,7 @@ public class UnitService {
         }
         return postrequisites;
     }
-
     //the try catch blocks might not be neccessary ay all here
-
     public List<Unit> getAllByProgramme(String theProgramme) {
         List<Unit> unitsInProgramme = new ArrayList<Unit>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
@@ -102,7 +99,6 @@ public class UnitService {
         }
         return unitsInFaculty;
     }
-
     //in the future Topic topic
     public List<Unit> getAllByTopic(String theTopic) {
         List<Unit> unitsWithTopic = new ArrayList<Unit>();
@@ -198,7 +194,6 @@ public class UnitService {
         return allFaculties;
     }
     
-    //getalltopicsinaprogramme
     public List<String> getAllTopicsInPrograme(String theProgramme) {
         List<String> topicsInProgramme = new ArrayList<String>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
@@ -221,6 +216,33 @@ public class UnitService {
             }
         }
         return topicsInProgramme;
+    }
+
+    public List<String> getAllSchools() {
+        List<String> allFaculties = new ArrayList<String>();
+        List<String> allSchools = new ArrayList<String>();
+        for(int i = 0; i < allFaculties.size(); i ++) {
+            allSchools.addAll(getAllSchoolsInFaculty(allFaculties.get(i)));
+        }
+        return allSchools;
+    }
+
+    public List<String> getAllProgrammes() {
+        List<String> allProgrammes = new ArrayList<String>();
+        List<String> allFaculties = new ArrayList<String>();
+        List<String> allSchools = new ArrayList<String>();
+        allSchools = getAllSchools();
+        return allProgrammes;
+    }
+
+    public List<String> getAllTopics() {
+        List<String> allProgrammes = new ArrayList<String>();
+        List<String> allTopics = new ArrayList<String>();
+        allProgrammes = getAllProgrammes();
+        for(int i = 0; i < allProgrammes.size(); i ++) {
+            allTopics.addAll(getAllTopicsInPrograme(allProgrammes.get(i)));
+        }
+        return allTopics;
     }
 
 }
