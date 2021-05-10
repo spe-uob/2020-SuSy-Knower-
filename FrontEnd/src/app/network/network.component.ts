@@ -65,6 +65,7 @@ export class NetworkComponent implements OnInit {
   }
   //Create the network itself
   public Load_Vis_Network(data){
+    console.log("Loading Network");
     var nodes = data.nodes;
     var edges = data.edges;
     var mode_type = Mode.FACULTY;
@@ -84,9 +85,11 @@ export class NetworkComponent implements OnInit {
       edges:{
               width:node_size/8,
               arrows:{to:{enabled:true,scaleFactor:0.5}},
+              smooth:false
             },
       physics:
-              { enabled: true,repulsion:{nodeDistance:100},maxVelocity:5 },
+              { enabled: true,repulsion:{nodeDistance:100},maxVelocity:2,
+             },
       layout:{
               hierarchical:{enabled:false,direction:"LR"}
             },
@@ -96,26 +99,27 @@ export class NetworkComponent implements OnInit {
           };
     this.network = new Network(container,data, options);
     this.network.setOptions(options);
-    nodes.add({id: 255, label: 'Node 255'});
-    nodes.add({id: 256, label: 'Node 256'});
-    var node255 = nodes.get(255);
-    var node256 = nodes.get(256);
-    this.Set_Node_Position(node255,nodes,5,5);
-    this.Style_Children([node255,node256],nodes);
+    // nodes.add({id: 255, label: 'Node 255'});
+    // nodes.add({id: 256, label: 'Node 256'});
+    // var node255 = nodes.get(255);
+    // var node256 = nodes.get(256);
+    // this.Set_Node_Position(node255,nodes,5,5);
+    // this.Style_Descendents([255,256],nodes,edges);
     
 
     var canvas = this.network.canvas.frame.canvas;
     /** @type {CanvasRenderingContext2D} */
-    var c = canvas.getContext('2d');
-    console.log("Loading Network");
+    var ctx = canvas.getContext('2d');
+
+    
   }
   public Get_Network_Data(units: Unit[],nodes,edges){
     units.forEach(unit => {
-      nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
-         topic: unit.topic, level: this.Find_Level(unit), 
-        type:Mode.UNIT,url:unit.url,group:unit.topic});
-      console.log(unit.topic);
+
       var prerequisites = this.Find_Prerequisites(unit);
+      nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
+        topic: unit.topic, level: this.Find_Level(unit), 
+       type:Mode.UNIT,url:unit.url,group:unit.topic});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
       });
@@ -130,12 +134,14 @@ export class NetworkComponent implements OnInit {
 
     this.Run_Network_Events(data);
   }
-  //Handles click and zoom events
+  //Handles click zoom and drawing events
   public Run_Network_Events(data){
     var nodes= data.nodes;
     var edges = data.edges;
     var that = this;
-    this.network.on("beforeDrawing", function(ctx) {})
+    this.network.on("beforeDrawing", function(ctx) {
+      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx)
+    })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
       that.Click(params,nodes,edges);
@@ -145,34 +151,42 @@ export class NetworkComponent implements OnInit {
     })
     this.network.on("zoom", function (params) {})
   }
+  public Draw_Title(title,ctx){
+    console.log("Drawing Title");
+    ctx.font = "50px Tahoma";
+    ctx.fillStyle = 'rgba(255,0,0,1)'
+    ctx.textAlign = "center";
+    ctx.fillText(title,0,-200);
+  }
   public Double_click(params,nodes,edges){
 
-    if(params.nodes){
+    if(params.nodes.length){
       var selected_node_id = params.nodes[0];
       
-
       if(this.network.isCluster(selected_node_id)){
-        if(this.mode == Mode.FACULTY){
-          var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
-          this.Uncluster(selected_node_id);
-          this.Fit_To_Selection(nodes_in_cluster)
+        var cluster = this.network.body.nodes[selected_node_id].options;
+        if(cluster.type == Mode.SUBJECT){
+            //this.Turn_On_Hierarchical(this.network.options);
+            //this.Turn_Off_Physics(this.network.options);
+            var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
+            this.Uncluster(selected_node_id);
+            this.Set_Unit_Positions(nodes_in_cluster,nodes);
+            this.Fit_To_Selection(nodes_in_cluster);
+            this.mode = Mode.UNIT;
+        }
+        else if(cluster.type == Mode.FACULTY){
           this.mode = Mode.SCHOOL;
-        }
-        else if(this.mode == Mode.SCHOOL){
           var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
           this.Uncluster(selected_node_id);
           this.Fit_To_Selection(nodes_in_cluster)
+        }
+        else if(cluster.type == Mode.SCHOOL){
           this.mode = Mode.SUBJECT;
-        }
-        else if(this.mode == Mode.SUBJECT){
-          this.Turn_On_Hierarchical(this.network.options);
-          this.Turn_Off_Physics(this.network.options);
           var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
           this.Uncluster(selected_node_id);
-          this.Set_Unit_Positions(nodes_in_cluster,nodes);
           this.Fit_To_Selection(nodes_in_cluster)
-          this.mode = Mode.UNIT;
         }
+
       }
       else{
         console.log("node is NOT a cluster")
@@ -189,11 +203,24 @@ export class NetworkComponent implements OnInit {
     if(clicked_node_id){
       console.log(nodes.get(clicked_node_id));
     }
-
-    if(this.network.isCluster(params.nodes[0]))
-    {
-      console.log("Selected node is a cluster")
-    }
+    if(params.nodes.length){
+      
+      if(this.network.isCluster(params.nodes[0]))
+      {
+        console.log("Selected node is a cluster")
+      }
+      else{
+        var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,nodes,edges);
+        this.Style_Ancestors(ancestors_Ids,nodes);
+        console.log(ancestors_Ids);
+        var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,nodes,edges);
+        this.Style_Descendents(descendents_Ids,nodes,edges);
+        console.log(descendents_Ids);
+      }
+  }
+  else{
+    console.log("No node clicked");
+  }
 
   }
   public Find_Prerequisites(unit: Unit): number[]{
@@ -213,14 +240,15 @@ export class NetworkComponent implements OnInit {
   public Get_Subject_List(){
     return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
     "Mathematics (MSci)"
-    ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)",
+    ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
+    "Chemical Physics (BSc)"
   ];
   }
   public Get_School_List(){
-    return ["SCEEM","SAME","School of Physics","School of Philosophy","School of Psychological Science"]
+    return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics"]
   }
   public Get_Faculty_List(){
-    return ["Engineering","Science","Arts"]
+    return ["Faculty of Engineering","Faculty of Science","Faculty of Arts"]
   }
   public Find_School(subject):String{
     if(subject == "Computer Science (BSc)"|| subject == "Electrical and Electronic Engineering (BEng)")
@@ -230,14 +258,17 @@ export class NetworkComponent implements OnInit {
     else if (subject == "Aerospace Engineering (BEng)"|| subject == "Civil Engineering (BEng)"){
       return "SAME";
     }
-    else if(subject == "Physics (BSc)"){
-      return "School of Physics"
+    else if(subject == "Physics (BSc)"|| subject == "Chemical Physics (BSc)"){
+      return "School of Physics";
     }
-    else if(subject == "Philosophy (BA)"){
-      return "School of Philosophy"
+    else if(subject == "Philosophy (BA)" || subject == "Anthropology (BA)"){
+      return "School of Arts";
     }
     else if(subject == "Psychology (BSc)"){
-      return "School of Psychological Science"
+      return "School of Psychological Science";
+    }
+    else if(subject == "Mathematics (MSci)"|| subject == "Data Science (BSc)"){
+      return "School of Mathematics";
     }
     else{
       return "Error";
@@ -245,24 +276,71 @@ export class NetworkComponent implements OnInit {
     
   }
   public Find_Faculty(school):String{
-    return "Engineering";
+    if(school == "SCEEM"||school == "SAME"){
+      return "Faculty of Engineering";
+    }
+    else if (school == "School of Mathematics"|| school == "School of Physics"){
+      return "Faculty of Science"
+    }
+    else{
+      return "Faculty of Engineering";
+    }
   }
-  public Get_Parents(node,nodes){
+  public Get_Parents_Ids(node_Id,nodes,edges){
+    var parents_Ids = []
+    var edge_Ids = this.network.getConnectedEdges(node_Id);
+    edge_Ids.forEach(edge_Id => {
+      var edge = edges.get(edge_Id);
+      if(edge.from == node_Id){
+        parents_Ids.push(edge.to);
+      }
+    });
+    console.log(parents_Ids)
+    return parents_Ids
+  }
+  public Get_Ancestors_Ids(node_Id,nodes,edges){
+    var ancestors_Ids =[];
+    ancestors_Ids = ancestors_Ids.concat(this.Get_Parents_Ids(node_Id,nodes,edges))
+    console.log(ancestors_Ids);
+    ancestors_Ids.forEach(ancestor => {
+      this.Get_Ancestors_Ids(ancestor,nodes,edges);
+    });
+    return ancestors_Ids
+  }
+  public Get_Children_Ids(node_Id,nodes,edges){
+    var children_Ids = []
+    var edge_Ids = this.network.getConnectedEdges(node_Id);
+    edge_Ids.forEach(edge_Id => {
+      var edge = edges.get(edge_Id);
+      if(edge.to == node_Id){
+        children_Ids.push(edge.from);
+      }
+    });
+    console.log(children_Ids)
+    return children_Ids;
     
   }
-  public Get_Children(node,nodes){
-    return;
+  public Get_Descendents_Ids(node_Id,nodes,edges){
+    var descendents_Ids =[];
+    descendents_Ids = descendents_Ids.concat(this.Get_Children_Ids(node_Id,nodes,edges))
+    console.log(descendents_Ids);
+    descendents_Ids.forEach(descendent => {
+      this.Get_Descendents_Ids(descendent,nodes,edges);
+    });
+    return descendents_Ids
   }
-  public Style_Parents(parents,nodes){
-    parents.forEach(parent => {
+  public Style_Ancestors(ancestor_Ids,nodes){
+    ancestor_Ids.forEach(ancestor_Id => {
+      var parent = nodes.get(ancestor_Id);
       parent.color = {background:"red"}
       nodes.update(parent);
     });
   }
-  public Style_Children(children,nodes){
-    children.forEach(child => {
-      child.color = {background:"green"}
-      nodes.update(child);
+  public Style_Descendents(descendent_Ids,nodes,edges){
+    descendent_Ids.forEach(descendent_Id => {
+      var descendent = nodes.get(descendent_Id);
+      descendent.color = {background:"green"}
+      nodes.update(descendent);
     });
   }
   public Style_Node(node,style){
@@ -311,6 +389,7 @@ export class NetworkComponent implements OnInit {
     var properties = {
       level:0,
       label: school,
+      color:{border: "blue"},
       id: id,
       faculty: this.Find_Faculty(school),
       type: Mode.SCHOOL,
@@ -338,10 +417,11 @@ export class NetworkComponent implements OnInit {
     };
     var properties = {
       level:0,
+      color: {border:"red"},
       label: faculty,
       id: id,
       type: Mode.FACULTY,
-      size: 20,
+      size: 25,
       borderWidth:10,
       font:{size:12}
     };
@@ -398,6 +478,7 @@ export class NetworkComponent implements OnInit {
   public Set_Node_Position(node,nodes,x:number,y:number){
     node.x = x;
     node.y = y;
+    node.fixed = true;
     nodes.update(node);
   }
   public Set_Unit_Positions(units,nodes){
@@ -416,6 +497,7 @@ export class NetworkComponent implements OnInit {
   }
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
+  
   
 
   
