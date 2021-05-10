@@ -119,16 +119,16 @@ public class UnitController {
 
         }
         programmes = unitService.getAllProgrammesInSchool(school);
-        model.addAttribute("by_school", programmes);
-        return "by_school";
+        model.addAttribute("programmes_by_school", programmes);
+        return "programmes_by_school";
     }
 
     @GetMapping(path="/schools_by_faculty")
     public String displaySchoolsByFaculty(Model model, @RequestParam(required = true) String faculty) {
         List<String> schools = new ArrayList<String>();
         schools = unitService.getAllSchoolsInFaculty(faculty);
-        model.addAttribute("by_faculty", schools);
-        return "by_faculty";
+        model.addAttribute("schools_by_faculty", schools);
+        return "schools_by_faculty";
     }
 
     @GetMapping(path="/topics_by_programme")

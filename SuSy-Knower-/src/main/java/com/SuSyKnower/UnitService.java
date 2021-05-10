@@ -33,18 +33,24 @@ public class UnitService {
         unitRepository.deleteById(id);
     }
 
-    //just for readability
     public int getNumberOfUnits() {
         return findAllUnits().size();
     }
+
     //get the prerequisites in a list form from the prereqs string in the Unit class
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
-        String prereqStr = unit.getPrereqs();
-        String[] elements =prereqStr.split(",");
-        if (elements.length == 0) return null; //handle it better, you cant just have NullPointerException
-        for (int i = 0; i < elements.length; i++) {
-            prerequisites.add(getUnit(Integer.parseInt(elements[i])).get()); //will throw NullPointerElement Exception when there are no prereqs
+        try {
+            String prereqStr = unit.getPrereqs();
+            if (prereqStr.length() == 0) return Collections.emptyList();
+            String[] elements =prereqStr.split(",");
+            //if (elements.length == 0) return Collections.emptyList(); //handle it better, you cant just have NullPointerException
+            for (int i = 0; i < elements.length; i++) {
+                prerequisites.add(getUnit(Integer.parseInt(elements[i])).get()); //will throw NullPointerElement Exception when there are no prereqs
+            }
+        }
+        catch(NullPointerException n) {
+
         }
         return prerequisites;
     }

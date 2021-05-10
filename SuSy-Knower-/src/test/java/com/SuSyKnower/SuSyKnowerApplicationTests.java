@@ -34,6 +34,17 @@ class SuSyKnowerApplicationTests {
 	//to complete
 	@Test
 	public void testGetPrereqs() {
+		Unit unit84 = testUnitService.getUnit(84).get();
+		List<String>ExpectedPrereqs = new ArrayList<>();
+		ExpectedPrereqs.add(testUnitService.getUnit(76).get().toString());
+		ExpectedPrereqs.add(testUnitService.getUnit(77).get().toString());
+		List<Unit> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPostreqs(unit84));
+		List<String> ActualPrereqsString = new ArrayList<>();
+		for(int i = 0; i < ActualPrereqs.size(); i++) {
+			ActualPrereqsString.add(ActualPrereqs.get(i).toString());
+		}
+		assertEquals(ExpectedPrereqs.toString(), ActualPrereqsString.toString());
 
 	}
 
@@ -76,7 +87,7 @@ class SuSyKnowerApplicationTests {
 	@Test
 	public void testGetAllByFaculty(){
 		List<String>ExpectedUnits = new ArrayList<>();
-		for (int i = 1; i <= testUnitService.getNumberOfUnits(); i++) {
+		for (int i = 1; i <= 75; i++) {
 			ExpectedUnits.add(testUnitService.getUnit(i).get().toString());
 		}
 		List<Unit> ActualUnits = new ArrayList<>();
@@ -123,13 +134,20 @@ class SuSyKnowerApplicationTests {
 	@Test
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
-		
-
+		List<String>ActualProgrammes = new ArrayList<String>();
+		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)"));
+		ExpectedProgrammes.add("Computer Science (BSc)");
+		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
 	@Test
 	public void testGetAllSchoolsInFaculty() {
-
+		List<String>ExpectedSchools = new ArrayList<String>();
+		List<String>ActualSchools = new ArrayList<String>();
+		ActualSchools.addAll(testUnitService.getAllSchoolsInFaculty("Engineering"));
+		ExpectedSchools.add("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)");
+		ExpectedSchools.add("School of Civil, Aerospace and Mechanical Engineering (CAME)");
+		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
 	}
 
 	@Test
