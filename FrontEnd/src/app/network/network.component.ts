@@ -105,11 +105,7 @@ export class NetworkComponent implements OnInit {
     // var node256 = nodes.get(256);
     // this.Set_Node_Position(node255,nodes,5,5);
     // this.Style_Descendents([255,256],nodes,edges);
-    
-
-    var canvas = this.network.canvas.frame.canvas;
-    /** @type {CanvasRenderingContext2D} */
-    var ctx = canvas.getContext('2d');
+  
 
     
   }
@@ -139,8 +135,9 @@ export class NetworkComponent implements OnInit {
     var nodes= data.nodes;
     var edges = data.edges;
     var that = this;
+    var canvas = this.network.canvas.frame.canvas;
     this.network.on("beforeDrawing", function(ctx) {
-      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx)
+      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,canvas)
     })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
@@ -151,12 +148,12 @@ export class NetworkComponent implements OnInit {
     })
     this.network.on("zoom", function (params) {})
   }
-  public Draw_Title(title,ctx){
+  public Draw_Title(title,ctx,canvas){
     console.log("Drawing Title");
     ctx.font = "50px Tahoma";
     ctx.fillStyle = 'rgba(255,0,0,1)'
     ctx.textAlign = "center";
-    ctx.fillText(title,0,-200);
+    ctx.fillText(title,0,-canvas.height/6);
   }
   public Double_click(params,nodes,edges){
 
