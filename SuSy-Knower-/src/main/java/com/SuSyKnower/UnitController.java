@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+//try with old mapping (test)
 @RequestMapping(path = "/unit")
 public class UnitController {
 
@@ -82,6 +83,33 @@ public class UnitController {
         return "prereqs";
     }
 
+    //just for testing
+    @GetMapping(path="/testprereqs")
+    public String testDisplayAllPrereqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> prerequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
+        }
+        List<String> stringPrerequisites = new ArrayList<String>();
+        for(int i = 0; i < prerequisites.size(); i++) {
+            stringPrerequisites.add(prerequisites.get(i).toString());
+        }
+        return stringPrerequisites.toString();
+    }
+
+    @GetMapping(path="/testpostreqs")
+    public String testDisplayAllPostreqs(Model model, @RequestParam(required = true) int id) {
+        List<Unit> postrequisites = new ArrayList<Unit>();
+        if(unitService.getUnit(id).isPresent()) {
+            postrequisites = unitService.getPostreqs(unitService.getUnit(id).get());
+        }
+        List<String> stringPostrequisites = new ArrayList<String>();
+        for(int i = 0; i < postrequisites.size(); i++) {
+            stringPostrequisites.add(postrequisites.get(i).toString());
+        }
+        return stringPostrequisites.toString();
+    }
+
     //display all the postrequisites in a separate tab given the unit id
     //the path is <server ip>:8080/test/postreqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/postreqs")
@@ -109,7 +137,6 @@ public class UnitController {
         model.addAttribute("by_programme", units);
         return "by_programme";
     }
-
 
     @GetMapping(path="/programmes_by_school")
     public String displayProgrammesBySchool(Model model, @RequestParam(required = false) String school) {

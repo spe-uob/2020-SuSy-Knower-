@@ -40,7 +40,7 @@ public class UnitService {
     //get the prerequisites in a list form from the prereqs string in the Unit class
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
-        try {
+       /* try {
             String prereqStr = unit.getPrereqs();
             if (prereqStr.length() == 0) return Collections.emptyList();
             String[] elements =prereqStr.split(",");
@@ -51,6 +51,16 @@ public class UnitService {
         }
         catch(NullPointerException n) {
 
+        }*/
+        String prereqStr = unit.getPrerequisites();
+        try {
+            String[] elements = prereqStr.split(",");
+            for (int i = 0; i < elements.length; i++) {
+                prerequisites.add(getUnit(Integer.parseInt(elements[i])).get());  
+            }
+        }
+        catch (NullPointerException n) {
+            return Collections.emptyList(); //experimental    
         }
         return prerequisites;
     }
@@ -137,13 +147,13 @@ public class UnitService {
         }
         return unitsWithSchool;
     }
-
+//not unique!
     public List<String> getAllProgrammesInSchool(String theSchool) {
         List<String> programmesInSchool = new ArrayList<String>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
-                     if(((getUnit(i).get()).getSchool()).equals(theSchool)) {
+                     if(((getUnit(i).get()).getSchool()).equals(theSchool) && !programmesInSchool.contains((getUnit(i).get()).getProgramme())) {
                         programmesInSchool.add((getUnit(i).get()).getProgramme());
                     }
                 }
@@ -153,22 +163,14 @@ public class UnitService {
         }
         return programmesInSchool;
     }
-
+//not unique!
     public List<String> getAllSchoolsInFaculty(String theFaculty) {
         List<String> schoolsInFaculty = new ArrayList<String>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
-                     if(((getUnit(i).get()).getFaculty()).equals(theFaculty)) {
-                         boolean tempIsPresent = false;
-                         for(int j = 0; j < schoolsInFaculty.size(); j++) {
-                             if(schoolsInFaculty.get(j).equals((getUnit(i).get()).getSchool()) ) {
-                                tempIsPresent = true;
-                             }
-                         }
-                         if(!tempIsPresent) {
-                            schoolsInFaculty.add((getUnit(i).get()).getSchool());
-                         }
+                    if(((getUnit(i).get()).getFaculty()).equals(theFaculty) && !schoolsInFaculty.contains((getUnit(i).get()).getSchool())) {
+                        schoolsInFaculty.add((getUnit(i).get()).getSchool());
                     }
                 }
                 catch(NullPointerException n) {
@@ -205,16 +207,8 @@ public class UnitService {
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
-                     if(((getUnit(i).get()).getProgramme()).equals(theProgramme)) {
-                         boolean tempIsPresent = false;
-                         for(int j = 0; j < topicsInProgramme.size(); j++) {
-                             if(topicsInProgramme.get(j).equals((getUnit(i).get()).getTopic()) ) {
-                                tempIsPresent = true;
-                             }
-                         }
-                         if(!tempIsPresent) {
-                            topicsInProgramme.add((getUnit(i).get()).getTopic());
-                         }
+                     if(((getUnit(i).get()).getProgramme()).equals(theProgramme) && !topicsInProgramme.contains((getUnit(i).get()).getTopic())) {
+                        topicsInProgramme.add((getUnit(i).get()).getTopic());
                     }
                 }
                 catch(NullPointerException n) {

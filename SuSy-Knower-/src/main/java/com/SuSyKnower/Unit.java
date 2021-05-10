@@ -86,10 +86,9 @@ public class Unit {
         this.school = school;
     }
 
-    public String getPrereqs() { return prereqs; }
-    public void setPrereqs(String prereqs) { this.prereqs = prereqs; }
+    public String getPrerequisites() { return prereqs; }
+    public void setPrerequisites(String prereqs) { this.prereqs = prereqs; }
 
-    //for testing purposes, different types of toString functions might be neccessary for the frontend integration
     @Override
     public String toString() {
         return "Unit{" +

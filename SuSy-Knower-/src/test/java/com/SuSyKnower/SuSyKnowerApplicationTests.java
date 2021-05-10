@@ -22,7 +22,7 @@ class SuSyKnowerApplicationTests {
 
 	@Test
 	public void testNumberOfUnits() {
-	 	assertEquals(33, testUnitService.getNumberOfUnits());
+	 	assertEquals(179, testUnitService.getNumberOfUnits());
 	}
 
 	@Test
@@ -31,7 +31,7 @@ class SuSyKnowerApplicationTests {
 		assertEquals("Unit{id=1, name='Imperative and Functional Programming', programme='Computer Science (BSc)', faculty='Engineering', topics='programming', link='https://www.bris.ac.uk/unit-programme-catalogue/UnitDetails.jsa?ayrCode=21%2F22&unitCode=COMS10016', prerequisites=null'}", unit1.toString());
 	}
 
-	//to complete
+	//empty
 	@Test
 	public void testGetPrereqs() {
 		Unit unit84 = testUnitService.getUnit(84).get();
@@ -39,7 +39,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedPrereqs.add(testUnitService.getUnit(76).get().toString());
 		ExpectedPrereqs.add(testUnitService.getUnit(77).get().toString());
 		List<Unit> ActualPrereqs = new ArrayList<>();
-		ActualPrereqs.addAll(testUnitService.getPostreqs(unit84));
+		ActualPrereqs.addAll(testUnitService.getPrereqs(unit84));
 		List<String> ActualPrereqsString = new ArrayList<>();
 		for(int i = 0; i < ActualPrereqs.size(); i++) {
 			ActualPrereqsString.add(ActualPrereqs.get(i).toString());
@@ -48,6 +48,21 @@ class SuSyKnowerApplicationTests {
 
 	}
 
+	@Test
+	public void testGetPrereqsEmpty() {
+		Unit unit1 = testUnitService.getUnit(1).get();
+		List<String>ExpectedPrereqs = new ArrayList<>();
+		List<Unit> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPrereqs(unit1));
+		List<String> ActualPrereqsString = new ArrayList<>();
+		for(int i = 0; i < ActualPrereqs.size(); i++) {
+			ActualPrereqsString.add(ActualPrereqs.get(i).toString());
+		}
+		assertEquals(ExpectedPrereqs.toString(), ActualPrereqsString.toString());
+
+	}
+	
+	//empty
 	//actualpostreqsstring is empty, but the getpostreqs function seems to work
 	//fix test
 	@Test
@@ -59,7 +74,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedPostreqs.add(testUnitService.getUnit(11).get().toString());
 		ExpectedPostreqs.add(testUnitService.getUnit(13).get().toString());
 		List<Unit> ActualPostreqs = new ArrayList<>();
-		ActualPostreqs.addAll(testUnitService.getPostreqs(unit1));
+		ActualPostreqs.addAll(testUnitService.getPostreqs(unit1)); //NumberFormat For input string:...
 		List<String> ActualPostreqsString = new ArrayList<>();
 		for(int i = 0; i < ActualPostreqs.size(); i++) {
 			ActualPostreqsString.add(ActualPostreqs.get(i).toString());
@@ -99,6 +114,7 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
+	//empty
 	@Test
 	public void testGetAllByTopic(){
 		List<String>ExpectedUnits = new ArrayList<>();
@@ -108,7 +124,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedUnits.add(testUnitService.getUnit(7).get().toString());
 		ExpectedUnits.add(testUnitService.getUnit(13).get().toString());
 		List<Unit> ActualUnits = new ArrayList<>();
-		ActualUnits.addAll(testUnitService.getAllByTopic("programming"));
+		ActualUnits.addAll(testUnitService.getAllByTopic("1"));
 		List<String> ActualUnitsString = new ArrayList<>();
 		for(int i = 0; i < ActualUnits.size(); i++) {
 			ActualUnitsString.add(ActualUnits.get(i).toString());
@@ -119,7 +135,7 @@ class SuSyKnowerApplicationTests {
 	@Test
 	public void testGetAllBySchool() {
 		List<String>ExpectedUnits = new ArrayList<>();
-		for (int i = 1; i < 14; i++) {
+		for (int i = 1; i <= 75; i++) {
 			ExpectedUnits.add(testUnitService.getUnit(i).get().toString());
 		}
 		List<Unit> ActualUnits = new ArrayList<>();
@@ -131,15 +147,17 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
+	//only unique!
 	@Test
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
 		List<String>ActualProgrammes = new ArrayList<String>();
 		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)"));
 		ExpectedProgrammes.add("Computer Science (BSc)");
+		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
-
+	//again, unique
 	@Test
 	public void testGetAllSchoolsInFaculty() {
 		List<String>ExpectedSchools = new ArrayList<String>();
