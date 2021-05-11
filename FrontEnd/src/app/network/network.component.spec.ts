@@ -90,8 +90,7 @@ describe('Resize Label',()=>{
     component = null;
   })
   it('should not affect small strings',()=>{
-    // expect(component.Resize_Label("Computer Science")).toEqual("Hello");
-    expect(component.Resize_Label('Computer Science and Electronics')).toEqual('Hello \n Hello'); // lable length should be > 16
+    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
   })
   it('should add a newline to a string if large',()=>{
     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
@@ -113,13 +112,12 @@ describe('Get_Parents',()=>{
 
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
-    service = TestBed.inject(MockedUnitService);
+    service = TestBed.inject(MockedUnitService); 
   });
 
 
   it('should not affect small strings',()=>{
-    // expect(component.Resize_Label("Computer Science")).toEqual("Hello");
-    expect(component.Resize_Label('Computer Science and Electronics')).toEqual('Hello \n Hello'); // lable length should be > 16
+    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
   })
   it('should add a newline to a string if large',()=>{
     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
