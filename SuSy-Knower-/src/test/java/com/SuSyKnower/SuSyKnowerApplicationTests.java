@@ -119,10 +119,11 @@ class SuSyKnowerApplicationTests {
 	public void testGetAllByTopic(){
 		List<String>ExpectedUnits = new ArrayList<>();
 		ExpectedUnits.add(testUnitService.getUnit(1).get().toString());
-		ExpectedUnits.add(testUnitService.getUnit(4).get().toString());
-		ExpectedUnits.add(testUnitService.getUnit(5).get().toString());
 		ExpectedUnits.add(testUnitService.getUnit(7).get().toString());
 		ExpectedUnits.add(testUnitService.getUnit(13).get().toString());
+		ExpectedUnits.add(testUnitService.getUnit(19).get().toString());
+		ExpectedUnits.add(testUnitService.getUnit(25).get().toString());
+		ExpectedUnits.add(testUnitService.getUnit(31).get().toString());
 		List<Unit> ActualUnits = new ArrayList<>();
 		ActualUnits.addAll(testUnitService.getAllByTopic("1"));
 		List<String> ActualUnitsString = new ArrayList<>();
@@ -147,7 +148,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
-	//only unique!
 	@Test
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
@@ -157,7 +157,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
-	//again, unique
+
 	@Test
 	public void testGetAllSchoolsInFaculty() {
 		List<String>ExpectedSchools = new ArrayList<String>();
@@ -170,27 +170,84 @@ class SuSyKnowerApplicationTests {
 
 	@Test
 	public void testGetAllTopicsInProgramme() {
-
+		List<String>ExpectedTopics = new ArrayList<String>();
+		List<String>ActualTopics = new ArrayList<String>();
+		ActualTopics.addAll(testUnitService.getAllTopicsInProgramme("Computer Science (BSc)"));
+		ExpectedTopics.add("1");
+		ExpectedTopics.add("2");
+		ExpectedTopics.add("3");
+		ExpectedTopics.add("4");
+		ExpectedTopics.add("5");
+		ExpectedTopics.add("6");
+		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
 	}
 
+	//engineering twice
 	@Test
 	public void testGetAllFaculties() {
-
+		List<String>ExpectedFaculties = new ArrayList<String>();
+		List<String>ActualFaculties = new ArrayList<String>();
+		ActualFaculties.addAll(testUnitService.getAllFaculties());
+		ExpectedFaculties.add("Engineering");
+		ExpectedFaculties.add("Science");
+		ExpectedFaculties.add("Arts");
+		ExpectedFaculties.add("Life Sciences");
+		ExpectedFaculties.add("Social Sciences and Law");
+		assertEquals(ExpectedFaculties.toString(), ActualFaculties.toString());
 	}
 
+	//empty
 	@Test
 	public void testGetAllSchools() {
-
+		List<String>ExpectedSchools = new ArrayList<String>();
+		List<String>ActualSchools = new ArrayList<String>();
+		ActualSchools = testUnitService.getAllSchools();
+		ExpectedSchools.add("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)");
+		ExpectedSchools.add("School of Civil, Aerospace and Mechanical Engineering (CAME)");
+		ExpectedSchools.add("School of Mathematics");
+		ExpectedSchools.add("School of Physics");
+		ExpectedSchools.add("School of Arts");
+		ExpectedSchools.add("School of Psychological Science");
+		ExpectedSchools.add("University of Bristol Law School");
+		ExpectedSchools.add("School of Management");
+		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
 	}
 
+	//empty
 	@Test
 	public void testGetAllProgrammes() {
-
+		List<String>ExpectedProgrammes = new ArrayList<String>();
+		List<String>ActualProgrammes = new ArrayList<String>();
+		ActualProgrammes.addAll(testUnitService.getAllProgrammes());
+		ExpectedProgrammes.add("Computer Science (BSc)");
+		ExpectedProgrammes.add("Aerospace Engineering (BEng)");
+		ExpectedProgrammes.add("Mathematics (MSci)");
+		ExpectedProgrammes.add("Civil Engineering (BEng)");
+		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
+		ExpectedProgrammes.add("Physics (BSc)");
+		ExpectedProgrammes.add("Philosophy (BA)");
+		ExpectedProgrammes.add("Psychology (BSc)");
+		ExpectedProgrammes.add("Data Science (BSc)");
+		ExpectedProgrammes.add("Anthropology (BA)");
+		ExpectedProgrammes.add("Chemical Physics (BSc)");
+		ExpectedProgrammes.add("Honours Law (LLB)");
+		ExpectedProgrammes.add("Management (BSc)");
+		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
+	//empty
 	@Test
 	public void testGetAllTopics() {
-
+		List<String>ExpectedTopics = new ArrayList<String>();
+		List<String>ActualTopics = new ArrayList<String>();
+		ActualTopics.addAll(testUnitService.getAllTopics());
+		ExpectedTopics.add("1");
+		ExpectedTopics.add("2");
+		ExpectedTopics.add("3");
+		ExpectedTopics.add("4");
+		ExpectedTopics.add("5");
+		ExpectedTopics.add("6");
+		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
 	}
 
 }

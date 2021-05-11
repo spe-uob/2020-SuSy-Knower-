@@ -77,8 +77,16 @@ public class UnitService {
                     if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());
                 }
                 catch(NullPointerException n) {
-                   // i++;
+                    //i++;
                 }
+                /*try {
+                    List<Unit> tryPrereqs = getPrereqs(getUnit(i).get());
+                    currentPrereqs.addAll(getPrereqs(getUnit(i).get()));
+                }
+                catch(NullPointerException n) {
+                    // i++;
+                }
+                if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());*/
             }
         }
         return postrequisites;
@@ -185,13 +193,7 @@ public class UnitService {
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
-                    boolean tempIsPresent = false;
-                    for(int j = 0; j < allFaculties.size(); j++) {
-                        if(allFaculties.get(j).equals((getUnit(i).get()).getFaculty()) ) {
-                            tempIsPresent = true;
-                        }
-                    }
-                    if(!tempIsPresent) {
+                     if(!allFaculties.contains((getUnit(i).get()).getFaculty())) {
                         allFaculties.add((getUnit(i).get()).getFaculty());
                     }
                 }
@@ -202,7 +204,7 @@ public class UnitService {
         return allFaculties;
     }
     
-    public List<String> getAllTopicsInPrograme(String theProgramme) {
+    public List<String> getAllTopicsInProgramme(String theProgramme) {
         List<String> topicsInProgramme = new ArrayList<String>();
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
@@ -218,9 +220,11 @@ public class UnitService {
         return topicsInProgramme;
     }
 
+    //likely not unique
     public List<String> getAllSchools() {
         List<String> allFaculties = new ArrayList<String>();
         List<String> allSchools = new ArrayList<String>();
+        allFaculties = getAllFaculties();
         for(int i = 0; i < allFaculties.size(); i ++) {
             allSchools.addAll(getAllSchoolsInFaculty(allFaculties.get(i)));
         }
@@ -232,6 +236,9 @@ public class UnitService {
         List<String> allFaculties = new ArrayList<String>();
         List<String> allSchools = new ArrayList<String>();
         allSchools = getAllSchools();
+        for(int i = 0; i < allSchools.size(); i ++) {
+            allProgrammes.addAll(getAllProgrammesInSchool(allSchools.get(i)));
+        }
         return allProgrammes;
     }
 
@@ -240,7 +247,7 @@ public class UnitService {
         List<String> allTopics = new ArrayList<String>();
         allProgrammes = getAllProgrammes();
         for(int i = 0; i < allProgrammes.size(); i ++) {
-            allTopics.addAll(getAllTopicsInPrograme(allProgrammes.get(i)));
+            allTopics.addAll(getAllTopicsInProgramme(allProgrammes.get(i)));
         }
         return allTopics;
     }
