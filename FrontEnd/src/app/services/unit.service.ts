@@ -15,4 +15,19 @@ export class UnitService {
   public getUnits(): Observable<Unit[]>{
       return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all`);
   }
+
+  public getSubjects(school): Observable<Unit[]>{
+    return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all`);
+  }
+  public getSchools(faculty): Observable<Unit[]>{
+    return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all`);
+  }
+  public getFaculties(): Observable<Unit[]>{
+    return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all`);
+  }
+  public getTopics(subject): Observable<Unit[]>{
+    return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all`);
+  }
+
+
 }
