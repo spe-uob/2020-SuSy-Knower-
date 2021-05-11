@@ -2,7 +2,7 @@ import { Unit } from './../unit';
 import { UnitService } from './../services/unit.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { DebugElement, Component } from '@angular/core';
+import { DebugElement, Component, Injectable } from '@angular/core';
 import { ComponentFixture, TestBed, } from '@angular/core/testing';
 
 import { NetworkComponent } from './network.component';
@@ -23,6 +23,9 @@ let mockData = [
   }
 ];
 
+@Injectable({
+  providedIn: 'root'
+})
 class MockedUnitService extends UnitService {
   mockData = [{
       id: 1,
@@ -41,8 +44,6 @@ class MockedUnitService extends UnitService {
       })
   }
 }
-
-
 
 
 describe('NetworkComponent', () => {
@@ -95,4 +96,30 @@ describe('Resize Label',()=>{
     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
   })
 
+})
+
+describe('Get_Parents',()=>{
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [ HttpClientTestingModule,],
+      providers:[{provide: UnitService, useClass: MockedUnitService}]
+    })
+
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    service = TestBed.inject(MockedUnitService); 
+  });
+
+
+  it('should not affect small strings',()=>{
+    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
+  })
+  it('should add a newline to a string if large',()=>{
+    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
+  })
 })

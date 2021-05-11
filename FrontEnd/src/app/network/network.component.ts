@@ -15,6 +15,7 @@ enum Mode {
   SUBJECT,
   SCHOOL,
   FACULTY,
+  CLUSTERCENTRE,
 }
 
 @Component({
@@ -30,6 +31,7 @@ export class NetworkComponent implements OnInit {
   public edges: any;
   public network: any;
   public mode: Mode;
+  public current_Subject: String;
 
   public units: Unit[];
   public tester: number;
@@ -37,6 +39,7 @@ export class NetworkComponent implements OnInit {
 
   ngOnInit() {
     this.mode = Mode.FACULTY;
+    this.current_Subject= "No Subject";
     var nodes = new DataSet([]);
     var edges = new DataSet([]);
     var data = {
@@ -88,15 +91,12 @@ export class NetworkComponent implements OnInit {
               smooth:false
             },
       physics:
-              { enabled: true,repulsion:{nodeDistance:100},maxVelocity:2,
+              { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
               //wind:{x:1,y:0},
              },
       layout:{
               hierarchical:{enabled:false,direction:"LR"}
             },
-      groups:{
-              
-            }
           };
     this.network = new Network(container,data, options);
     this.network.setOptions(options);
@@ -115,8 +115,8 @@ export class NetworkComponent implements OnInit {
 
       var prerequisites = this.Find_Prerequisites(unit);
       nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
-        topic: unit.topic, level: this.Find_Level(unit), 
-       type:Mode.UNIT,url:unit.url,group:unit.topic});
+        /*topic: unit.topic,*/ level: this.Find_Level(unit), 
+       type:Mode.UNIT,url:unit.url,/*group:unit.topic*/});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
       });
@@ -129,7 +129,9 @@ export class NetworkComponent implements OnInit {
     }
   //Once data has been recieved from database, organise it into the original view
   public Format_Loaded_Data(data){
-    this.Cluster_All(this.Get_Subject_List(),this.Get_School_List(),this.Get_Faculty_List());
+    var nodes = data.nodes;
+    var edges = data.edges;
+    this.Cluster_All(this.Get_Subject_List(),this.Get_School_List(),this.Get_Faculty_List(),nodes,edges);
 
     this.Run_Network_Events(data);
   }
@@ -145,7 +147,11 @@ export class NetworkComponent implements OnInit {
     })
     this.network.on("afterDrawing", function(ctx) {
       that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
-      that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
+      that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
+      if(that.mode == Mode.UNIT){
+        that.Draw_Sub_Title(that.current_Subject,ctx,0,-80);
+        that.Draw_Body("Double click a unit to open its webpage",ctx,0,-40);
+      }
     })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
@@ -157,30 +163,34 @@ export class NetworkComponent implements OnInit {
     this.network.on("zoom", function (params) {})
   }
   public Draw_Title(title,ctx,x,y){
-    console.log("Drawing Title");
     ctx.font = "50px Tahoma";
     ctx.fillStyle = 'rgba(255,0,0,1)'
     ctx.textAlign = "center";
     ctx.fillText(title,x,y);
   }
   public Draw_Sub_Title(title,ctx,x,y){
-    console.log("Drawing Title");
-    ctx.font = "20px Tahoma";
+    ctx.font = "30px Tahoma";
+    ctx.fillStyle = 'rgba(0,0,0,1)'
+    ctx.textAlign = "center";
+    ctx.fillText(title,x,y);
+  }
+  public Draw_Body(title,ctx,x,y){
+    ctx.font = "10px Tahoma";
     ctx.fillStyle = 'rgba(0,0,0,1)'
     ctx.textAlign = "center";
     ctx.fillText(title,x,y);
   }
   public Double_click(params,nodes,edges){
-
+    //console.log(this.network.findNode(1));
+    //this.Search(1);
     if(params.nodes.length){
       var selected_node_id = params.nodes[0];
       
       if(this.network.isCluster(selected_node_id)){
         var cluster = this.network.body.nodes[selected_node_id].options;
         if(cluster.type == Mode.SUBJECT){
-            //this.Turn_On_Hierarchical(this.network.options);
-            //this.Turn_Off_Physics(this.network.options);
             var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
+            this.current_Subject = cluster.label;
             this.Uncluster(selected_node_id);
             this.Set_Unit_Positions(nodes_in_cluster,nodes);
             this.Fit_To_Selection(nodes_in_cluster);
@@ -190,13 +200,13 @@ export class NetworkComponent implements OnInit {
           this.mode = Mode.SCHOOL;
           var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
           this.Uncluster(selected_node_id);
-          this.Fit_To_Selection(nodes_in_cluster)
+          //this.Fit_To_Selection(nodes_in_cluster)
         }
         else if(cluster.type == Mode.SCHOOL){
           this.mode = Mode.SUBJECT;
           var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
           this.Uncluster(selected_node_id);
-          this.Fit_To_Selection(nodes_in_cluster)
+          //this.Fit_To_Selection(nodes_in_cluster)
         }
 
       }
@@ -220,14 +230,17 @@ export class NetworkComponent implements OnInit {
       if(this.network.isCluster(params.nodes[0]))
       {
         console.log("Selected node is a cluster")
+        console.log(this.network.getNodesInCluster(params.nodes[0]))
       }
       else{
-        var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,nodes,edges);
-        this.Style_Ancestors(ancestors_Ids,nodes);
-        console.log(ancestors_Ids);
-        var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,nodes,edges);
-        this.Style_Descendents(descendents_Ids,nodes,edges);
-        console.log(descendents_Ids);
+        var node = nodes.get(clicked_node_id);
+        if(node.type == Mode.UNIT){
+          var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,nodes,edges);
+          this.Style_Ancestors(ancestors_Ids,nodes);
+          var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,nodes,edges);
+          this.Style_Descendents(descendents_Ids,nodes,edges);
+          console.log(descendents_Ids);
+        }
       }
   }
   else{
@@ -237,7 +250,6 @@ export class NetworkComponent implements OnInit {
   }
   public Find_Prerequisites(unit: Unit): number[]{
     var prereqStr = unit.prereqs;
-    console.log(prereqStr);
     var prereqChar = [];
     var prereqs = []
     if(prereqStr != null){
@@ -250,6 +262,14 @@ export class NetworkComponent implements OnInit {
   public Find_Level(unit: Unit): number{
     return unit.tb;
   }
+  public Search(search){
+    var pathway = this.network.findNode(search);
+    for (let i = 0; i < pathway.length-1; i++) {
+      const cluster = pathway[i];
+      this.Uncluster(cluster);
+    }
+    this.network.selectNodes([search]);
+  }
   public Get_Subject_List(){
     return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
     "Mathematics (MSci)"
@@ -258,10 +278,11 @@ export class NetworkComponent implements OnInit {
   ];
   }
   public Get_School_List(){
-    return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics"]
+    return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
+    "School of Management","University of Bristol Law School"]
   }
   public Get_Faculty_List(){
-    return ["Faculty of Engineering","Faculty of Science","Faculty of Arts"]
+    return ["Faculty of Engineering","Faculty of Science","Faculty of Arts","Faculty of Social Sciences","Faculty of Life Sciences"]
   }
   public Find_School(subject):String{
     if(subject == "Computer Science (BSc)"|| subject == "Electrical and Electronic Engineering (BEng)")
@@ -283,6 +304,13 @@ export class NetworkComponent implements OnInit {
     else if(subject == "Mathematics (MSci)"|| subject == "Data Science (BSc)"){
       return "School of Mathematics";
     }
+    else if(subject == "Honours Law (LLB)"){
+      return "University of Bristol Law School";
+    }
+    else if(subject == "Management (BSc)"){
+      return "School of Management";
+    }
+
     else{
       return "Error";
     }
@@ -294,6 +322,15 @@ export class NetworkComponent implements OnInit {
     }
     else if (school == "School of Mathematics"|| school == "School of Physics"){
       return "Faculty of Science"
+    }
+    else if (school == "University of Bristol Law School"|| school == "School of Management"){
+      return "Faculty of Social Sciences"
+    }
+    else if (school == "School of Arts"){
+      return "Faculty of Arts"
+    }
+    else if (school == "School of Psychological Science"){
+      return "Faculty of Life Sciences"
     }
     else{
       return "Faculty of Engineering";
@@ -364,7 +401,7 @@ export class NetworkComponent implements OnInit {
   }
   public Resize_Label(label): String{
     if(label.length < 17){
-      return "Hello";
+      return label;
     }
     else{
       return "Hello \n Hello";
@@ -376,7 +413,7 @@ export class NetworkComponent implements OnInit {
     var joinCon = function (nodeOptions) {
       return nodeOptions.subject == subject;
     };
-    var properties = {
+    var cluster_properties = {
       level:0,
       label: subject,
       id: id,
@@ -384,11 +421,12 @@ export class NetworkComponent implements OnInit {
       type: Mode.SUBJECT,
       size: 14,
       borderWidth:7,
-      font:{size:12}
+      font:{size:12},
+      allowSingleNodeCluster: true
     };
-    this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
-    
 
+    this.network.cluster({joinCondition: joinCon, clusterNodeProperties: cluster_properties});
+    
   }
   public Cluster_Sujects(subjects: String[]){
     console.log("Clustering Many Subjects");
@@ -399,12 +437,12 @@ export class NetworkComponent implements OnInit {
     });
 
   }
-  public Cluster_One_School(school,id){
+  public Cluster_One_School(school,id,nodes,edges){
     console.log("Clustering One School");
     var joinCon = function (nodeOptions) {
       return nodeOptions.school == school;
     };
-    var properties = {
+    var cluster_properties = {
       level:0,
       label: school,
       color:{border: "blue"},
@@ -413,16 +451,25 @@ export class NetworkComponent implements OnInit {
       type: Mode.SCHOOL,
       size: 17,
       borderWidth:8,
-      font:{size:12}
+      font:{size:12},
+      allowSingleNodeCluster: true
     };
-    this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
+    this.network.cluster({joinCondition: joinCon, clusterNodeProperties: cluster_properties});
 
   }
-  public Cluster_Schools(schools){
+  public Add_Centre_Node(id,faculty,nodes,edges){
+    nodes.add({id:id,color:"green",faculty:faculty,type:Mode.CLUSTERCENTRE});
+  }
+  public Add_Centre_Nodes(id,faculty,nodes,edges,faculties){
+    faculties.forEach(element => {
+      
+    });
+  }
+  public Cluster_Schools(schools,nodes,edges){
     console.log("Clustering Many Schools");
     var id = 2000;
     schools.forEach(school => {
-      this.Cluster_One_School(school,id);
+      this.Cluster_One_School(school,id,nodes,edges);
       id++
     });
   
@@ -441,7 +488,8 @@ export class NetworkComponent implements OnInit {
       type: Mode.FACULTY,
       size: 25,
       borderWidth:10,
-      font:{size:12}
+      font:{size:12},
+      allowSingleNodeCluster: true,
     };
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
 
@@ -483,14 +531,14 @@ export class NetworkComponent implements OnInit {
   public Test_Routine(){
     
   }
-  public Cluster_All(subjects,schools,faculties){
+  public Cluster_All(subjects,schools,faculties,nodes,edges){
     this.Cluster_Sujects(subjects);
-    this.Cluster_Schools(schools);
+    this.Cluster_Schools(schools,nodes,edges);
     this.Cluster_Faculties(faculties);
   }
   public Fit_To_Selection(node_Ids){
     console.log(node_Ids)
-    this.network.fit({nodes:node_Ids});
+    this.network.fit({nodes:node_Ids,animation:true});
     //this.network.options.
   }
   public Set_Node_Position(node,nodes,x:number,y:number){
