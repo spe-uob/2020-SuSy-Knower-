@@ -34,6 +34,9 @@ export class NetworkComponent implements OnInit {
   public current_Subject: String;
 
   public units: Unit[];
+  public subjects: String[];
+  public schools: String[];
+  public faculties: String[];
   public tester: number;
   constructor(private unitService: UnitService) { }
 
@@ -64,7 +67,7 @@ export class NetworkComponent implements OnInit {
         },
       (error: HttpErrorResponse) => {alert(error.message); }
     );
-    console.log("Getting units")
+    console.log("Getting units");
   }
   //Create the network itself
   public Load_Vis_Network(data){
@@ -276,6 +279,13 @@ export class NetworkComponent implements OnInit {
     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
     "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)"
   ];
+  // this.unitService.getUnits().subscribe(
+  //   (response: String[]) => {
+  //       this.subjects = response;
+  //     },
+  //   (error: HttpErrorResponse) => {alert(error.message); }
+  // );
+  // console.log("Getting units");
   }
   public Get_School_List(){
     return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
@@ -317,6 +327,8 @@ export class NetworkComponent implements OnInit {
     
   }
   public Find_Faculty(school):String{
+
+    //return "WRITE FUNCTION";
     if(school == "SCEEM"||school == "SAME"){
       return "Faculty of Engineering";
     }

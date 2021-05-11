@@ -106,7 +106,7 @@ public class UnitController {
         }
         else {
             topics = unitService.getAllTopicsInProgramme(programme);
-        } 
+        }
         return topics.toString();
     }
 
@@ -118,7 +118,7 @@ public class UnitController {
         }
         else {
             topics = unitService.getAllTopicsInProgramme(programme);
-        } 
+        }
         return topics.toString();
     }
 
@@ -130,27 +130,27 @@ public class UnitController {
         }
         else {
             programmes = unitService.getAllProgrammesInSchool(school);
-        } 
+        }
         return programmes.toString();
     }
 
     @GetMapping(path="/testfaculties")
     public String testdisplayAllFaculties(Model model) {
         List<String> faculties = new ArrayList<String>();
-        faculties = unitService.getAllFaculties(); 
+        faculties = unitService.getAllFaculties();
         return faculties.toString();
     }
 
     //display all the prerequisites in a separate tab given the unit id
     //the path is <server ip>:8080/test/prereqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/prereqs")
-    public String displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
+    public ResponseEntity<List<Unit>> displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
         List<Unit> prerequisites = new ArrayList<Unit>();
         if(unitService.getUnit(id).isPresent()) {
             prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
         }
         model.addAttribute("prerequisites", prerequisites);
-        return "prereqs";
+        return new ResponseEntity<>(prerequisites, HttpStatus.OK);
     }
 
     //display all the postrequisites in a separate tab given the unit id
@@ -194,23 +194,24 @@ public class UnitController {
     @GetMapping(path="/faculties")
     public String displayAllFaculties(Model model) {
         List<String> faculties = new ArrayList<String>();
-        faculties = unitService.getAllFaculties(); 
+        faculties = unitService.getAllFaculties();
         model.addAttribute("faculties", faculties);
         return "faculties";
     }
 
     @GetMapping(path="/programmes_by_school")
-    public String displayProgrammesBySchool(Model model, @RequestParam(required = false) String school) {
+    public ResponseEntity<List<String>>  displayProgrammesBySchool(Model model, @RequestParam(required = false) String school) {
         List<String> programmes = new ArrayList<String>();
         //return all programmes
         if(school == null || school.trim().isEmpty()) {
-            programmes = unitService.getAllProgrammes();
+            programmes.add("hello");//unitService.getAllProgrammes();
         }
         else {
             programmes = unitService.getAllProgrammesInSchool(school);
-        } 
-        model.addAttribute("programmes_by_school", programmes);
-        return "programmes_by_school";
+        }
+        return new ResponseEntity<>(programmes, HttpStatus.OK);
+        //model.addAttribute("programmes_by_school", programmes);
+        //return "programmes_by_school";
     }
 
     @GetMapping(path="/schools_by_faculty")
@@ -221,7 +222,7 @@ public class UnitController {
         }
         else {
             schools = unitService.getAllSchoolsInFaculty(faculty);
-        } 
+        }
         model.addAttribute("schools_by_faculty", schools);
         return "schools_by_faculty";
     }
@@ -234,7 +235,7 @@ public class UnitController {
         }
         else {
             topics = unitService.getAllTopicsInProgramme(programme);
-        } 
+        }
         model.addAttribute("topics_by_programme", topics);
         return "topics_by_programme";
     }
