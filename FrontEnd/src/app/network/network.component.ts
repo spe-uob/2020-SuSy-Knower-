@@ -89,6 +89,7 @@ export class NetworkComponent implements OnInit {
             },
       physics:
               { enabled: true,repulsion:{nodeDistance:100},maxVelocity:2,
+              //wind:{x:1,y:0},
              },
       layout:{
               hierarchical:{enabled:false,direction:"LR"}
@@ -121,6 +122,8 @@ export class NetworkComponent implements OnInit {
       });
     });
     var data = {nodes: nodes,edges: edges,};
+    console.log(nodes);
+    console.log(edges);
     console.log("Turning data into nodes and edges")
     return data;
     }
@@ -137,7 +140,12 @@ export class NetworkComponent implements OnInit {
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
     this.network.on("beforeDrawing", function(ctx) {
-      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,canvas)
+      //that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
+      //that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
+    })
+    this.network.on("afterDrawing", function(ctx) {
+      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
+      that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
     })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
@@ -148,12 +156,19 @@ export class NetworkComponent implements OnInit {
     })
     this.network.on("zoom", function (params) {})
   }
-  public Draw_Title(title,ctx,canvas){
+  public Draw_Title(title,ctx,x,y){
     console.log("Drawing Title");
     ctx.font = "50px Tahoma";
     ctx.fillStyle = 'rgba(255,0,0,1)'
     ctx.textAlign = "center";
-    ctx.fillText(title,0,-canvas.height/6);
+    ctx.fillText(title,x,y);
+  }
+  public Draw_Sub_Title(title,ctx,x,y){
+    console.log("Drawing Title");
+    ctx.font = "20px Tahoma";
+    ctx.fillStyle = 'rgba(0,0,0,1)'
+    ctx.textAlign = "center";
+    ctx.fillText(title,x,y);
   }
   public Double_click(params,nodes,edges){
 
@@ -222,6 +237,7 @@ export class NetworkComponent implements OnInit {
   }
   public Find_Prerequisites(unit: Unit): number[]{
     var prereqStr = unit.prereqs;
+    console.log(prereqStr);
     var prereqChar = [];
     var prereqs = []
     if(prereqStr != null){
@@ -238,7 +254,7 @@ export class NetworkComponent implements OnInit {
     return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
     "Mathematics (MSci)"
     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-    "Chemical Physics (BSc)"
+    "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)"
   ];
   }
   public Get_School_List(){
@@ -347,8 +363,13 @@ export class NetworkComponent implements OnInit {
 
   }
   public Resize_Label(label): String{
-
-    return "NEED TO WRITE FUNCTION";
+    if(label.length < 17){
+      return "Hello";
+    }
+    else{
+      return "Hello \n Hello";
+    }
+    
   }
   public Cluster_One_Subject(subject,id){
     console.log("Clustering One Subject");
@@ -481,13 +502,14 @@ export class NetworkComponent implements OnInit {
   public Set_Unit_Positions(units,nodes){
     var yOffset = 0;
     var currentLevel =1;
+    var xOffset = 375; // should be number of levels+1/2 *150
     units.forEach(unit => {
       var node = nodes.get(unit);
       if(!(node.level == currentLevel)){
         yOffset = 0;
         currentLevel = node.level;
       }
-      this.Set_Node_Position(node,nodes,150*node.level,yOffset*100);
+      this.Set_Node_Position(node,nodes,150*node.level-xOffset,yOffset*100);
       yOffset++;
       
     });

@@ -74,11 +74,9 @@ describe('NetworkComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should return',() =>{
-  // })
 });
 
-describe('Get Units',()=>{
+describe('Resize Label',()=>{
   let component: NetworkComponent;
   let service: MockedUnitService;
 
@@ -90,11 +88,11 @@ describe('Get Units',()=>{
     service = null;
     component = null;
   })
-  it('should return units when units are available',()=>{
-    expect(component.getUnits());
+  it('should not affect small strings',()=>{
+    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
   })
-  it('should return error when no units available',()=>{
-    expect(component.getUnits()).toBeFalsy;
+  it('should add a newline to a string if large',()=>{
+    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
   })
-    
+
 })
