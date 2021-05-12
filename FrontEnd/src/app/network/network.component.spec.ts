@@ -239,23 +239,44 @@ describe('Set Node Position',()=>{
 
 describe('Find all', () => {
   let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
   let service: MockedUnitService;
-  let unit: Unit;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
 
   beforeEach(() => {
-    service = new MockedUnitService(null);
-    component = new NetworkComponent(service);
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prereqs:"1,2,3,4",tb:1}]
   });
-  afterEach(() => {
-    service = null;
-    component = null;
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  it('should find pre-requisites', () => {
+    units.forEach(unit => {
+    expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
+    })
   });
-  // it('should find pre-requisites', () => {
-  //   expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
-  // });
-  // it('should find level', () => {
-  //   expect(component.Find_Level(unit)).toEqual(2);
-  // });
+  it('should find level', () => {
+    units.forEach(unit => {
+      expect(component.Find_Level(unit)).toEqual(1);
+    });
+  });
   it('should find faculty', () => {
     expect(component.Find_Faculty('SCEEM')).toEqual('Faculty of Engineering');
   });
