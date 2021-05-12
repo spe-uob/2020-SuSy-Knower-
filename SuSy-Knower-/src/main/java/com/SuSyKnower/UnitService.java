@@ -108,8 +108,22 @@ public class UnitService {
         return unitsWithSchool;
     }
 //not unique!
+//slow and doesnt even work
     public List<String> getAllProgrammesInSchool(String theSchool) {
         List<String> programmesInSchool = new ArrayList<String>();
+        /*List<Unit> tempUnits = new ArrayList<Unit>();
+        tempUnits = findAllUnits();
+        for(int i = 0; i < getNumberOfUnits(); i++) {
+            try {
+                if(((tempUnits.get(i)).getSchool()).equals(theSchool) && !programmesInSchool.contains((tempUnits.get(i)).getProgramme())) {
+                    programmesInSchool.add((tempUnits.get(i)).getProgramme());                        
+                }
+            }
+            catch(NullPointerException n) {
+            }
+            
+        }*/
+        
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {

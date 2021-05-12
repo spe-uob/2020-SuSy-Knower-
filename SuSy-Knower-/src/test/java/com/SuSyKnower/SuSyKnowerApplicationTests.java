@@ -149,7 +149,7 @@ class SuSyKnowerApplicationTests {
 		}
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
-/*
+
 	//slow
 	@Test
 	public void testGetAllProgrammesInSchool() {
@@ -160,7 +160,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
-
+/*
 	//slow
 	@Test
 	public void testGetAllSchoolsInFaculty() {

@@ -64,83 +64,6 @@ public class UnitController {
       return new ResponseEntity<>(units, HttpStatus.OK);
     }
 
-
-    @ResponseBody
-    @GetMapping(path="/testindex")
-    public List<Unit> displayAllUnits() {
-        return unitService.findAllUnits();
-    }
-
-        //just for testing
-    @GetMapping(path="/testprereqs")
-    public String testDisplayAllPrereqs(Model model, @RequestParam(required = true) int id) {
-        List<Unit> prerequisites = new ArrayList<Unit>();
-        if(unitService.getUnit(id).isPresent()) {
-            prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
-        }
-        List<String> stringPrerequisites = new ArrayList<String>();
-        for(int i = 0; i < prerequisites.size(); i++) {
-            stringPrerequisites.add(prerequisites.get(i).toString());
-        }
-        return stringPrerequisites.toString();
-    }
-
-    @GetMapping(path="/testpostreqs")
-    public String testDisplayAllPostreqs(Model model, @RequestParam(required = true) int id) {
-        List<Unit> postrequisites = new ArrayList<Unit>();
-        if(unitService.getUnit(id).isPresent()) {
-            postrequisites = unitService.getPostreqs(unitService.getUnit(id).get());
-        }
-        List<String> stringPostrequisites = new ArrayList<String>();
-        for(int i = 0; i < postrequisites.size(); i++) {
-            stringPostrequisites.add(postrequisites.get(i).toString());
-        }
-        return stringPostrequisites.toString();
-    }
-
-    @GetMapping(path="/testalltopics")
-    public String testDisplayAllTopics(Model model, @RequestParam(required = false) String programme) {
-        List<String> topics = new ArrayList<String>();
-        if(programme == null || programme.trim().isEmpty()) {
-            topics = unitService.getAllTopics();
-        }
-        else {
-            topics = unitService.getAllTopicsInProgramme(programme);
-        }
-        return topics.toString();
-    }
-
-    @GetMapping(path="/testallschools")
-    public String testDisplayAllSchools(Model model, @RequestParam(required = false) String programme) {
-        List<String> topics = new ArrayList<String>();
-        if(programme == null || programme.trim().isEmpty()) {
-            topics = unitService.getAllTopics();
-        }
-        else {
-            topics = unitService.getAllTopicsInProgramme(programme);
-        }
-        return topics.toString();
-    }
-
-    @GetMapping(path="/testallprogrammes")
-    public String testDisplayAllProgrammes(Model model, @RequestParam(required = false) String school) {
-        List<String> programmes = new ArrayList<String>();
-        if(school == null || school.trim().isEmpty()) {
-            programmes = unitService.getAllProgrammes();
-        }
-        else {
-            programmes = unitService.getAllProgrammesInSchool(school);
-        }
-        return programmes.toString();
-    }
-
-    @GetMapping(path="/testfaculties")
-    public String testdisplayAllFaculties(Model model) {
-        List<String> faculties = new ArrayList<String>();
-        faculties = unitService.getAllFaculties();
-        return faculties.toString();
-    }
-
     //display all the prerequisites in a separate tab given the unit id
     //the path is <server ip>:8080/test/prereqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/prereqs")
@@ -211,37 +134,38 @@ public class UnitController {
             unitsByFaculty = unitService.findAllUnits();
         }
         else {
-            unitsByFaculty = unitService.getAllByProgramme(faculty);
+            unitsByFaculty = unitService.getAllByFaculty(faculty);
         }
         model.addAttribute("by_faculty", unitsByFaculty);
         return new ResponseEntity<>(unitsByFaculty, HttpStatus.OK);
     }
 
     @GetMapping(path="/faculties")
-    public String displayAllFaculties(Model model) {
+    public ResponseEntity<List<String>> displayAllFaculties(Model model) {
         List<String> faculties = new ArrayList<String>();
         faculties = unitService.getAllFaculties();
         model.addAttribute("faculties", faculties);
-        return "faculties";
+        return new ResponseEntity<>(faculties, HttpStatus.OK);
     }
 
-    @GetMapping(path="/programmes_by_school")
+    @GetMapping(path="/programmes")
     public ResponseEntity<List<String>>  displayProgrammesBySchool(Model model, @RequestParam(required = false) String school) {
         List<String> programmes = new ArrayList<String>();
         //return all programmes
         if(school == null || school.trim().isEmpty()) {
-            programmes.add("hello");//unitService.getAllProgrammes();
+            programmes = unitService.getAllProgrammes();
         }
         else {
             programmes = unitService.getAllProgrammesInSchool(school);
         }
+        model.addAttribute("programmes", programmes);
         return new ResponseEntity<>(programmes, HttpStatus.OK);
         //model.addAttribute("programmes_by_school", programmes);
         //return "programmes_by_school";
     }
 
-    @GetMapping(path="/schools_by_faculty")
-    public String displaySchoolsByFaculty(Model model, @RequestParam(required = false) String faculty) {
+    @GetMapping(path="/schools")
+    public ResponseEntity<List<String>> displaySchoolsByFaculty(Model model, @RequestParam(required = false) String faculty) {
         List<String> schools = new ArrayList<String>();
         if(faculty == null || faculty.trim().isEmpty()) {
             schools = unitService.getAllSchools();
@@ -249,12 +173,12 @@ public class UnitController {
         else {
             schools = unitService.getAllSchoolsInFaculty(faculty);
         }
-        model.addAttribute("schools_by_faculty", schools);
-        return "schools_by_faculty";
+        model.addAttribute("schools", schools);
+        return new ResponseEntity<>(schools, HttpStatus.OK);
     }
 
-    @GetMapping(path="/topics_by_programme")
-    public String displayTopicsByProgramme(Model model, @RequestParam(required = false) String programme) {
+    @GetMapping(path="/topics")
+    public ResponseEntity<List<String>> displayTopicsByProgramme(Model model, @RequestParam(required = false) String programme) {
         List<String> topics = new ArrayList<String>();
         if(programme == null || programme.trim().isEmpty()) {
             topics = unitService.getAllTopics();
@@ -262,8 +186,8 @@ public class UnitController {
         else {
             topics = unitService.getAllTopicsInProgramme(programme);
         }
-        model.addAttribute("topics_by_programme", topics);
-        return "topics_by_programme";
+        model.addAttribute("topics", topics);
+        return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
 }
