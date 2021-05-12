@@ -76,6 +76,16 @@ public class UnitController {
         return new ResponseEntity<>(prerequisites, HttpStatus.OK);
     }
 
+    @GetMapping(path="/prereqs_int")
+    public ResponseEntity<List<Integer>> displayAllPrereqsInt(Model model, @RequestParam(required = true) int id) {
+        List<Integer> prerequisitesIds = new ArrayList<Integer>();
+        if(unitService.getUnit(id).isPresent()) {
+            prerequisitesIds = unitService.getPrereqsInt(unitService.getUnit(id).get());
+        }
+        model.addAttribute("prerequisitesIds", prerequisitesIds);
+        return new ResponseEntity<>(prerequisitesIds, HttpStatus.OK);
+    }
+
     //display all the postrequisites in a separate tab given the unit id
     //the path is <server ip>:8080/test/postreqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/postreqs")
