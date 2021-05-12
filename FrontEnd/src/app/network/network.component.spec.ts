@@ -2,8 +2,9 @@ import { Unit } from './../unit';
 import { UnitService } from './../services/unit.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { DebugElement, Component, Injectable } from '@angular/core';
-import { ComponentFixture, TestBed, } from '@angular/core/testing';
+import { DebugElement, Component, Injectable, Inject } from '@angular/core';
+import { ComponentFixture, inject, TestBed, } from '@angular/core/testing';
+import { DataSet} from 'vis-data';
 
 import { NetworkComponent } from './network.component';
 import { Observable, Observer } from 'rxjs';
@@ -18,7 +19,7 @@ let mockData = [
     school: "SCEEM",
     topic: "Algortihms",
     url: "googl.com",
-    prereqs: "1,2,3,4",
+    prereqs: "2,3,4",
     tb: 2,
   }
 ];
@@ -34,7 +35,7 @@ class MockedUnitService extends UnitService {
       school: "SCEEM",
       topic: "Algortihms",
       url: "googl.com",
-      prereqs: "1,2,3,4",
+      prereqs: "2,3,4",
       tb: 2,
     }]
 
@@ -70,12 +71,63 @@ describe('NetworkComponent', () => {
     de = fixture.debugElement;
     fixture.detectChanges();
   });
+  afterEach(() =>{
+    fixture.destroy();
+  })
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+  it('should have a network',() => {
+    expect(component.network).toBeTruthy();
+  });
+  it('should call ngOnInit',() => {
+    spyOn(component,'ngOnInit');
+    component.ngOnInit();
+    expect(component.ngOnInit).toHaveBeenCalled();
   });
 
 });
+
+describe("Get_Network_Data",()=>{
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [
+      {id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prereqs:"1,2,3,4",tb:1}
+    ]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  it('should call nodes.add',()=>{
+    expect(component.Get_Network_Data(units,component.nodes,component.edges)).toBeTruthy;
+  })
+  it('should return nodes and edges')
+  it('should find a units prerequisites')
+
+})
 
 describe('Resize Label',()=>{
   let component: NetworkComponent;
@@ -90,7 +142,7 @@ describe('Resize Label',()=>{
     component = null;
   })
   it('should not affect small strings',()=>{
-    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
+    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
   })
   it('should add a newline to a string if large',()=>{
     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
@@ -98,7 +150,7 @@ describe('Resize Label',()=>{
 
 })
 
-describe('Get_Parents',()=>{
+xdescribe('Get_Parents',()=>{
   let component: NetworkComponent;
   let service: MockedUnitService;
   let fixture: ComponentFixture<NetworkComponent>;
@@ -116,10 +168,70 @@ describe('Get_Parents',()=>{
   });
 
 
-  it('should not affect small strings',()=>{
-    expect(component.Resize_Label("Computer Science")).toEqual("Hello");
+  it('should call',()=>{
+    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
   })
   it('should add a newline to a string if large',()=>{
     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
   })
+})
+
+describe('Set Node Position',()=>{
+  let component: NetworkComponent;
+  let testBedService: UnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let mock_node;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [ HttpClientTestingModule,],
+      providers:[UnitService],
+    })
+    TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    testBedService = TestBed.inject(UnitService); 
+    mock_node ={
+      id: 1,
+      name: "Object Orientated",
+      programme: "Computer Science",
+      school: "SCEEM",
+      topic: "Algortihms",
+      url: "googl.com",
+      prereqs: "1,2,3,4",
+      tb: 2,
+    }
+  });
+  afterEach(()=>{
+    fixture.destroy();
+  })
+  it('should call nodes.update',()=>{
+    var nodes = new DataSet([]);
+    var spy = spyOn(nodes,'update');
+    nodes.update({id:1234,label:"unit"});
+    var check = nodes.get(1234);
+    expect(nodes.get(1234)).not.toBeNull;
+    expect(spy).toHaveBeenCalled;
+  })
+  it('should inject into testbed and directly the same',
+    inject([UnitService],(injectService:UnitService) => {
+      expect(injectService).toBe(testBedService);})
+    );
+  it('should set x to value provided',()=>{
+    component.Set_Node_Position(mock_node,component.nodes,0,0);
+    expect(mock_node.y).toEqual(0);
+  });
+  it('should set y to value provided',()=>{
+    component.Set_Node_Position(mock_node,component.nodes,0,0);
+    expect(mock_node.x).toEqual(0);
+  });
+  it('should set node.fixed to true',()=>{
+    component.Set_Node_Position(mock_node,component.nodes,0,0);
+    expect(mock_node.fixed).toBeTruthy();
+  });
+  xit('should call add node to nodes',()=>{
+    component.Set_Node_Position(mock_node,component.nodes,0,0);
+    expect(component.nodes).toContain(mock_node);
+  });
 })
