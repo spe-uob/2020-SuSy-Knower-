@@ -50,6 +50,9 @@ export class NetworkComponent implements OnInit {
     
   
     this.getUnits(data);
+    this.Get_Subject_List();
+    this.Get_School_List();
+    this.Get_Faculty_List();
 
     // create an array with edges
 
@@ -134,7 +137,7 @@ export class NetworkComponent implements OnInit {
   public Format_Loaded_Data(data){
     var nodes = data.nodes;
     var edges = data.edges;
-    this.Cluster_All(this.Get_Subject_List(),this.Get_School_List(),this.Get_Faculty_List(),nodes,edges);
+    this.Cluster_All(this.Get_Subject_List(),this.Get_School_List(),this.Get_Faculty_List(),nodes,edges);//this.subjects,this.schools,this.faculties
 
     this.Run_Network_Events(data);
   }
@@ -251,7 +254,6 @@ export class NetworkComponent implements OnInit {
           this.Style_Ancestors(ancestors_Ids,nodes);
           var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,nodes,edges);
           this.Style_Descendents(descendents_Ids,nodes,edges);
-          console.log(descendents_Ids);
         }
       }
   }
@@ -261,7 +263,8 @@ export class NetworkComponent implements OnInit {
 
   }
   public Find_Prerequisites(unit: Unit): number[]{
-    var prereqStr = unit.prereqs;
+    var prereqStr= unit.prereqs;
+
     var prereqChar = [];
     var prereqs = []
     if(prereqStr != null){
@@ -274,13 +277,29 @@ export class NetworkComponent implements OnInit {
   public Find_Level(unit: Unit): number{
     return unit.tb;
   }
-  public Search(search){
-    var pathway = this.network.findNode(search);
-    for (let i = 0; i < pathway.length-1; i++) {
+  public Find_Node_Id_From_Label(label):number{
+    console.log(label);
+    var node_id = -1
+    this.nodes.forEach(node => {
+      if(node.label == label){
+        node_id = node.id;
+      }
+    });
+    return node_id;
+  }
+  public Search($event){
+    var searched_id = this.Find_Node_Id_From_Label($event);
+    if(searched_id!= -1){
+      var pathway = this.network.findNode(searched_id);
+      for (let i = 0; i < pathway.length-1; i++) {
       const cluster = pathway[i];
       this.Uncluster(cluster);
+      }
+      this.network.selectNodes([searched_id]);
     }
-    this.network.selectNodes([search]);
+    else{
+      console.log("No such Unit");
+    }
   }
   public Get_Subject_List(){
     return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
@@ -288,17 +307,22 @@ export class NetworkComponent implements OnInit {
     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
     "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
   ];
-  // this.unitService.getUnits().subscribe(
+  // this.unitService.getSubjects().subscribe(
   //   (response: String[]) => {
   //       this.subjects = response;
   //     },
   //   (error: HttpErrorResponse) => {alert(error.message); }
   // );
-  // console.log("Getting units");
   }
   public Get_School_List(){
     return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
     "School of Management","University of Bristol Law School"]
+    // this.unitService.getSchools().subscribe(
+    //   (response: String[]) => {
+    //       this.schools = response;
+    //     },
+    //   (error: HttpErrorResponse) => {alert(error.message); }
+    // );
   }
   public Get_Faculty_List(){
     return ["Faculty of Engineering","Faculty of Science","Faculty of Arts","Faculty of Social Sciences","Faculty of Life Sciences"]
@@ -372,7 +396,6 @@ export class NetworkComponent implements OnInit {
   public Get_Ancestors_Ids(node_Id,nodes,edges){
     var ancestors_Ids =[];
     ancestors_Ids = ancestors_Ids.concat(this.Get_Parents_Ids(node_Id,nodes,edges))
-    console.log(ancestors_Ids);
     ancestors_Ids.forEach(ancestor => {
       this.Get_Ancestors_Ids(ancestor,nodes,edges);
     });
@@ -394,7 +417,6 @@ export class NetworkComponent implements OnInit {
   public Get_Descendents_Ids(node_Id,nodes,edges){
     var descendents_Ids =[];
     descendents_Ids = descendents_Ids.concat(this.Get_Children_Ids(node_Id,nodes,edges))
-    console.log(descendents_Ids);
     descendents_Ids.forEach(descendent => {
       this.Get_Descendents_Ids(descendent,nodes,edges);
     });
@@ -417,8 +439,12 @@ export class NetworkComponent implements OnInit {
   public Style_Node(node,style){
 
   }
-  public Reset_Style(topic){
 
+  public Reset_Style(topic,nodes,node_id){
+    var gr = this.network.groups._defaultGroups[topic];
+    gr.id = node_id;
+    nodes.update(gr);
+    console.log(gr);
   }
   public Resize_Label(label): String{
     if(label.length < 17){

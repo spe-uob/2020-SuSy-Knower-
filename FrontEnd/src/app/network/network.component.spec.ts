@@ -35,7 +35,7 @@ class MockedUnitService extends UnitService {
       school: "SCEEM",
       topic: "Algortihms",
       url: "googl.com",
-      prereqs: "2,3,4",
+      prereqs: [],
       tb: 2,
     }]
 
@@ -150,31 +150,31 @@ describe('Resize Label',()=>{
 
 })
 
-// xdescribe('Get_Parents',()=>{
-//   let component: NetworkComponent;
-//   let service: MockedUnitService;
-//   let fixture: ComponentFixture<NetworkComponent>;
-//
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [ NetworkComponent ],
-//       imports: [ HttpClientTestingModule,],
-//       providers:[{provide: UnitService, useClass: MockedUnitService}]
-//     })
-//
-//     fixture = TestBed.createComponent(NetworkComponent);
-//     component = fixture.componentInstance;
-//     service = TestBed.inject(MockedUnitService);
-//   });
-//
-//
-//   it('should call',()=>{
-//     expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
-//   })
-//   it('should add a newline to a string if large',()=>{
-//     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
-//   })
-// })
+xdescribe('Get_Parents',()=>{
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [ HttpClientTestingModule,],
+      providers:[{provide: UnitService, useClass: MockedUnitService}]
+    })
+
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    service = TestBed.inject(MockedUnitService);
+  });
+
+
+  it('should call',()=>{
+    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
+  })
+  it('should add a newline to a string if large',()=>{
+    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
+  })
+})
 
 describe('Set Node Position',()=>{
   let component: NetworkComponent;

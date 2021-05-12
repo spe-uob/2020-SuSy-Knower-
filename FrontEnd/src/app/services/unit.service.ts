@@ -16,22 +16,22 @@ export class UnitService {
       return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/all/`);
   }
 
-  public getSubjects(school = null): Observable<Unit[]>{
+  public getSubjects(school = null): Observable<String[]>{
     var extension = "/?school="+school;
     if(school){
-      return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/programmes_by_school${extension}`);
+      return this.http.get<String[]>(`${this.apiServerUrl}/unit/programmes_by_school${extension}`);
     }
     else{
-      return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/programmes_by_school`);
+      return this.http.get<String[]>(`${this.apiServerUrl}/unit/programmes_by_school`);
     }
   }
-  public getSchools(faculty): Observable<Unit[]>{
+  public getSchools(faculty = null): Observable<String[]>{
     var extension = "/?school="+faculty;
     if(faculty){
-      return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/schools_by_faculty${extension}`);
+      return this.http.get<String[]>(`${this.apiServerUrl}/unit/schools_by_faculty${extension}`);
     }
     else{
-      return this.http.get<Unit[]>(`${this.apiServerUrl}/unit/schools_by_faculty`);
+      return this.http.get<String[]>(`${this.apiServerUrl}/unit/schools_by_faculty`);
     }
     
   }
