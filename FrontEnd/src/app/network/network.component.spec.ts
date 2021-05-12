@@ -236,6 +236,73 @@ describe('Set Node Position',()=>{
   });
 })
 
+describe('Set_Unit_Positions', () => {
+  let component: NetworkComponent;
+  let testBedService: UnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let units: Unit[];
+  let mock_node;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [HttpClientTestingModule,],
+      providers: [UnitService],
+    })
+    TestBed.overrideComponent(NetworkComponent, {
+      set: {
+        providers: [{
+          provide: UnitService,
+          useClass: MockedUnitService
+        }]
+      }
+    })
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    testBedService = TestBed.inject(UnitService);
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prereqs:"1,2,3,4",tb:1}]
+    mock_node ={id: 9, lable: 'Algorithms 2',level: 2,}
+  });
+  afterEach(()=>{
+    fixture.destroy();
+  })
+
+  it('should set yOffset to 0 if nodelevel is not equal to current level', () => {
+    var yOffset = 0;
+    var currentLevel = 1;
+    // component.Set_Unit_Positions(units, mock_node)
+    expect(currentLevel).not.toEqual(mock_node.level)
+    expect(yOffset).toEqual(0);
+  })
+
+  // it('should set current level equal to node level if not equal', () => {
+  //   var currentLevel = 1;
+  //   component.Set_Unit_Positions(units,mock_node)
+  //   expect(currentLevel).toEqual(mock_node.level);
+  // })
+  // it('should set yOffset to 0 if nodelevel is not equal to current level', () => {
+  //   var yOffset = 0;
+  //   var currentLevel = 1;
+  //   var nodes = component.nodes
+  //   units.forEach(unit => {
+  //     var node = nodes.get(unit);
+  //     var nodeLevel = node.level;
+  //     expect(currentLevel).not.toEqual(nodeLevel)
+  //     expect(yOffset).toEqual(0);
+  //   })
+  // })
+  // it('should set current level equal to node level if not equal', () => {
+  //   var currentLevel = 1;
+  //     var nodes = component.nodes
+  //     units.forEach(unit => {
+  //       var node = nodes.get(unit);
+  //       let nodeLevel = node.level;
+  //       expect(currentLevel).not.toEqual(nodeLevel);
+  //       component.Set_Unit_Positions(units, nodes);
+  //       expect(currentLevel).toEqual(nodeLevel);
+  //     })
+  // })
+})
 
 describe('Find all', () => {
   let component: NetworkComponent;
@@ -369,5 +436,55 @@ describe('Get Ids', () => {
   });
 });
 
+describe('Find_Node_Id_From_Label', () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
 
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  });
+  it('should find node id from lable', () => {
+    expect(component.Find_Node_Id_From_Label('Algorithms 2')).toEqual(9)
+  })
+})
+
+describe('Style_Ancestors', () => {
+  let component: NetworkComponent;
+  let testBedService: UnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let mock_node;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [ HttpClientTestingModule,],
+      providers:[UnitService],
+    })
+    TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    testBedService = TestBed.inject(UnitService);
+    mock_node ={
+      id: 1,
+      name: "Object Orientated",
+      programme: "Computer Science",
+      school: "SCEEM",
+      topic: "Algortihms",
+      url: "googl.com",
+      prereqs: "1,2,3,4",
+      tb: 2,
+    }
+  });
+  afterEach(()=>{
+    fixture.destroy();
+  })
+  it('should color parent red', () => {
+  let ancestorId ;
+  })
+})
 
