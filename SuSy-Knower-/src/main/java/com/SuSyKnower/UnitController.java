@@ -166,29 +166,55 @@ public class UnitController {
     }
 
     @GetMapping(path="/by_topic")
-    public String displayUnitsByTopic(Model model, @RequestParam(required = false) String topic) {
-        List<Unit> units = new ArrayList<Unit>();
+    public ResponseEntity<List<Unit>> displayUnitsByTopic(Model model, @RequestParam(required = false) String topic) {
+        List<Unit> unitsByTopic = new ArrayList<Unit>();
         if(topic == null || topic.trim().isEmpty()) {
-            units = unitService.findAllUnits();
+            unitsByTopic = unitService.findAllUnits();
         }
         else {
-            units = unitService.getAllByTopic(topic);
+            unitsByTopic = unitService.getAllByTopic(topic);
         }
-        model.addAttribute("by_topic", units);
-        return "by_topic";
+        model.addAttribute("by_topic", unitsByTopic);
+        return new ResponseEntity<>(unitsByTopic, HttpStatus.OK);
     }
     //for everything add a default option: if there's no argument provided, all of the units/schools/topics etc. are returned
     @GetMapping(path="/by_programme")
-    public String displayUnitsByProgramme(Model model, @RequestParam(required = false) String programme) {
-        List<Unit> units = new ArrayList<Unit>();
+    public ResponseEntity<List<Unit>> displayUnitsByProgramme(Model model, @RequestParam(required = false) String programme) {
+        List<Unit> unitsByProgramme = new ArrayList<Unit>();
         if(programme == null || programme.trim().isEmpty()) {
-            units = unitService.findAllUnits();
+            unitsByProgramme = unitService.findAllUnits();
         }
         else {
-            units = unitService.getAllByProgramme(programme);
+            unitsByProgramme = unitService.getAllByProgramme(programme);
         }
-        model.addAttribute("by_programme", units);
-        return "by_programme";
+        model.addAttribute("by_programme", unitsByProgramme);
+        return new ResponseEntity<>(unitsByProgramme, HttpStatus.OK);
+    }
+
+    @GetMapping(path="/by_school")
+    public ResponseEntity<List<Unit>> displayUnitsBySchool(Model model, @RequestParam(required = false) String school) {
+        List<Unit> unitsBySchool = new ArrayList<Unit>();
+        if(school == null || school.trim().isEmpty()) {
+            unitsBySchool = unitService.findAllUnits();
+        }
+        else {
+            unitsBySchool = unitService.getAllBySchool(school);
+        }
+        model.addAttribute("by_school", unitsBySchool);
+        return new ResponseEntity<>(unitsBySchool, HttpStatus.OK);
+    }
+
+    @GetMapping(path="/by_faculty")
+    public ResponseEntity<List<Unit>> displayUnitsByFaculty(Model model, @RequestParam(required = false) String faculty) {
+        List<Unit> unitsByFaculty = new ArrayList<Unit>();
+        if(faculty == null || faculty.trim().isEmpty()) {
+            unitsByFaculty = unitService.findAllUnits();
+        }
+        else {
+            unitsByFaculty = unitService.getAllByProgramme(faculty);
+        }
+        model.addAttribute("by_faculty", unitsByFaculty);
+        return new ResponseEntity<>(unitsByFaculty, HttpStatus.OK);
     }
 
     @GetMapping(path="/faculties")
