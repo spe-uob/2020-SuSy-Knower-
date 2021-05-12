@@ -150,31 +150,31 @@ describe('Resize Label',()=>{
 
 })
 
-xdescribe('Get_Parents',()=>{
-  let component: NetworkComponent;
-  let service: MockedUnitService;
-  let fixture: ComponentFixture<NetworkComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NetworkComponent ],
-      imports: [ HttpClientTestingModule,],
-      providers:[{provide: UnitService, useClass: MockedUnitService}]
-    })
-
-    fixture = TestBed.createComponent(NetworkComponent);
-    component = fixture.componentInstance;
-    service = TestBed.inject(MockedUnitService); 
-  });
-
-
-  it('should call',()=>{
-    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
-  })
-  it('should add a newline to a string if large',()=>{
-    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
-  })
-})
+// xdescribe('Get_Parents',()=>{
+//   let component: NetworkComponent;
+//   let service: MockedUnitService;
+//   let fixture: ComponentFixture<NetworkComponent>;
+//
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({
+//       declarations: [ NetworkComponent ],
+//       imports: [ HttpClientTestingModule,],
+//       providers:[{provide: UnitService, useClass: MockedUnitService}]
+//     })
+//
+//     fixture = TestBed.createComponent(NetworkComponent);
+//     component = fixture.componentInstance;
+//     service = TestBed.inject(MockedUnitService);
+//   });
+//
+//
+//   it('should call',()=>{
+//     expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
+//   })
+//   it('should add a newline to a string if large',()=>{
+//     expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
+//   })
+// })
 
 describe('Set Node Position',()=>{
   let component: NetworkComponent;
@@ -191,7 +191,7 @@ describe('Set Node Position',()=>{
     TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
-    testBedService = TestBed.inject(UnitService); 
+    testBedService = TestBed.inject(UnitService);
     mock_node ={
       id: 1,
       name: "Object Orientated",
@@ -235,3 +235,86 @@ describe('Set Node Position',()=>{
     expect(component.nodes).toContain(mock_node);
   });
 })
+
+
+describe('Find all', () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+  let unit: Unit;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  });
+  // it('should find pre-requisites', () => {
+  //   expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
+  // });
+  // it('should find level', () => {
+  //   expect(component.Find_Level(unit)).toEqual(2);
+  // });
+  it('should find faculty', () => {
+    expect(component.Find_Faculty('SCEEM')).toEqual('Faculty of Engineering');
+  });
+  it('should find school', () => {
+    expect(component.Find_School('Computer Science (BSc)')).toEqual('SCEEM');
+  });
+});
+
+describe('Get All', () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+  let mock_node;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+    mock_node ={
+      id: 1,
+      name: "Object Orientated",
+      programme: "Computer Science",
+      school: "SCEEM",
+      topic: "Algortihms",
+      url: "googl.com",
+      prereqs: "1,2,3,4",
+      tb: 2,
+    }
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  });
+  it('should get subjects list', () => {
+    expect(component.Get_Subject_List()).toEqual(["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
+      "Mathematics (MSci)"
+      ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
+      "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
+    ]);
+  });
+  it('should get school list', () => {
+    expect(component.Get_School_List()).toEqual(['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
+      'School of Management', 'University of Bristol Law School']);
+  });
+  it('should get faculty list', () => {
+    expect(component.Get_Faculty_List()).toEqual(['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences']);
+  });
+  it('should get parents id')
+  // it('should get parents id', () => {
+  //   expect(component.Get_Parents_Ids(mock_node.id, component.nodes, component.edges)).toEqual([]);
+  // });
+  it('should get ancestors id')
+  // it('should get ancestors id', () => {
+  //   expect(component.Get_Ancestors_Ids(id,nodes,edges)).toEqual();
+  // });
+  it('should get children id')
+  // it('should get children id', () => {
+  //   expect(component.Get_Children_Ids(id,nodes,edges)).toEqual();
+  // });
+  it('should get descendents id')
+  // it('should get descendents id', () => {
+  //   expect(component.Get_Descendents_Ids(id,nodes,edges)).toEqual();
+  // });
+});
