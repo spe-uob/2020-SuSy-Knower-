@@ -423,7 +423,6 @@ export class NetworkComponent implements OnInit {
     gr.id = node_id;
     nodes.update(gr);
     console.log(gr);
-    //{id:node_id,color:{background: gr.background,border:gr.border, highlight:gr.highlight}}
   }
   public Resize_Label(label): String{
     if(label.length < 17){
