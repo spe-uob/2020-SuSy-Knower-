@@ -285,7 +285,7 @@ describe('Find all', () => {
   });
 });
 
-describe('Get All', () => {
+describe('Get Lists', () => {
   let component: NetworkComponent;
   let service: MockedUnitService;
   let mock_node;
@@ -322,20 +322,52 @@ describe('Get All', () => {
   it('should get faculty list', () => {
     expect(component.Get_Faculty_List()).toEqual(['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences']);
   });
-  it('should get parents id')
-  // it('should get parents id', () => {
-  //   expect(component.Get_Parents_Ids(mock_node.id, component.nodes, component.edges)).toEqual([]);
-  // });
-  it('should get ancestors id')
-  // it('should get ancestors id', () => {
-  //   expect(component.Get_Ancestors_Ids(id,nodes,edges)).toEqual();
-  // });
-  it('should get children id')
-  // it('should get children id', () => {
-  //   expect(component.Get_Children_Ids(id,nodes,edges)).toEqual();
-  // });
-  it('should get descendents id')
-  // it('should get descendents id', () => {
-  //   expect(component.Get_Descendents_Ids(id,nodes,edges)).toEqual();
-  // });
 });
+
+describe('Get Ids', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [
+      {id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prereqs:"1,2,3,4",tb:1}
+    ]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  it('should get parents id', () => {
+      expect(component.Get_Parents_Ids(units, component.nodes, component.edges)).toEqual([]);
+  });
+  it('should get ancestors id', () => {
+    expect(component.Get_Ancestors_Ids(units, component.nodes, component.edges)).toEqual([]);
+  });
+  it('should get children id', () => {
+    expect(component.Get_Children_Ids(units, component.nodes, component.edges)).toEqual([]);
+  });
+  it('should get descendents id', () => {
+    expect(component.Get_Descendents_Ids(units, component.nodes, component.edges)).toEqual([]);
+  });
+});
+
+
+
