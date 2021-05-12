@@ -100,7 +100,7 @@ public class UnitController {
         model.addAttribute("by_topic", unitsByTopic);
         return new ResponseEntity<>(unitsByTopic, HttpStatus.OK);
     }
-    //for everything add a default option: if there's no argument provided, all of the units/schools/topics etc. are returned
+    
     @GetMapping(path="/by_programme")
     public ResponseEntity<List<Unit>> displayUnitsByProgramme(Model model, @RequestParam(required = false) String programme) {
         List<Unit> unitsByProgramme = new ArrayList<Unit>();
@@ -151,7 +151,6 @@ public class UnitController {
     @GetMapping(path="/programmes")
     public ResponseEntity<List<String>>  displayProgrammesBySchool(Model model, @RequestParam(required = false) String school) {
         List<String> programmes = new ArrayList<String>();
-        //return all programmes
         if(school == null || school.trim().isEmpty()) {
             programmes = unitService.getAllProgrammes();
         }
@@ -160,8 +159,6 @@ public class UnitController {
         }
         model.addAttribute("programmes", programmes);
         return new ResponseEntity<>(programmes, HttpStatus.OK);
-        //model.addAttribute("programmes_by_school", programmes);
-        //return "programmes_by_school";
     }
 
     @GetMapping(path="/schools")

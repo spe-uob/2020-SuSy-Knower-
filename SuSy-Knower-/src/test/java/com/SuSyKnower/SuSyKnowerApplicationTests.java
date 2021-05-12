@@ -155,12 +155,12 @@ class SuSyKnowerApplicationTests {
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
 		List<String>ActualProgrammes = new ArrayList<String>();
-		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)"));
+		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science"));
 		ExpectedProgrammes.add("Computer Science (BSc)");
 		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
-/*
+
 	//slow
 	@Test
 	public void testGetAllSchoolsInFaculty() {
@@ -187,6 +187,7 @@ class SuSyKnowerApplicationTests {
 	}
 	//slow
 	//engineering twice
+	
 	@Test
 	public void testGetAllFaculties() {
 		List<String>ExpectedFaculties = new ArrayList<String>();
@@ -252,6 +253,6 @@ class SuSyKnowerApplicationTests {
 		ExpectedTopics.add("5");
 		ExpectedTopics.add("6");
 		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
-	}*/
+	}
 
 }

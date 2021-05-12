@@ -107,8 +107,9 @@ public class UnitService {
         unitsWithSchool = unitRepository.findUnitBySchool(theSchool);
         return unitsWithSchool;
     }
-//not unique!
+
 //slow and doesnt even work
+//try querying in the unitrepo idk any other version
     public List<String> getAllProgrammesInSchool(String theSchool) {
         List<String> programmesInSchool = new ArrayList<String>();
         /*List<Unit> tempUnits = new ArrayList<Unit>();
@@ -122,7 +123,7 @@ public class UnitService {
             catch(NullPointerException n) {
             }
             
-        }*/
+        }
         
         for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
@@ -136,13 +137,14 @@ public class UnitService {
                 }
             }
             
-        }
+        }*/
+        programmesInSchool = unitRepository.findDistinctProgrammes(theSchool);
         return programmesInSchool;
     }
-//not unique!
+
     public List<String> getAllSchoolsInFaculty(String theFaculty) {
         List<String> schoolsInFaculty = new ArrayList<String>();
-        for(int i = 1; i <= getNumberOfUnits(); i++) {
+        /*for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
                     if(((getUnit(i).get()).getFaculty()).equals(theFaculty) && !schoolsInFaculty.contains((getUnit(i).get()).getSchool())) {
@@ -152,29 +154,20 @@ public class UnitService {
                 catch(NullPointerException n) {
                 }
             }
-        }
+        }*/
+        schoolsInFaculty = unitRepository.findDistinctSchools(theFaculty);
         return schoolsInFaculty;
     }
 
     public List<String> getAllFaculties() {
         List<String> allFaculties = new ArrayList<String>();
-        for(int i = 1; i <= getNumberOfUnits(); i++) {
-            if(getUnit(i).isPresent()) {
-                try {
-                     if(!allFaculties.contains((getUnit(i).get()).getFaculty())) {
-                        allFaculties.add((getUnit(i).get()).getFaculty());
-                    }
-                }
-                catch(NullPointerException n) {
-                }
-            }
-        }
+        allFaculties = unitRepository.findDistinctFaculties();
         return allFaculties;
     }
     
     public List<String> getAllTopicsInProgramme(String theProgramme) {
         List<String> topicsInProgramme = new ArrayList<String>();
-        for(int i = 1; i <= getNumberOfUnits(); i++) {
+       /* for(int i = 1; i <= getNumberOfUnits(); i++) {
             if(getUnit(i).isPresent()) {
                 try {
                      if(((getUnit(i).get()).getProgramme()).equals(theProgramme) && !topicsInProgramme.contains((getUnit(i).get()).getTopic())) {
@@ -184,11 +177,12 @@ public class UnitService {
                 catch(NullPointerException n) {
                 }
             }
-        }
+        }*/
+        topicsInProgramme = unitRepository.findDistinctTopics(theProgramme);
         return topicsInProgramme;
     }
 
-    //likely not unique
+
     public List<String> getAllSchools() {
         List<String> allFaculties = new ArrayList<String>();
         List<String> allSchools = new ArrayList<String>();
