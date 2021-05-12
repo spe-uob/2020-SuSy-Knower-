@@ -193,7 +193,6 @@ export class NetworkComponent implements OnInit {
     ctx.fillText(title,x,y);
   }
   public Double_click(params,nodes,edges){
-    this.Reset_Style(1,nodes,1);
     //console.log(this.network.findNode(1));
     //this.Search(1);
     if(params.nodes.length){
@@ -418,12 +417,8 @@ export class NetworkComponent implements OnInit {
   public Style_Node(node,style){
 
   }
-  public Reset_Style(topic,nodes,node_id){
-    var gr = this.network.groups._defaultGroups[topic];
-    gr.id = node_id;
-    nodes.update(gr);
-    console.log(gr);
-    //{id:node_id,color:{background: gr.background,border:gr.border, highlight:gr.highlight}}
+  public Reset_Style(topic){
+
   }
   public Resize_Label(label): String{
     if(label.length < 17){
