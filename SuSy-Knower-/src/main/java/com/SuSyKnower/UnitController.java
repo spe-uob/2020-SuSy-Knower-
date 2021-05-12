@@ -197,4 +197,46 @@ public class UnitController {
         return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
+    @GetMapping(path="/schoolByProgramme")
+    public ResponseEntity<String> displayTheSchool(Model model, @RequestParam(required = false) String programme) {
+        String schoolByProgramme = new String();
+        if(programme == null) {
+            //to change
+            schoolByProgramme = "no argument";
+        }
+        else {
+            Unit unit = new Unit();
+            try{
+                unit = unitService.getAllByProgramme(programme).get(0);
+                schoolByProgramme = unit.getSchool();
+            }
+            catch(IndexOutOfBoundsException i) {
+                schoolByProgramme = "incorrect argument";
+            }
+        }
+        model.addAttribute("schoolByProgramme", schoolByProgramme);
+        return new ResponseEntity<>(schoolByProgramme, HttpStatus.OK);
+    }
+
+    @GetMapping(path="/facultyBySchool")
+    public ResponseEntity<String> displayTheFaculty(Model model, @RequestParam(required = false) String school) {
+        String facultyBySchool = new String();
+        if(school == null) {
+            //to change
+            facultyBySchool = "no argument";
+        }
+        else {
+            Unit unit = new Unit();
+            try {
+                unit = unitService.getAllBySchool(school).get(0);
+                facultyBySchool = unit.getFaculty();
+            }
+            catch(IndexOutOfBoundsException i) {
+                facultyBySchool = "incorrect argument";
+            }
+        }
+        model.addAttribute("facultyBySchool", facultyBySchool);
+        return new ResponseEntity<>(facultyBySchool, HttpStatus.OK);
+    }
+
 }

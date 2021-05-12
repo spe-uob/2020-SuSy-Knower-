@@ -47,6 +47,7 @@ class SuSyKnowerApplicationTests {
 
 	}
 
+
 	@Test
 	public void testGetPrereqsEmpty() {
 		Unit unit1 = testUnitService.getUnit(1).get();
@@ -58,6 +59,18 @@ class SuSyKnowerApplicationTests {
 			ActualPrereqsString.add(ActualPrereqs.get(i).toString());
 		}
 		assertEquals(ExpectedPrereqs.toString(), ActualPrereqsString.toString());
+
+	}
+
+	@Test
+	public void testGetPrereqsInt() {
+		Unit unit84 = testUnitService.getUnit(84).get();
+		List<Integer>ExpectedPrereqs = new ArrayList<>();
+		ExpectedPrereqs.add(Integer.valueOf(76));
+		ExpectedPrereqs.add(Integer.valueOf(77));
+		List<Integer> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPrereqsInt(unit84));
+		assertEquals(ExpectedPrereqs, ActualPrereqs);
 
 	}
 
