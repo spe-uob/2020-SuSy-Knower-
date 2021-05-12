@@ -263,7 +263,8 @@ export class NetworkComponent implements OnInit {
 
   }
   public Find_Prerequisites(unit: Unit): number[]{
-    var prereqStr = unit.prereqs;
+    var prereqStr= unit.prereqs;
+
     var prereqChar = [];
     var prereqs = []
     if(prereqStr != null){

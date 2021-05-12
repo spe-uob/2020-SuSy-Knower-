@@ -35,7 +35,7 @@ class MockedUnitService extends UnitService {
       school: "SCEEM",
       topic: "Algortihms",
       url: "googl.com",
-      prereqs: "2,3,4",
+      prereqs: [],
       tb: 2,
     }]
 
