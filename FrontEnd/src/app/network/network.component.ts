@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ElementRef, Renderer2 } from '@angular/core';
 import { Unit } from '../unit';
-import { Network } from 'vis-network';
+import { Network, Node, Edge } from 'vis-network';
 import { DataSet} from 'vis-data';
 import { option } from 'vis-util/esnext';
 import { assertNotNull } from '@angular/compiler/src/output/output_ast';
@@ -27,8 +27,8 @@ export class NetworkComponent implements OnInit {
   @ViewChild("siteConfigNetwork") networkContainer: ElementRef;
   @ViewChild("pop") popOver: any;
 
-  public nodes: any;
-  public edges: any;
+  public nodes: any = new DataSet([]);
+  public edges: any = new DataSet([]);
   public network: any;
   public mode: Mode;
   public current_Subject: String;
@@ -43,12 +43,11 @@ export class NetworkComponent implements OnInit {
   ngOnInit() {
     this.mode = Mode.FACULTY;
     this.current_Subject= "No Subject";
-    var nodes = new DataSet([]);
-    var edges = new DataSet([]);
     var data = {
-    nodes: nodes,
-    edges: edges
+    nodes: this.nodes,
+    edges: this.edges
     };
+    
   
     this.getUnits(data);
 
@@ -56,6 +55,7 @@ export class NetworkComponent implements OnInit {
 
     this.Load_Vis_Network(data);
     console.log(this.network);
+    console.log(this.nodes);
   }
   //Observer of the unitservice to recieve units from database
   public getUnits(data): void {
@@ -167,20 +167,29 @@ export class NetworkComponent implements OnInit {
   }
   public Draw_Title(title,ctx,x,y){
     ctx.font = "50px Tahoma";
-    ctx.fillStyle = 'rgba(255,0,0,1)'
     ctx.textAlign = "center";
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 30;
+    ctx.strokeText(title, x, y);
+    ctx.fillStyle = 'rgba(255,0,0,1)';
     ctx.fillText(title,x,y);
   }
   public Draw_Sub_Title(title,ctx,x,y){
     ctx.font = "30px Tahoma";
-    ctx.fillStyle = 'rgba(0,0,0,1)'
     ctx.textAlign = "center";
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 20;
+    ctx.strokeText(title, x, y);
+    ctx.fillStyle = 'rgba(0,0,0,1)'
     ctx.fillText(title,x,y);
   }
   public Draw_Body(title,ctx,x,y){
     ctx.font = "10px Tahoma";
-    ctx.fillStyle = 'rgba(0,0,0,1)'
     ctx.textAlign = "center";
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 10;
+    ctx.strokeText(title, x, y);
+    ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillText(title,x,y);
   }
   public Double_click(params,nodes,edges){
@@ -277,7 +286,7 @@ export class NetworkComponent implements OnInit {
     return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
     "Mathematics (MSci)"
     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-    "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)"
+    "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
   ];
   // this.unitService.getUnits().subscribe(
   //   (response: String[]) => {
@@ -438,7 +447,6 @@ export class NetworkComponent implements OnInit {
     };
 
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: cluster_properties});
-    
   }
   public Cluster_Sujects(subjects: String[]){
     console.log("Clustering Many Subjects");
