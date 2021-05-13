@@ -79,7 +79,6 @@ export class NetworkComponent implements OnInit {
     this.unitService.getUnits().subscribe(
       (response: Unit[]) => {
           this.units = response;
-          console.log(this.units); 
           data = this.Get_Network_Data(response,data.nodes,data.edges);
           this.done++;
           this.All_Data_Loaded_Check();
@@ -125,6 +124,7 @@ export class NetworkComponent implements OnInit {
             },
       physics:
               { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
+            
               //wind:{x:1,y:0},
              },
       layout:{
@@ -147,7 +147,7 @@ export class NetworkComponent implements OnInit {
     units.forEach(unit => {
 
       var prerequisites = this.Find_Prerequisites(unit);
-      nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
+      nodes.add({id:unit.id, label: this.Resize_Label(unit.name), subject:unit.programme,
         topic: unit.topic, level: this.Find_Level(unit),
        type:Mode.UNIT,url:unit.url,group:unit.topic});
       prerequisites.forEach(prereq => {
@@ -160,8 +160,9 @@ export class NetworkComponent implements OnInit {
     }
   //Once data has been recieved from database, organise it into the original view
   public Format_Loaded_Data(nodes,edges){
-    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
     this.Run_Network_Events(nodes,edges);
+    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
+    
   }
 
 
@@ -505,7 +506,7 @@ export class NetworkComponent implements OnInit {
   public Style_Descendents(descendent_Ids,nodes,edges){
     descendent_Ids.forEach(descendent_Id => {
       var descendent = nodes.get(descendent_Id);
-      descendent.color = {background:"green"}
+      descendent.color = {background:"lightgreen"}
       nodes.update(descendent);
     });
   }
@@ -540,7 +541,8 @@ export class NetworkComponent implements OnInit {
       return label;
     }
     else{
-      return "Hello \n Hello";
+      label =label.split(' ').join('\n');
+      return label;
     }
 
   }
@@ -722,25 +724,34 @@ export class NetworkComponent implements OnInit {
   public Set_Node_Position(node,nodes,x:number,y:number){
     node.x = x;
     node.y = y;
-    node.fixed = true;
     nodes.update(node);
   }
   public Set_Unit_Positions(units,nodes){
     var y = 0;
     var currentLevel =1;
     var xOffset = -375; // should be number of levels+1/2 *150
+    var yValues = [];
     
+
+
     units.forEach(unit => {
       var node = nodes.get(unit);
       console.log(node.level)
+      
+
       if(node.level > this.current_max_tb){
         this.current_max_tb= node.level;
         
       }
       
       if(!(node.level == currentLevel)){
-        y = 0;
+        y = 0//yValues[node.level];
         currentLevel = node.level;
+        yValues[node.level]=y
+        console.log(yValues)
+      }
+      else{
+        yValues[node.level]= y; 
       }
       this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,y*this.unit_height);
       y++;
