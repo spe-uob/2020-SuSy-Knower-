@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+//exception for broken pipe?
 @RestController
-//try with old mapping (test)
 @RequestMapping(path = "/unit")
 public class UnitController {
 
@@ -66,6 +66,7 @@ public class UnitController {
 
     @GetMapping(path="/prereqs")
     public ResponseEntity<List<Unit>> displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
+//catch exception:no argument or wrong argument
         List<Unit> prerequisites = new ArrayList<Unit>();
         if(unitService.getUnit(id).isPresent()) {
             prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
@@ -76,6 +77,7 @@ public class UnitController {
 
     @GetMapping(path="/prereqs_int")
     public ResponseEntity<List<Integer>> displayAllPrereqsInt(Model model, @RequestParam(required = true) int id) {
+//catch exception:no argument or wrong argument
         List<Integer> prerequisitesIds = new ArrayList<Integer>();
         if(unitService.getUnit(id).isPresent()) {
             prerequisitesIds = unitService.getPrereqsInt(unitService.getUnit(id).get());
@@ -197,7 +199,7 @@ public class UnitController {
     public ResponseEntity<String> displayTheSchool(Model model, @RequestParam(required = false) String programme) {
         String schoolByProgramme = new String();
         if(programme == null) {
-            //to change
+ //exception??
             schoolByProgramme = "no argument";
         }
         else {
@@ -206,6 +208,7 @@ public class UnitController {
                 unit = unitService.getAllByProgramme(programme).get(0);
                 schoolByProgramme = unit.getSchool();
             }
+//exception?
             catch(IndexOutOfBoundsException i) {
                 schoolByProgramme = "incorrect argument";
             }
@@ -218,7 +221,7 @@ public class UnitController {
     public ResponseEntity<String> displayTheFaculty(Model model, @RequestParam(required = false) String school) {
         String facultyBySchool = new String();
         if(school == null) {
-            //to change
+//maybe exception?
             facultyBySchool = "no argument";
         }
         else {
@@ -227,6 +230,7 @@ public class UnitController {
                 unit = unitService.getAllBySchool(school).get(0);
                 facultyBySchool = unit.getFaculty();
             }
+//maybe exception?
             catch(IndexOutOfBoundsException i) {
                 facultyBySchool = "incorrect argument";
             }

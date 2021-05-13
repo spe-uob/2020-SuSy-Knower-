@@ -11,6 +11,8 @@ import java.util.*;
 
 //write unit tests for each kind of test case
 //run by writing "mvn test" in the terminal
+
+//mocking???
 @SpringBootTest
 class SuSyKnowerApplicationTests {
 	@Autowired
@@ -163,7 +165,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
 
-	//slow
 	@Test
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
@@ -173,7 +174,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
-	//slow
 	@Test
 	public void testGetAllSchoolsInFaculty() {
 		List<String>ExpectedSchools = new ArrayList<String>();
@@ -185,7 +185,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedSchools.add("School of Electrical & Electronic Engineering");
 		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
 	}
-	//slow
+
 	@Test
 	public void testGetAllTopicsInProgramme() {
 		List<String>ExpectedTopics = new ArrayList<String>();
@@ -199,8 +199,6 @@ class SuSyKnowerApplicationTests {
 		ExpectedTopics.add("6");
 		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
 	}
-	//slow
-	//engineering twice
 	
 	@Test
 	public void testGetAllFaculties() {
@@ -215,7 +213,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedFaculties.toString(), ActualFaculties.toString());
 	}
 
-	//empty
 	@Test
 	public void testGetAllSchools() {
 		List<String>ExpectedSchools = new ArrayList<String>();
@@ -238,7 +235,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
 	}
 
-	//empty
 	@Test
 	public void testGetAllProgrammes() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
@@ -262,7 +258,6 @@ class SuSyKnowerApplicationTests {
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
-	//empty
 	@Test
 	public void testGetAllTopics() {
 		List<String>ExpectedTopics = new ArrayList<String>();

@@ -40,6 +40,7 @@ public class UnitService {
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
         String prereqStr = unit.getPrerequisites();
+//exception
         try {
             String[] elements = prereqStr.split(",");
             for (int i = 0; i < elements.length; i++) {
