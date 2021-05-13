@@ -105,6 +105,7 @@ export class NetworkComponent implements OnInit {
                   highlight: {border: 'black',background: 'white'},},
             font:{face:"tahoma",size:9,strokeWidth: 3,strokeColor: "#ffffff"},
             level:0,
+            fixed:true,
             },
       edges:{
               width:node_size/8,
@@ -166,11 +167,11 @@ export class NetworkComponent implements OnInit {
       //that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
     })
     this.network.on("afterDrawing", function(ctx) {
-      that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
+      that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
       if(that.mode == Mode.UNIT){
         that.Draw_Sub_Title(that.current_Subject,ctx,0,-80);
-        that.Draw_Body("Double click a unit to open its webpage",ctx,0,-40);
+        that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-40);
       }
     })
     this.network.on("initRedraw", function(){})
@@ -186,12 +187,12 @@ export class NetworkComponent implements OnInit {
 //CANVAS DRAWING
 
   public Draw_Title(title,ctx,x,y){
-    ctx.font = "50px Tahoma";
+    ctx.font = "bold 40px Tahoma";
     ctx.textAlign = "center";
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 30;
     ctx.strokeText(title, x, y);
-    ctx.fillStyle = 'rgba(255,0,0,1)';
+    ctx.fillStyle = 'rgba(200,0,0,1)';
     ctx.fillText(title,x,y);
   }
   public Draw_Sub_Title(title,ctx,x,y){
@@ -229,6 +230,7 @@ export class NetworkComponent implements OnInit {
             this.Set_Unit_Positions(nodes_in_cluster,nodes);
             this.Fit_To_Selection(nodes_in_cluster);
             this.mode = Mode.UNIT;
+            this.Turn_On_Physics(this.network.options);
         }
         else if(cluster.type == Mode.FACULTY){
           this.mode = Mode.SCHOOL;
@@ -330,6 +332,7 @@ public Click(params,nodes,edges){
       var pathway = this.network.findNode(searched_id);
       for (let i = 0; i < pathway.length-1; i++) {
       const cluster = pathway[i];
+      //this.network.selectNodes([pathway[i]]);
       this.Uncluster(cluster);
       }
       this.network.selectNodes([searched_id]);
@@ -556,7 +559,8 @@ public Click(params,nodes,edges){
       size: 14,
       borderWidth:7,
       font:{size:12},
-      allowSingleNodeCluster: true
+      allowSingleNodeCluster: true,
+      fixed:false
     };
 
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: cluster_properties});
@@ -578,14 +582,15 @@ public Click(params,nodes,edges){
     var cluster_properties = {
       level:0,
       label: school,
-      color:{border: "blue"},
+      color:{border: 'red'},
       id: id,
       faculty: this.Find_Faculty(school),
       type: Mode.SCHOOL,
       size: 17,
       borderWidth:8,
       font:{size:12},
-      allowSingleNodeCluster: true
+      allowSingleNodeCluster: true,
+      fixed:false,
     };
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: cluster_properties});
 
@@ -615,7 +620,7 @@ public Click(params,nodes,edges){
     };
     var properties = {
       level:0,
-      color: {border:"red"},
+      color: {border:'rgba(0,0,200,1)'},
       label: faculty,
       id: id,
       type: Mode.FACULTY,
@@ -623,6 +628,7 @@ public Click(params,nodes,edges){
       borderWidth:10,
       font:{size:12},
       allowSingleNodeCluster: true,
+      fixed:false,
     };
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
 
@@ -652,7 +658,7 @@ public Click(params,nodes,edges){
 
   public Turn_On_Physics(options){
     console.log("Turning Physics On");
-    options.physics = true;
+    options.physics = {wind: { x: 0, y: 1 }};
     this.network.setOptions(options);
   }
   public Turn_Off_Physics(options){
