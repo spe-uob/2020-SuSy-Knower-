@@ -33,6 +33,8 @@ export class NetworkComponent implements OnInit {
   public network: any;
   public mode: Mode;
   public current_Subject: String;
+  public current_pre_reqs: number[];
+  public current_post_reqs: number[];
 
   public units: Unit[];
   public subjects: String[];
@@ -46,13 +48,13 @@ export class NetworkComponent implements OnInit {
     this.done = 0;
     this.mode = Mode.FACULTY;
     this.current_Subject= "No Subject";
+    this.current_pre_reqs=[];
+    this.current_post_reqs=[];
     var data = {
     nodes: this.nodes,
     edges: this.edges
     };
 
-
-    this.getUnits(data);
     this.Get_Subject_List();
     this.Get_School_List();
     this.Get_Faculty_List();
@@ -138,8 +140,8 @@ export class NetworkComponent implements OnInit {
 
       var prerequisites = this.Find_Prerequisites(unit);
       nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
-        /*topic: unit.topic,*/ level: this.Find_Level(unit),
-       type:Mode.UNIT,url:unit.url,/*group:unit.topic*/});
+        topic: unit.topic, level: this.Find_Level(unit),
+       type:Mode.UNIT,url:unit.url,group:unit.topic});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
       });
@@ -153,9 +155,17 @@ export class NetworkComponent implements OnInit {
   //Once data has been recieved from database, organise it into the original view
   public Format_Loaded_Data(nodes,edges){
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
-
     this.Run_Network_Events(nodes,edges);
   }
+
+
+
+
+
+
+
+
+
   //Handles click zoom and drawing events
   public Run_Network_Events(nodes,edges){
     var that = this;
@@ -181,6 +191,9 @@ export class NetworkComponent implements OnInit {
     })
     this.network.on("zoom", function (params) {})
   }
+
+
+
   public Draw_Title(title,ctx,x,y){
     ctx.font = "50px Tahoma";
     ctx.textAlign = "center";
@@ -208,9 +221,12 @@ export class NetworkComponent implements OnInit {
     ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillText(title,x,y);
   }
+
+
+
+
+
   public Double_click(params,nodes,edges){
-    //console.log(this.network.findNode(1));
-    //this.Search(1);
     if(params.nodes.length){
       var selected_node_id = params.nodes[0];
 
@@ -248,9 +264,20 @@ export class NetworkComponent implements OnInit {
 
 
   }
-  public Click(params,nodes,edges){
-    var clicked_node_id = params.nodes[0];
-    if(clicked_node_id){
+public Click(params,nodes,edges){
+  //console.log(nodes[0]);
+  if(this.mode == Mode.UNIT){
+      this.current_pre_reqs.forEach(id => {
+        node = nodes.get(id);
+        this.Reset_Style(node.topic,nodes,node.id)
+      });
+      this.current_post_reqs.forEach(id => {
+        node = nodes.get(id);
+        this.Reset_Style(node.topic,nodes,node.id)
+      });
+    }
+  var clicked_node_id = params.nodes[0];
+  if(clicked_node_id){
       console.log(nodes.get(clicked_node_id));
     }
     if(params.nodes.length){
@@ -314,11 +341,6 @@ export class NetworkComponent implements OnInit {
     }
   }
   public Get_Subject_List(){
-  //   return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
-  //   "Mathematics (MSci)"
-  //   ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-  //   "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
-  // ];
   this.unitService.getSubjects().subscribe(
     (response: String[]) => {
         this.subjects = response;
@@ -330,8 +352,6 @@ export class NetworkComponent implements OnInit {
   );
   }
   public Get_School_List(){
-    // return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
-    // "School of Management","University of Bristol Law School"]
     this.unitService.getSchools().subscribe(
       (response: String[]) => {
           this.schools = response;
@@ -343,8 +363,6 @@ export class NetworkComponent implements OnInit {
     );
   }
   public Get_Faculty_List(){
-    // return ["Faculty of Engineering","Faculty of Science","Faculty of Arts",
-    // "Faculty of Social Sciences","Faculty of Life Sciences"]
     this.unitService.getFaculties().subscribe(
       (response: String[]) => {
           this.faculties = response;
@@ -419,6 +437,12 @@ export class NetworkComponent implements OnInit {
       return "Faculty of Engineering";
     }
   }
+
+
+
+
+
+
   public Get_Parents_Ids(node_Id,nodes,edges){
     var parents_Ids = []
     var edge_Ids = this.network.getConnectedEdges(node_Id);
@@ -437,6 +461,7 @@ export class NetworkComponent implements OnInit {
     ancestors_Ids.forEach(ancestor => {
       this.Get_Ancestors_Ids(ancestor,nodes,edges);
     });
+    this.current_post_reqs = ancestors_Ids;
     return ancestors_Ids
   }
   public Get_Children_Ids(node_Id,nodes,edges){
@@ -458,6 +483,7 @@ export class NetworkComponent implements OnInit {
     descendents_Ids.forEach(descendent => {
       this.Get_Descendents_Ids(descendent,nodes,edges);
     });
+    this.current_pre_reqs = descendents_Ids;
     return descendents_Ids
   }
   public Style_Ancestors(ancestor_Ids,nodes){
@@ -474,11 +500,24 @@ export class NetworkComponent implements OnInit {
       nodes.update(descendent);
     });
   }
+
+
+
+
+
+
   public Style_Node(node,style){
 
   }
+  public Fade_Node(node,nodes){
+    node.color = 'grey';
+    nodes.update(node);
+  }
 
   public Reset_Style(topic,nodes,node_id){
+    if(topic == null){
+      topic = 1;
+    }
     var gr = this.network.groups._defaultGroups[topic];
     gr.id = node_id;
     nodes.update(gr);
@@ -493,6 +532,12 @@ export class NetworkComponent implements OnInit {
     }
 
   }
+
+
+
+
+
+
   public Cluster_One_Subject(subject,id){
     console.log("Clustering One Subject");
     var joinCon = function (nodeOptions) {
@@ -587,6 +632,20 @@ export class NetworkComponent implements OnInit {
     });
 
   }
+  public Uncluster(cluster_id){
+    console.log("Unclustering cluster")
+    this.network.openCluster(cluster_id);
+  }
+  public Cluster_All(subjects,schools,faculties,nodes,edges){
+    this.Cluster_Sujects(subjects);
+    this.Cluster_Schools(schools,nodes,edges);
+    this.Cluster_Faculties(faculties);
+  }
+
+
+
+
+
   public Turn_On_Physics(options){
     console.log("Turning Physics On");
     options.physics = true;
@@ -608,18 +667,12 @@ export class NetworkComponent implements OnInit {
     console.log(options.layout.hierarchical);
     this.network.setOptions(options);
   }
-  public Uncluster(cluster_id){
-    console.log("Unclustering cluster")
-    this.network.openCluster(cluster_id);
-  }
+
   public Test_Routine(){
 
   }
-  public Cluster_All(subjects,schools,faculties,nodes,edges){
-    this.Cluster_Sujects(subjects);
-    this.Cluster_Schools(schools,nodes,edges);
-    this.Cluster_Faculties(faculties);
-  }
+
+  
   public Fit_To_Selection(node_Ids){
     console.log(node_Ids)
     this.network.fit({nodes:node_Ids,animation:true});
