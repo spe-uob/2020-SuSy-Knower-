@@ -160,12 +160,6 @@ export class NetworkComponent implements OnInit {
 
 
 
-
-
-
-
-
-
   //Handles click zoom and drawing events
   public Run_Network_Events(nodes,edges){
     var that = this;
@@ -192,7 +186,7 @@ export class NetworkComponent implements OnInit {
     this.network.on("zoom", function (params) {})
   }
 
-
+//CANVAS DRAWING
 
   public Draw_Title(title,ctx,x,y){
     ctx.font = "50px Tahoma";
@@ -222,9 +216,7 @@ export class NetworkComponent implements OnInit {
     ctx.fillText(title,x,y);
   }
 
-
-
-
+//EVENTS
 
   public Double_click(params,nodes,edges){
     if(params.nodes.length){
@@ -290,9 +282,9 @@ public Click(params,nodes,edges){
       else{
         var node = nodes.get(clicked_node_id);
         if(node.type == Mode.UNIT){
-          var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,nodes,edges);
+          var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,edges);
           this.Style_Ancestors(ancestors_Ids,nodes);
-          var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,nodes,edges);
+          var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,edges);
           this.Style_Descendents(descendents_Ids,nodes,edges);
         }
       }
@@ -302,6 +294,9 @@ public Click(params,nodes,edges){
   }
 
   }
+
+//FINDING DATA
+
   public Find_Prerequisites(unit: Unit): number[]{
     var prereqStr= unit.prerequisites;
     var prereqChar = [];
@@ -441,9 +436,9 @@ public Click(params,nodes,edges){
 
 
 
+//GETTING PRE/POST REQUITSITE IDS
 
-
-  public Get_Parents_Ids(node_Id,nodes,edges){
+  public Get_Parents_Ids(node_Id,edges){
     var parents_Ids = []
     var edge_Ids = this.network.getConnectedEdges(node_Id);
     edge_Ids.forEach(edge_Id => {
@@ -455,16 +450,16 @@ public Click(params,nodes,edges){
     console.log(parents_Ids)
     return parents_Ids
   }
-  public Get_Ancestors_Ids(node_Id,nodes,edges){
+  public Get_Ancestors_Ids(node_Id,edges){
     var ancestors_Ids =[];
-    ancestors_Ids = ancestors_Ids.concat(this.Get_Parents_Ids(node_Id,nodes,edges))
+    ancestors_Ids = ancestors_Ids.concat(this.Get_Parents_Ids(node_Id,edges))
     ancestors_Ids.forEach(ancestor => {
-      this.Get_Ancestors_Ids(ancestor,nodes,edges);
+      this.Get_Ancestors_Ids(ancestor,edges);
     });
     this.current_post_reqs = ancestors_Ids;
     return ancestors_Ids
   }
-  public Get_Children_Ids(node_Id,nodes,edges){
+  public Get_Children_Ids(node_Id,edges){
     var children_Ids = []
     var edge_Ids = this.network.getConnectedEdges(node_Id);
     edge_Ids.forEach(edge_Id => {
@@ -477,11 +472,11 @@ public Click(params,nodes,edges){
     return children_Ids;
 
   }
-  public Get_Descendents_Ids(node_Id,nodes,edges){
+  public Get_Descendents_Ids(node_Id,edges){
     var descendents_Ids =[];
-    descendents_Ids = descendents_Ids.concat(this.Get_Children_Ids(node_Id,nodes,edges))
+    descendents_Ids = descendents_Ids.concat(this.Get_Children_Ids(node_Id,edges))
     descendents_Ids.forEach(descendent => {
-      this.Get_Descendents_Ids(descendent,nodes,edges);
+      this.Get_Descendents_Ids(descendent,edges);
     });
     this.current_pre_reqs = descendents_Ids;
     return descendents_Ids
@@ -505,7 +500,7 @@ public Click(params,nodes,edges){
 
 
 
-
+//STYLING
   public Style_Node(node,style){
 
   }
@@ -672,7 +667,7 @@ public Click(params,nodes,edges){
 
   }
 
-  
+
   public Fit_To_Selection(node_Ids){
     console.log(node_Ids)
     this.network.fit({nodes:node_Ids,animation:true});
