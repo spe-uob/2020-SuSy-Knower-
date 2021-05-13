@@ -50,7 +50,9 @@ export class NetworkComponent implements OnInit {
     nodes: this.nodes,
     edges: this.edges
     };
-    
+
+
+    this.getUnits(data);
     this.Get_Subject_List();
     this.Get_School_List();
     this.Get_Faculty_List();
@@ -94,7 +96,7 @@ export class NetworkComponent implements OnInit {
     console.log("Loading Network");
     var mode_type = Mode.FACULTY;
     var node_size =10
-    
+
     var container = document.getElementById("mynetwork");
     var options = {
 
@@ -127,16 +129,16 @@ export class NetworkComponent implements OnInit {
     // var node256 = nodes.get(256);
     // this.Set_Node_Position(node255,nodes,5,5);
     // this.Style_Descendents([255,256],nodes,edges);
-  
 
-    
+
+
   }
   public Get_Network_Data(units: Unit[],nodes,edges){
     units.forEach(unit => {
 
       var prerequisites = this.Find_Prerequisites(unit);
       nodes.add({id:unit.id, label: unit.name, subject:unit.programme,
-        /*topic: unit.topic,*/ level: this.Find_Level(unit), 
+        /*topic: unit.topic,*/ level: this.Find_Level(unit),
        type:Mode.UNIT,url:unit.url,/*group:unit.topic*/});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
@@ -211,7 +213,7 @@ export class NetworkComponent implements OnInit {
     //this.Search(1);
     if(params.nodes.length){
       var selected_node_id = params.nodes[0];
-      
+
       if(this.network.isCluster(selected_node_id)){
         var cluster = this.network.body.nodes[selected_node_id].options;
         if(cluster.type == Mode.SUBJECT){
@@ -243,8 +245,8 @@ export class NetworkComponent implements OnInit {
         window.open(unit.url, "_blank");
       }
   }
-    
-    
+
+
   }
   public Click(params,nodes,edges){
     var clicked_node_id = params.nodes[0];
@@ -252,7 +254,7 @@ export class NetworkComponent implements OnInit {
       console.log(nodes.get(clicked_node_id));
     }
     if(params.nodes.length){
-      
+
       if(this.network.isCluster(params.nodes[0]))
       {
         console.log("Selected node is a cluster")
@@ -393,7 +395,7 @@ export class NetworkComponent implements OnInit {
     else{
       return "Error";
     }
-    
+
   }
   public Find_Faculty(school):String{
 
@@ -448,7 +450,7 @@ export class NetworkComponent implements OnInit {
     });
     console.log(children_Ids)
     return children_Ids;
-    
+
   }
   public Get_Descendents_Ids(node_Id,nodes,edges){
     var descendents_Ids =[];
@@ -489,7 +491,7 @@ export class NetworkComponent implements OnInit {
     else{
       return "Hello \n Hello";
     }
-    
+
   }
   public Cluster_One_Subject(subject,id){
     console.log("Clustering One Subject");
@@ -544,7 +546,7 @@ export class NetworkComponent implements OnInit {
   }
   public Add_Centre_Nodes(id,faculty,nodes,edges,faculties){
     faculties.forEach(element => {
-      
+
     });
   }
   public Cluster_Schools(schools,nodes,edges){
@@ -554,7 +556,7 @@ export class NetworkComponent implements OnInit {
       this.Cluster_One_School(school,id,nodes,edges);
       id++
     });
-  
+
   }
   public Cluster_One_Faculty(faculty,id){
     console.log("Clustering One Faculty");
@@ -583,7 +585,7 @@ export class NetworkComponent implements OnInit {
       this.Cluster_One_Faculty(faculty,id);
       id++
     });
-  
+
   }
   public Turn_On_Physics(options){
     console.log("Turning Physics On");
@@ -611,7 +613,7 @@ export class NetworkComponent implements OnInit {
     this.network.openCluster(cluster_id);
   }
   public Test_Routine(){
-    
+
   }
   public Cluster_All(subjects,schools,faculties,nodes,edges){
     this.Cluster_Sujects(subjects);
@@ -641,15 +643,15 @@ export class NetworkComponent implements OnInit {
       }
       this.Set_Node_Position(node,nodes,150*node.level-xOffset,yOffset*100);
       yOffset++;
-      
+
     });
   }
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
-  
-  
 
-  
+
+
+
 
 
 
