@@ -36,6 +36,13 @@ export class NetworkComponent implements OnInit {
   public current_subject_nodes: any;
   public current_pre_reqs: number[];
   public current_post_reqs: number[];
+  public current_max_tb: number;
+  public current_max_units_per_tb:number;
+
+  public unit_width:number;
+  public unit_height:number;
+  public unit_block_width:number;
+  public unit_block_height:number;
 
   public units: Unit[];
   public subjects: String[];
@@ -46,6 +53,9 @@ export class NetworkComponent implements OnInit {
   constructor(private unitService: UnitService) { }
 
   ngOnInit() {
+    this.current_max_tb=0;
+    this.unit_width=150;
+    this.unit_height=100;
     this.done = 0;
     this.mode = Mode.FACULTY;
     this.current_Subject= "No Subject";
@@ -145,8 +155,6 @@ export class NetworkComponent implements OnInit {
       });
     });
     var data = {nodes: nodes,edges: edges,};
-    console.log(nodes);
-    console.log(edges);
     console.log("Turning data into nodes and edges")
     return data;
     }
@@ -170,8 +178,17 @@ export class NetworkComponent implements OnInit {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
       if(that.mode == Mode.UNIT){
-        that.Draw_Sub_Title(that.current_Subject,ctx,0,-80);
-        that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-40);
+
+        for (let i = 0; i < that.current_max_tb; i++) {
+          if(i % 2 == 0){
+            that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*3)
+            
+          }
+          that.Draw_TB_Title(ctx,-225+that.unit_width*i,0,Math.ceil((i+1)/2),(i%2)+1);
+        }
+        
+        that.Draw_Sub_Title(that.current_Subject,ctx,0,-130);
+        that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-80);
       }
     })
     this.network.on("initRedraw", function(){})
@@ -213,9 +230,20 @@ export class NetworkComponent implements OnInit {
     ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillText(title,x,y);
   }
+  public Draw_Teaching_Block(ctx,x,y,width,height){
+    ctx.fillStyle = 'rgba(0,0,0,0.1)'
+    ctx.fillRect(x-width/2,y,width,height);
+  }
+  public Draw_TB_Title(ctx,x,y,year,tb){
+    var defecit = 50
+    ctx.font = "bold italic 10px Arial";
+    ctx.fillStyle = 'rgba(0,0,0,0.3)'
+    ctx.textAlign = "center";
+
+    ctx.fillText(`Year ${year} TB${tb}`,x,y-defecit);
+  }
 
 //EVENTS
-
   public Double_click(params,nodes,edges){
     if(params.nodes.length){
       var selected_node_id = params.nodes[0];
@@ -256,7 +284,7 @@ export class NetworkComponent implements OnInit {
 
 
   }
-public Click(params,nodes,edges){
+  public Click(params,nodes,edges){
   //console.log(nodes[0]);
   if(this.mode == Mode.UNIT){
       this.current_subject_nodes.forEach(id => {
@@ -297,6 +325,11 @@ public Click(params,nodes,edges){
   else{
     console.log("No node clicked");
   }
+
+  }
+
+
+  public Unit_View(){
 
   }
 
@@ -347,7 +380,6 @@ public Click(params,nodes,edges){
         this.subjects = response;
         this.done ++;
         this.All_Data_Loaded_Check();
-        console.log(this.subjects);
       },
     (error: HttpErrorResponse) => {alert(error.message); }
   );
@@ -358,7 +390,7 @@ public Click(params,nodes,edges){
           this.schools = response;
           this.done ++;
           this.All_Data_Loaded_Check();
-          console.log(this.schools);
+
         },
       (error: HttpErrorResponse) => {alert(error.message); }
     );
@@ -371,7 +403,6 @@ public Click(params,nodes,edges){
           if(this.done >= 4){
             this.Format_Loaded_Data(this.nodes,this.edges);
           }
-          console.log(this.faculties);
         },
       (error: HttpErrorResponse) => {alert(error.message); }
     );
@@ -504,8 +535,6 @@ public Click(params,nodes,edges){
 
 
 
-
-
 //STYLING
   public Style_Node(node,style){
 
@@ -520,7 +549,6 @@ public Click(params,nodes,edges){
       this.Fade_Node(id,nodes);
     });
   }
-
   public Reset_Style(topic,nodes,node_id){
     if(topic == null){
       topic = 1;
@@ -539,9 +567,12 @@ public Click(params,nodes,edges){
     }
 
   }
+  
 
 
-
+  public Reset_Nodes(nodes,edges){
+    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);
+  }
 
 
 
@@ -695,17 +726,24 @@ public Click(params,nodes,edges){
     nodes.update(node);
   }
   public Set_Unit_Positions(units,nodes){
-    var yOffset = 0;
+    var y = 0;
     var currentLevel =1;
-    var xOffset = 375; // should be number of levels+1/2 *150
+    var xOffset = -375; // should be number of levels+1/2 *150
+    
     units.forEach(unit => {
       var node = nodes.get(unit);
+      console.log(node.level)
+      if(node.level > this.current_max_tb){
+        this.current_max_tb= node.level;
+        
+      }
+      
       if(!(node.level == currentLevel)){
-        yOffset = 0;
+        y = 0;
         currentLevel = node.level;
       }
-      this.Set_Node_Position(node,nodes,150*node.level-xOffset,yOffset*100);
-      yOffset++;
+      this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,y*this.unit_height);
+      y++;
 
     });
   }

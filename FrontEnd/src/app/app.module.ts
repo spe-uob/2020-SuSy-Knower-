@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { NetworkComponent } from './network/network.component';
+import { ResetButtonComponent } from './components/reset-button/reset-button.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { NetworkComponent } from './network/network.component';
     AppComponent,
     SearchBarComponent,
     NetworkComponent,
+    ResetButtonComponent,
   ],
   imports: [
     BrowserModule,
