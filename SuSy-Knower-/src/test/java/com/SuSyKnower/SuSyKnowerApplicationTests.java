@@ -141,6 +141,8 @@ class SuSyKnowerApplicationTests {
 		ExpectedUnits.add(testUnitService.getUnit(19).get().toString());
 		ExpectedUnits.add(testUnitService.getUnit(25).get().toString());
 		ExpectedUnits.add(testUnitService.getUnit(31).get().toString());
+		ExpectedUnits.add(testUnitService.getUnit(34).get().toString());
+		ExpectedUnits.add(testUnitService.getUnit(40).get().toString());
 		List<Unit> ActualUnits = new ArrayList<>();
 		ActualUnits.addAll(testUnitService.getAllByTopic("1"));
 		List<String> ActualUnitsString = new ArrayList<>();

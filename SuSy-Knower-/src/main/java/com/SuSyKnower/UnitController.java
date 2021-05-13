@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
+import com.SuSyKnower.CustomizedException.*;
 
 
 import java.util.ArrayList;
@@ -199,8 +200,8 @@ public class UnitController {
     public ResponseEntity<String> displayTheSchool(Model model, @RequestParam(required = false) String programme) {
         String schoolByProgramme = new String();
         if(programme == null) {
- //exception??
             schoolByProgramme = "no argument";
+            throw new NoArgumentException();
         }
         else {
             Unit unit = new Unit();
@@ -208,9 +209,9 @@ public class UnitController {
                 unit = unitService.getAllByProgramme(programme).get(0);
                 schoolByProgramme = unit.getSchool();
             }
-//exception?
             catch(IndexOutOfBoundsException i) {
                 schoolByProgramme = "incorrect argument";
+                throw new IncorrectArgumentException();
             }
         }
        // model.addAttribute("schoolByProgramme", schoolByProgramme);
@@ -221,8 +222,8 @@ public class UnitController {
     public ResponseEntity<String> displayTheFaculty(Model model, @RequestParam(required = false) String school) {
         String facultyBySchool = new String();
         if(school == null) {
-//maybe exception?
             facultyBySchool = "no argument";
+            throw new NoArgumentException();
         }
         else {
             Unit unit = new Unit();
@@ -230,9 +231,9 @@ public class UnitController {
                 unit = unitService.getAllBySchool(school).get(0);
                 facultyBySchool = unit.getFaculty();
             }
-//maybe exception?
             catch(IndexOutOfBoundsException i) {
                 facultyBySchool = "incorrect argument";
+                throw new IncorrectArgumentException();
             }
         }
         //model.addAttribute("facultyBySchool", facultyBySchool);
