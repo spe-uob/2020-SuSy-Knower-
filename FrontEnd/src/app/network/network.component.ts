@@ -33,6 +33,7 @@ export class NetworkComponent implements OnInit {
   public network: any;
   public mode: Mode;
   public current_Subject: String;
+  public current_subject_nodes: any;
   public current_pre_reqs: number[];
   public current_post_reqs: number[];
 
@@ -62,11 +63,6 @@ export class NetworkComponent implements OnInit {
 
 
     // create an array with edges
-
-    
-
-    console.log(this.network);
-    console.log(this.nodes);
   }
   //Observer of the unitservice to recieve units from database
   public getUnits(data): void {
@@ -113,7 +109,8 @@ export class NetworkComponent implements OnInit {
       edges:{
               width:node_size/8,
               arrows:{to:{enabled:true,scaleFactor:0.5}},
-              smooth:false
+              smooth:false,
+              selectionWidth: node_size/3, //function (width) {return width*2;}
             },
       physics:
               { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
@@ -227,6 +224,7 @@ export class NetworkComponent implements OnInit {
         if(cluster.type == Mode.SUBJECT){
             var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
             this.current_Subject = cluster.label;
+            this.current_subject_nodes = nodes_in_cluster;
             this.Uncluster(selected_node_id);
             this.Set_Unit_Positions(nodes_in_cluster,nodes);
             this.Fit_To_Selection(nodes_in_cluster);
@@ -259,11 +257,7 @@ export class NetworkComponent implements OnInit {
 public Click(params,nodes,edges){
   //console.log(nodes[0]);
   if(this.mode == Mode.UNIT){
-      this.current_pre_reqs.forEach(id => {
-        node = nodes.get(id);
-        this.Reset_Style(node.topic,nodes,node.id)
-      });
-      this.current_post_reqs.forEach(id => {
+      this.current_subject_nodes.forEach(id => {
         node = nodes.get(id);
         this.Reset_Style(node.topic,nodes,node.id)
       });
@@ -286,6 +280,15 @@ public Click(params,nodes,edges){
           this.Style_Ancestors(ancestors_Ids,nodes);
           var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,edges);
           this.Style_Descendents(descendents_Ids,nodes,edges);
+          var relatives = ancestors_Ids.concat(descendents_Ids);
+          var non_relatives =[];
+          this.current_subject_nodes.forEach(id => {
+            if(!(relatives.includes(id)) && id != clicked_node_id){
+              non_relatives.push(id);
+            }
+          });
+          console.log(non_relatives)
+          this.Fade_Nodes(non_relatives,nodes);
         }
       }
   }
@@ -504,9 +507,15 @@ public Click(params,nodes,edges){
   public Style_Node(node,style){
 
   }
-  public Fade_Node(node,nodes){
-    node.color = 'grey';
+  public Fade_Node(node_id,nodes){
+    var node = nodes.get(node_id)
+    node.color = 'rgba(100,100,100,0.1)';
     nodes.update(node);
+  }
+  public Fade_Nodes(node_ids,nodes){
+    node_ids.forEach(id => {
+      this.Fade_Node(id,nodes);
+    });
   }
 
   public Reset_Style(topic,nodes,node_id){
