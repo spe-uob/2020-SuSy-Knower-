@@ -375,20 +375,20 @@ describe('Get Lists', () => {
     service = null;
     component = null;
   });
-  it('should get subjects list', () => {
-    expect(component.Get_Subject_List()).toEqual(["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
-      "Mathematics (MSci)"
-      ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-      "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
-    ]);
-  });
-  it('should get school list', () => {
-    expect(component.Get_School_List()).toEqual(['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
-      'School of Management', 'University of Bristol Law School']);
-  });
-  it('should get faculty list', () => {
-    expect(component.Get_Faculty_List()).toEqual(['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences']);
-  });
+  // it('should get subjects list', () => {
+  //   expect(component.Get_Subject_List()).toEqual(["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
+  //     "Mathematics (MSci)"
+  //     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
+  //     "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
+  //   ]);
+  // });
+  // it('should get school list', () => {
+  //   expect(component.Get_School_List()).toEqual(['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
+  //     'School of Management', 'University of Bristol Law School']);
+  // });
+  // it('should get faculty list', () => {
+  //   expect(component.Get_Faculty_List()).toEqual(['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences']);
+  // });
 });
 
 describe('Get Ids', () => {

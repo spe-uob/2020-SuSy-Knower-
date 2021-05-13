@@ -5,6 +5,6 @@ export interface Unit{
     school: string;
     topic: string;
     url: string; 
-    prereqs: String;//Unit[];
+    prerequisites: String;//Unit[];
     tb: number;
 }
