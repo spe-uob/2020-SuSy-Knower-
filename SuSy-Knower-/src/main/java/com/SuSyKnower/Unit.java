@@ -16,8 +16,6 @@ public class Unit {
     private String programme;
     private String school;
     private String faculty;
-    //temporarily only one topic per unit allowed
-    //a csv string, might be worth parsing not to separate strings but topic objects
     private String topic;
     private String url;
     private String prereqs;
@@ -98,7 +96,6 @@ public class Unit {
                 ", faculty='" + faculty + '\'' +
                 ", school='" + school + '\'' +
                 ", topics='" + topic + '\'' +
-                //make it an actual link in some layer
                 ", link='" + url + '\'' +
                 ", prerequisites=" + prereqs + '\'' +
                 '}';

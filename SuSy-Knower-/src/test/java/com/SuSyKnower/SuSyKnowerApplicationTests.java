@@ -170,7 +170,6 @@ class SuSyKnowerApplicationTests {
 		List<String>ActualProgrammes = new ArrayList<String>();
 		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science"));
 		ExpectedProgrammes.add("Computer Science (BSc)");
-		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
@@ -180,8 +179,10 @@ class SuSyKnowerApplicationTests {
 		List<String>ExpectedSchools = new ArrayList<String>();
 		List<String>ActualSchools = new ArrayList<String>();
 		ActualSchools.addAll(testUnitService.getAllSchoolsInFaculty("Engineering"));
-		ExpectedSchools.add("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)");
-		ExpectedSchools.add("School of Civil, Aerospace and Mechanical Engineering (CAME)");
+		ExpectedSchools.add("School of Computer Science");
+		ExpectedSchools.add("School of Aerospace Engineering");
+		ExpectedSchools.add("School of Mechanical Engineering");
+		ExpectedSchools.add("School of Electrical & Electronic Engineering");
 		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
 	}
 	//slow
@@ -220,12 +221,18 @@ class SuSyKnowerApplicationTests {
 		List<String>ExpectedSchools = new ArrayList<String>();
 		List<String>ActualSchools = new ArrayList<String>();
 		ActualSchools = testUnitService.getAllSchools();
-		ExpectedSchools.add("School of Computer Science, Electrical and Electronic Engineering, and Engineering Maths (SCEEM)");
-		ExpectedSchools.add("School of Civil, Aerospace and Mechanical Engineering (CAME)");
+		ExpectedSchools.add("School of Computer Science");
+		ExpectedSchools.add("School of Aerospace Engineering");
+		ExpectedSchools.add("School of Mechanical Engineering");
+		ExpectedSchools.add("School of Electrical & Electronic Engineering");
 		ExpectedSchools.add("School of Mathematics");
 		ExpectedSchools.add("School of Physics");
-		ExpectedSchools.add("School of Arts");
+		ExpectedSchools.add("School of Chemistry");
+		ExpectedSchools.add("School of Philosophy");
+		ExpectedSchools.add("School of Anthropology and Archaeology");
+		ExpectedSchools.add("School of English");
 		ExpectedSchools.add("School of Psychological Science");
+		ExpectedSchools.add("School of Biological Sciences");
 		ExpectedSchools.add("University of Bristol Law School");
 		ExpectedSchools.add("School of Management");
 		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
@@ -239,15 +246,17 @@ class SuSyKnowerApplicationTests {
 		ActualProgrammes.addAll(testUnitService.getAllProgrammes());
 		ExpectedProgrammes.add("Computer Science (BSc)");
 		ExpectedProgrammes.add("Aerospace Engineering (BEng)");
-		ExpectedProgrammes.add("Mathematics (MSci)");
 		ExpectedProgrammes.add("Civil Engineering (BEng)");
 		ExpectedProgrammes.add("Electrical and Electronic Engineering (BEng)");
-		ExpectedProgrammes.add("Physics (BSc)");
-		ExpectedProgrammes.add("Philosophy (BA)");
-		ExpectedProgrammes.add("Psychology (BSc)");
+		ExpectedProgrammes.add("Mathematics (MSci)");
 		ExpectedProgrammes.add("Data Science (BSc)");
-		ExpectedProgrammes.add("Anthropology (BA)");
+		ExpectedProgrammes.add("Physics (BSc)");
 		ExpectedProgrammes.add("Chemical Physics (BSc)");
+		ExpectedProgrammes.add("Philosophy (BA)");
+		ExpectedProgrammes.add("Anthropology (BA)");
+		ExpectedProgrammes.add("English (BA)");
+		ExpectedProgrammes.add("Psychology (BSc)");
+		ExpectedProgrammes.add("Zoology (BSc)");
 		ExpectedProgrammes.add("Honours Law (LLB)");
 		ExpectedProgrammes.add("Management (BSc)");
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
@@ -265,6 +274,7 @@ class SuSyKnowerApplicationTests {
 		ExpectedTopics.add("4");
 		ExpectedTopics.add("5");
 		ExpectedTopics.add("6");
+		ExpectedTopics.add(null);
 		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
 	}
 

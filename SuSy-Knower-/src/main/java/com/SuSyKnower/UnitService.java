@@ -37,7 +37,6 @@ public class UnitService {
         return findAllUnits().size();
     }
 
-    //get the prerequisites in a list form from the prereqs string in the Unit class
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
         String prereqStr = unit.getPrerequisites();
@@ -67,7 +66,7 @@ public class UnitService {
         }
         return prerequisites;
     }
-//all iterate through the entire database
+
     //NumberFormat For input string:...
     //slow
     public List<Unit> getPostreqs(Unit unit) {
@@ -176,6 +175,10 @@ public class UnitService {
         for(int i = 0; i < allProgrammes.size(); i ++) {
             allTopics.addAll(getAllTopicsInProgramme(allProgrammes.get(i)));
         }
+        Set<String> set = new LinkedHashSet<>(allTopics);
+        allTopics.clear();
+        allTopics.addAll(set);
+
         return allTopics;
     }
 

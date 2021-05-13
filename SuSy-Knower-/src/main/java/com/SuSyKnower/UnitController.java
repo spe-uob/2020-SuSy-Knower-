@@ -54,7 +54,7 @@ public class UnitController {
     public String displayAllUsers(Model model) {
         List<Unit> unitList = new ArrayList<Unit>();
         unitList = unitService.findAllUnits();
-        model.addAttribute("unitList", unitList);
+       // model.addAttribute("unitList", unitList);
         return "index";
     }
 
@@ -64,15 +64,13 @@ public class UnitController {
       return new ResponseEntity<>(units, HttpStatus.OK);
     }
 
-    //display all the prerequisites in a separate tab given the unit id
-    //the path is <server ip>:8080/test/prereqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/prereqs")
     public ResponseEntity<List<Unit>> displayAllPrereqs(Model model, @RequestParam(required = true) int id) {
         List<Unit> prerequisites = new ArrayList<Unit>();
         if(unitService.getUnit(id).isPresent()) {
             prerequisites = unitService.getPrereqs(unitService.getUnit(id).get());
         }
-        model.addAttribute("prerequisites", prerequisites);
+       // model.addAttribute("prerequisites", prerequisites);
         return new ResponseEntity<>(prerequisites, HttpStatus.OK);
     }
 
@@ -82,19 +80,17 @@ public class UnitController {
         if(unitService.getUnit(id).isPresent()) {
             prerequisitesIds = unitService.getPrereqsInt(unitService.getUnit(id).get());
         }
-        model.addAttribute("prerequisitesIds", prerequisitesIds);
+       // model.addAttribute("prerequisitesIds", prerequisitesIds);
         return new ResponseEntity<>(prerequisitesIds, HttpStatus.OK);
     }
 
-    //display all the postrequisites in a separate tab given the unit id
-    //the path is <server ip>:8080/test/postreqs?id=<the id of a unit whose prereqs you want to see>
     @GetMapping(path="/postreqs")
     public String displayAllPostreqs(Model model, @RequestParam(required = true) int id) {
         List<Unit> postrequisites = new ArrayList<Unit>();
         if(unitService.getUnit(id).isPresent()) {
             postrequisites = unitService.getPostreqs(unitService.getUnit(id).get());
         }
-        model.addAttribute("postrequisites", postrequisites);
+       // model.addAttribute("postrequisites", postrequisites);
         return "postreqs";
     }
 
@@ -107,7 +103,7 @@ public class UnitController {
         else {
             unitsByTopic = unitService.getAllByTopic(topic);
         }
-        model.addAttribute("by_topic", unitsByTopic);
+       // model.addAttribute("by_topic", unitsByTopic);
         return new ResponseEntity<>(unitsByTopic, HttpStatus.OK);
     }
     
@@ -120,7 +116,7 @@ public class UnitController {
         else {
             unitsByProgramme = unitService.getAllByProgramme(programme);
         }
-        model.addAttribute("by_programme", unitsByProgramme);
+       // model.addAttribute("by_programme", unitsByProgramme);
         return new ResponseEntity<>(unitsByProgramme, HttpStatus.OK);
     }
 
@@ -133,7 +129,7 @@ public class UnitController {
         else {
             unitsBySchool = unitService.getAllBySchool(school);
         }
-        model.addAttribute("by_school", unitsBySchool);
+        //model.addAttribute("by_school", unitsBySchool);
         return new ResponseEntity<>(unitsBySchool, HttpStatus.OK);
     }
 
@@ -146,7 +142,7 @@ public class UnitController {
         else {
             unitsByFaculty = unitService.getAllByFaculty(faculty);
         }
-        model.addAttribute("by_faculty", unitsByFaculty);
+        //model.addAttribute("by_faculty", unitsByFaculty);
         return new ResponseEntity<>(unitsByFaculty, HttpStatus.OK);
     }
 
@@ -154,7 +150,7 @@ public class UnitController {
     public ResponseEntity<List<String>> displayAllFaculties(Model model) {
         List<String> faculties = new ArrayList<String>();
         faculties = unitService.getAllFaculties();
-        model.addAttribute("faculties", faculties);
+        //model.addAttribute("faculties", faculties);
         return new ResponseEntity<>(faculties, HttpStatus.OK);
     }
 
@@ -167,7 +163,7 @@ public class UnitController {
         else {
             programmes = unitService.getAllProgrammesInSchool(school);
         }
-        model.addAttribute("programmes", programmes);
+        //model.addAttribute("programmes", programmes);
         return new ResponseEntity<>(programmes, HttpStatus.OK);
     }
 
@@ -180,7 +176,7 @@ public class UnitController {
         else {
             schools = unitService.getAllSchoolsInFaculty(faculty);
         }
-        model.addAttribute("schools", schools);
+        //model.addAttribute("schools", schools);
         return new ResponseEntity<>(schools, HttpStatus.OK);
     }
 
@@ -193,7 +189,7 @@ public class UnitController {
         else {
             topics = unitService.getAllTopicsInProgramme(programme);
         }
-        model.addAttribute("topics", topics);
+        //model.addAttribute("topics", topics);
         return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
@@ -214,7 +210,7 @@ public class UnitController {
                 schoolByProgramme = "incorrect argument";
             }
         }
-        model.addAttribute("schoolByProgramme", schoolByProgramme);
+       // model.addAttribute("schoolByProgramme", schoolByProgramme);
         return new ResponseEntity<>(schoolByProgramme, HttpStatus.OK);
     }
 
@@ -235,7 +231,7 @@ public class UnitController {
                 facultyBySchool = "incorrect argument";
             }
         }
-        model.addAttribute("facultyBySchool", facultyBySchool);
+        //model.addAttribute("facultyBySchool", facultyBySchool);
         return new ResponseEntity<>(facultyBySchool, HttpStatus.OK);
     }
 
