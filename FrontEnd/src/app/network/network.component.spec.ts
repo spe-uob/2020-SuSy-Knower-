@@ -423,16 +423,16 @@ describe('Get Ids', () => {
     fixture.destroy();
   })
   xit('should get parents id', () => {
-      expect(component.Get_Parents_Ids(5, [1, 2, 3, 4, 6, 7, 9, 8, 10, 11, 12, 13])).toEqual([8, 11]);
+      expect(component.Get_Parents_Ids(5, [{5, 8, "5-8"}, {5, 11, "5-11"}])).toEqual([8, 11]);
   });
   xit('should get ancestors id', () => {
-    expect(component.Get_Ancestors_Ids(8, [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13])).toEqual([1, 3, 4, 5, 6]);
+    expect(component.Get_Ancestors_Ids(5, [{5, 8, "5-8"}, {5, 11, "5-11"}])).toContain([8, 11]);
   });
   xit('should get children id', () => {
-    expect(component.Get_Children_Ids(5, [1, 2, 3, 4, 6, 7, 9, 8, 10, 11, 12, 13] )).toEqual([]);
+    expect(component.Get_Children_Ids(9, [{3, 9, "3-9"}, {4, 9, "4-9"}, {6, 9, "6-9"}])).toEqual([3,4,6]);
   });
   xit('should get descendents id', () => {
-    expect(component.Get_Descendents_Ids(8, [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13])).toEqual([2, 7, 9, 10, 11, 12, 13]);
+    expect(component.Get_Descendents_Ids(9, [{3, 9, "3-9"}, {4, 9, "4-9"}, {6, 9, "6-9"}])).toContain([3,4,6]);
   });
 });
 
