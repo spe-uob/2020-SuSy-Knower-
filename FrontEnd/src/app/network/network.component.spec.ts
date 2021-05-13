@@ -270,7 +270,7 @@ describe('Set_Unit_Positions', () => {
   it('should set yOffset to 0 if nodelevel is not equal to current level', () => {
     var yOffset = 0;
     var currentLevel = 1;
-    // component.Set_Unit_Positions(units, mock_node)
+    component.Set_Unit_Positions(units, mock_node)
     expect(currentLevel).not.toEqual(mock_node.level)
     expect(yOffset).toEqual(0);
   })
@@ -422,18 +422,18 @@ describe('Get Ids', () => {
   afterEach(() =>{
     fixture.destroy();
   })
-  // it('should get parents id', () => {
-  //     expect(component.Get_Parents_Ids(units, component.nodes, component.edges)).toEqual([]);
-  // });
-  // it('should get ancestors id', () => {
-  //   expect(component.Get_Ancestors_Ids(units, component.nodes, component.edges)).toEqual([]);
-  // });
-  // it('should get children id', () => {
-  //   expect(component.Get_Children_Ids(units, component.nodes, component.edges)).toEqual([]);
-  // });
-  // it('should get descendents id', () => {
-  //   expect(component.Get_Descendents_Ids(units, component.nodes, component.edges)).toEqual([]);
-  // });
+  xit('should get parents id', () => {
+      expect(component.Get_Parents_Ids(5, [1, 2, 3, 4, 6, 7, 9, 8, 10, 11, 12, 13])).toEqual([8, 11]);
+  });
+  xit('should get ancestors id', () => {
+    expect(component.Get_Ancestors_Ids(8, [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13])).toEqual([1, 3, 4, 5, 6]);
+  });
+  xit('should get children id', () => {
+    expect(component.Get_Children_Ids(5, [1, 2, 3, 4, 6, 7, 9, 8, 10, 11, 12, 13] )).toEqual([]);
+  });
+  xit('should get descendents id', () => {
+    expect(component.Get_Descendents_Ids(8, [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13])).toEqual([2, 7, 9, 10, 11, 12, 13]);
+  });
 });
 
 describe('Find_Node_Id_From_Label', () => {
@@ -453,7 +453,7 @@ describe('Find_Node_Id_From_Label', () => {
   })
 })
 
-describe('Style_Ancestors', () => {
+describe('Style', () => {
   let component: NetworkComponent;
   let testBedService: UnitService;
   let fixture: ComponentFixture<NetworkComponent>;
@@ -469,22 +469,42 @@ describe('Style_Ancestors', () => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
     testBedService = TestBed.inject(UnitService);
-    mock_node ={
-      id: 1,
-      name: "Object Orientated",
-      programme: "Computer Science",
-      school: "SCEEM",
-      topic: "Algortihms",
-      url: "googl.com",
-      prereqs: "1,2,3,4",
-      tb: 2,
-    }
   });
   afterEach(()=>{
     fixture.destroy();
   })
-  it('should color parent red', () => {
-  let ancestorId ;
+  xit('should color parent red', () => {
+    expect(component.Style_Ancestors)
+  })
+  xit('should color descendent green', () => {
+    expect(component.Style_Descendents)
   })
 })
 
+describe('Reset Nodes' , () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  });
+  it('should cluster all nodes back', () => {
+    let subjects = ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
+      "Mathematics (MSci)"
+      ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
+      "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"];
+    let schools = ['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
+      'School of Management', 'University of Bristol Law School'];
+    let faculties = ['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences'];
+    let nodes = component.nodes;
+    let edges = component.edges
+    spyOn(component,'Cluster_All');
+    component.Cluster_All(subjects,schools,faculties,nodes,edges);
+    expect(component.Cluster_All(subjects,schools,faculties,nodes,edges)).toHaveBeenCalled();
+  })
+})

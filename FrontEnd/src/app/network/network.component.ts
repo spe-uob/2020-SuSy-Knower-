@@ -249,30 +249,7 @@ export class NetworkComponent implements OnInit {
       var selected_node_id = params.nodes[0];
 
       if(this.network.isCluster(selected_node_id)){
-        var cluster = this.network.body.nodes[selected_node_id].options;
-        if(cluster.type == Mode.SUBJECT){
-            var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
-            this.current_Subject = cluster.label;
-            this.current_subject_nodes = nodes_in_cluster;
-            this.Uncluster(selected_node_id);
-            this.Set_Unit_Positions(nodes_in_cluster,nodes);
-            this.Fit_To_Selection(nodes_in_cluster);
-            this.mode = Mode.UNIT;
-            this.Turn_On_Physics(this.network.options);
-        }
-        else if(cluster.type == Mode.FACULTY){
-          this.mode = Mode.SCHOOL;
-          var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
           this.Uncluster(selected_node_id);
-          //this.Fit_To_Selection(nodes_in_cluster)
-        }
-        else if(cluster.type == Mode.SCHOOL){
-          this.mode = Mode.SUBJECT;
-          var nodes_in_cluster = this.network.getNodesInCluster(selected_node_id);
-          this.Uncluster(selected_node_id);
-          //this.Fit_To_Selection(nodes_in_cluster)
-        }
-
       }
       else{
         console.log("node is NOT a cluster")
@@ -353,7 +330,7 @@ export class NetworkComponent implements OnInit {
     console.log(label);
     var node_id = -1
     this.nodes.forEach(node => {
-      if(node.label == label){
+      if(node.label.toLowerCase().includes(label.toLowerCase()) ){
         node_id = node.id;
       }
     });
@@ -675,7 +652,30 @@ export class NetworkComponent implements OnInit {
   }
   public Uncluster(cluster_id){
     console.log("Unclustering cluster")
-    this.network.openCluster(cluster_id);
+    var cluster = this.network.body.nodes[cluster_id].options;
+    if(cluster.type == Mode.SUBJECT){
+        var nodes_in_cluster = this.network.getNodesInCluster(cluster_id);
+        this.current_Subject = cluster.label;
+        this.current_subject_nodes = nodes_in_cluster;
+        this.network.openCluster(cluster_id);
+        this.Set_Unit_Positions(nodes_in_cluster,this.nodes);
+        this.Fit_To_Selection(nodes_in_cluster);
+        this.mode = Mode.UNIT;
+        this.Turn_On_Physics(this.network.options);
+    }
+    else if(cluster.type == Mode.FACULTY){
+      this.mode = Mode.SCHOOL;
+      var nodes_in_cluster = this.network.getNodesInCluster(cluster_id);
+      this.network.openCluster(cluster_id);
+      //this.Fit_To_Selection(nodes_in_cluster)
+    }
+    else if(cluster.type == Mode.SCHOOL){
+      this.mode = Mode.SUBJECT;
+      var nodes_in_cluster = this.network.getNodesInCluster(cluster_id);
+      this.network.openCluster(cluster_id);
+      //this.Fit_To_Selection(nodes_in_cluster)
+    }
+    
   }
   public Cluster_All(subjects,schools,faculties,nodes,edges){
     this.Cluster_Sujects(subjects);
