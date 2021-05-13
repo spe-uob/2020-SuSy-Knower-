@@ -7,6 +7,7 @@ import { Network, Node, Edge } from 'vis-network';
 import { DataSet} from 'vis-data';
 import { option } from 'vis-util/esnext';
 import { assertNotNull } from '@angular/compiler/src/output/output_ast';
+import { useAnimation } from '@angular/animations';
 
 declare var vis:any;
 
@@ -37,10 +38,12 @@ export class NetworkComponent implements OnInit {
   public subjects: String[];
   public schools: String[];
   public faculties: String[];
+  public done: number;
   public tester: number;
   constructor(private unitService: UnitService) { }
 
   ngOnInit() {
+    this.done = 0;
     this.mode = Mode.FACULTY;
     this.current_Subject= "No Subject";
     var data = {
@@ -48,15 +51,16 @@ export class NetworkComponent implements OnInit {
     edges: this.edges
     };
     
-  
-    this.getUnits(data);
     this.Get_Subject_List();
     this.Get_School_List();
     this.Get_Faculty_List();
+    this.getUnits(data);
+
 
     // create an array with edges
 
-    this.Load_Vis_Network(data);
+    
+
     console.log(this.network);
     console.log(this.nodes);
   }
@@ -65,18 +69,29 @@ export class NetworkComponent implements OnInit {
     this.unitService.getUnits().subscribe(
       (response: Unit[]) => {
           this.units = response;
+          console.log(this.units); 
           data = this.Get_Network_Data(response,data.nodes,data.edges);
-          this.Format_Loaded_Data(data);
+          this.done++;
+          this.All_Data_Loaded_Check();
         },
       (error: HttpErrorResponse) => {alert(error.message); }
     );
     console.log("Getting units");
   }
+  public All_Data_Loaded_Check(){
+    if(this.done>=4){
+      this.Load_Vis_Network();
+      this.Format_Loaded_Data(this.nodes,this.edges);
+      
+    }
+  }
   //Create the network itself
-  public Load_Vis_Network(data){
+  public Load_Vis_Network(){
+    var data = {
+      nodes: this.nodes,
+      edges: this.edges,
+      };
     console.log("Loading Network");
-    var nodes = data.nodes;
-    var edges = data.edges;
     var mode_type = Mode.FACULTY;
     var node_size =10
     
@@ -134,17 +149,13 @@ export class NetworkComponent implements OnInit {
     return data;
     }
   //Once data has been recieved from database, organise it into the original view
-  public Format_Loaded_Data(data){
-    var nodes = data.nodes;
-    var edges = data.edges;
-    this.Cluster_All(this.Get_Subject_List(),this.Get_School_List(),this.Get_Faculty_List(),nodes,edges);//this.subjects,this.schools,this.faculties
+  public Format_Loaded_Data(nodes,edges){
+    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
 
-    this.Run_Network_Events(data);
+    this.Run_Network_Events(nodes,edges);
   }
   //Handles click zoom and drawing events
-  public Run_Network_Events(data){
-    var nodes= data.nodes;
-    var edges = data.edges;
+  public Run_Network_Events(nodes,edges){
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
     this.network.on("beforeDrawing", function(ctx) {
@@ -263,8 +274,7 @@ export class NetworkComponent implements OnInit {
 
   }
   public Find_Prerequisites(unit: Unit): number[]{
-    var prereqStr= unit.prereqs;
-
+    var prereqStr= unit.prerequisites;
     var prereqChar = [];
     var prereqs = []
     if(prereqStr != null){
@@ -302,44 +312,65 @@ export class NetworkComponent implements OnInit {
     }
   }
   public Get_Subject_List(){
-    return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
-    "Mathematics (MSci)"
-    ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-    "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
-  ];
-  // this.unitService.getSubjects().subscribe(
-  //   (response: String[]) => {
-  //       this.subjects = response;
-  //     },
-  //   (error: HttpErrorResponse) => {alert(error.message); }
-  // );
+  //   return ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
+  //   "Mathematics (MSci)"
+  //   ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
+  //   "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
+  // ];
+  this.unitService.getSubjects().subscribe(
+    (response: String[]) => {
+        this.subjects = response;
+        this.done ++;
+        this.All_Data_Loaded_Check();
+        console.log(this.subjects);
+      },
+    (error: HttpErrorResponse) => {alert(error.message); }
+  );
   }
   public Get_School_List(){
-    return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
-    "School of Management","University of Bristol Law School"]
-    // this.unitService.getSchools().subscribe(
-    //   (response: String[]) => {
-    //       this.schools = response;
-    //     },
-    //   (error: HttpErrorResponse) => {alert(error.message); }
-    // );
+    // return ["SCEEM","SAME","School of Physics","School of Arts","School of Psychological Science","School of Mathematics",
+    // "School of Management","University of Bristol Law School"]
+    this.unitService.getSchools().subscribe(
+      (response: String[]) => {
+          this.schools = response;
+          this.done ++;
+          this.All_Data_Loaded_Check();
+          console.log(this.schools);
+        },
+      (error: HttpErrorResponse) => {alert(error.message); }
+    );
   }
   public Get_Faculty_List(){
-    return ["Faculty of Engineering","Faculty of Science","Faculty of Arts","Faculty of Social Sciences","Faculty of Life Sciences"]
+    // return ["Faculty of Engineering","Faculty of Science","Faculty of Arts",
+    // "Faculty of Social Sciences","Faculty of Life Sciences"]
+    this.unitService.getFaculties().subscribe(
+      (response: String[]) => {
+          this.faculties = response;
+          this.done ++;
+          if(this.done >= 4){
+            this.Format_Loaded_Data(this.nodes,this.edges);
+          }
+          console.log(this.faculties);
+        },
+      (error: HttpErrorResponse) => {alert(error.message); }
+    );
   }
   public Find_School(subject):String{
     if(subject == "Computer Science (BSc)"|| subject == "Electrical and Electronic Engineering (BEng)")
     {
-      return "SCEEM";
+      return "School of Computer Science";
     }
     else if (subject == "Aerospace Engineering (BEng)"|| subject == "Civil Engineering (BEng)"){
-      return "SAME";
+      return "School of Aerospace Engineering";
     }
     else if(subject == "Physics (BSc)"|| subject == "Chemical Physics (BSc)"){
       return "School of Physics";
     }
-    else if(subject == "Philosophy (BA)" || subject == "Anthropology (BA)"){
-      return "School of Arts";
+    else if(subject == "Anthropology (BA)"){
+      return "School of Anthropology and Archaeology";
+    }
+    else if(subject == "Philosophy (BA)" ){
+      return "School of Philosophy";
     }
     else if(subject == "Psychology (BSc)"){
       return "School of Psychological Science";
@@ -352,8 +383,13 @@ export class NetworkComponent implements OnInit {
     }
     else if(subject == "Management (BSc)"){
       return "School of Management";
+    }    
+    else if(subject == "English (BA)"){
+      return "School of English";
     }
-
+    else if(subject == "Zoology (BSc)"){
+      return "School of Biological Sciences";
+    }
     else{
       return "Error";
     }
@@ -362,20 +398,20 @@ export class NetworkComponent implements OnInit {
   public Find_Faculty(school):String{
 
     //return "WRITE FUNCTION";
-    if(school == "SCEEM"||school == "SAME"){
-      return "Faculty of Engineering";
+    if(school == "School of Computer Science"||school == "School of Aerospace Engineering"){
+      return "Engineering";
     }
     else if (school == "School of Mathematics"|| school == "School of Physics"){
-      return "Faculty of Science"
+      return "Science"
     }
     else if (school == "University of Bristol Law School"|| school == "School of Management"){
-      return "Faculty of Social Sciences"
+      return "Social Sciences and Law"
     }
-    else if (school == "School of Arts"){
-      return "Faculty of Arts"
+    else if (school == "School of Philosophy"|| school == "School of Anthropology and Archaeology"|| school == "School of English"){
+      return "Arts"
     }
-    else if (school == "School of Psychological Science"){
-      return "Faculty of Life Sciences"
+    else if (school == "School of Psychological Science"|| school == "School of Biological Sciences"){
+      return "Life Sciences"
     }
     else{
       return "Faculty of Engineering";
