@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+//import com.SuSyKnower.CustomizedException.*;
 
 @Service
 public class UnitService {
@@ -40,7 +41,6 @@ public class UnitService {
     public List<Unit> getPrereqs(Unit unit) {
         List<Unit> prerequisites = new ArrayList<Unit>();
         String prereqStr = unit.getPrerequisites();
-//exception
         try {
             String[] elements = prereqStr.split(",");
             for (int i = 0; i < elements.length; i++) {
@@ -82,7 +82,6 @@ public class UnitService {
                 if (currentPrereqs.contains(unit)) postrequisites.add(tempUnits.get(i));
             }
             catch(NumberFormatException f) {
-                
             }
             /*if(getUnit(i).isPresent()) {
                 try {
