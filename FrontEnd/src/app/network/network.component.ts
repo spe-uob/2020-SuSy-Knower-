@@ -579,7 +579,7 @@ export class NetworkComponent implements OnInit {
     var gr = this.network.groups._defaultGroups[topic];
     gr.id = node_id;
     nodes.update({id:node_id,color:{background:gr.background,border:gr.border,highlight:gr.highlight}});
-    console.log({id:node_id,color:{background:gr.background,border:gr.border,highlight:gr.highlight}});
+
 
   }
   public Resize_Label(label): String{
@@ -808,7 +808,6 @@ export class NetworkComponent implements OnInit {
         y = 0//yValues[node.level];
         currentLevel = node.level;
 
-        console.log(yValues)
       }
       else{
         yValues[node.level] += 1;
