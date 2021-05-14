@@ -13,8 +13,13 @@ import java.util.*;
 //run by writing "mvn test" in the terminal
 
 //mocking???
+//this seems to be a partial integration test already, the UnitService is not a mock. I can try
+//do the same thing for unit controller, 
+//and mock tests for the same thing
+
+//change to SuSyKnowerServiceTests maybe?
 @SpringBootTest
-class SuSyKnowerApplicationTests {
+class SuSyKnowerServiceTests {
 	@Autowired
 	private UnitService testUnitService;
 
