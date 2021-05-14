@@ -9,6 +9,7 @@ import { DataSet} from 'vis-data';
 import { option } from 'vis-util/esnext';
 import { assertNotNull } from '@angular/compiler/src/output/output_ast';
 import { useAnimation } from '@angular/animations';
+import { convertToObject } from 'typescript';
 
 declare var vis:any;
 
@@ -41,6 +42,7 @@ export class NetworkComponent implements OnInit {
   public current_max_units_per_tb:number;
   public initital_View_Position:any;
   public initial_View_scale:any;
+  public clusters:any[];
 
   public unit_width:number;
   public unit_height:number;
@@ -56,6 +58,7 @@ export class NetworkComponent implements OnInit {
   constructor(private unitService: UnitService) { }
 
   ngOnInit() {
+    this.clusters=[];
     this.current_max_tb=0;
     this.current_max_units_per_tb=0;
     this.unit_width=150;
@@ -168,6 +171,7 @@ export class NetworkComponent implements OnInit {
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
     this.initial_View_scale = this.network.getScale();
     this.initital_View_Position = this.network.getViewPosition();
+
   }
 
 
@@ -177,6 +181,8 @@ export class NetworkComponent implements OnInit {
   public Run_Network_Events(nodes,edges){
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
+    this.network.once("stabilizationIterationsDone", function() {
+   }); 
     this.network.on("beforeDrawing", function(ctx) {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
@@ -471,6 +477,9 @@ export class NetworkComponent implements OnInit {
     this.mode = Mode.FACULTY;
     this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
     this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
+    this.clusters.forEach(cluster_id => {
+      this.network.clustering.updateClusteredNode(cluster_id,{x:0,y:0});
+    });
   }
 
 
@@ -658,6 +667,10 @@ export class NetworkComponent implements OnInit {
       allowSingleNodeCluster: true,
       fixed:false,
     };
+    if(!this.clusters.includes(id)){
+      this.clusters.push(id);
+    }
+    console.log(this.clusters);
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
 
   }
@@ -737,7 +750,9 @@ export class NetworkComponent implements OnInit {
   public Fit_To_Selection(node_Ids){
     console.log(node_Ids)
     this.network.fit({nodes:node_Ids,animation:true});
-    //this.network.options.
+    //var pos = this.network.getViewPosition();
+    //this.network.moveTo({position:{x:pos.x,y:pos.y}})
+    //this.network.moveTo
   }
   public Set_Node_Position(node,nodes,x:number,y:number){
     node.x = x;
