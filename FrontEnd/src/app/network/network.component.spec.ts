@@ -804,6 +804,14 @@ describe('Cluster_One_Subject', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:1006,label:'Physics (BSc)'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
     de = fixture.debugElement;
     fixture.detectChanges();
   });
