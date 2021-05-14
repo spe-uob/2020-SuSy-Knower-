@@ -39,6 +39,8 @@ export class NetworkComponent implements OnInit {
   public current_post_reqs: number[];
   public current_max_tb: number;
   public current_max_units_per_tb:number;
+  public initital_View_Position:any;
+  public initial_View_scale:any;
 
   public unit_width:number;
   public unit_height:number;
@@ -164,7 +166,8 @@ export class NetworkComponent implements OnInit {
   public Format_Loaded_Data(nodes,edges){
     this.Run_Network_Events(nodes,edges);
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
-
+    this.initial_View_scale = this.network.getScale();
+    this.initital_View_Position = this.network.getViewPosition();
   }
 
 
@@ -462,9 +465,12 @@ export class NetworkComponent implements OnInit {
         }
       }
     }
-  public Reset_Graph(){
+  public Reset_Graph($event){
     console.log("Resetting...")
-    //this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
+    this.Turn_Off_Physics(this.network.options);
+    this.mode = Mode.FACULTY;
+    this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
+    this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
   }
 
 
@@ -562,12 +568,6 @@ export class NetworkComponent implements OnInit {
       return label;
     }
 
-  }
-
-
-
-  public Reset_Nodes(nodes,edges){
-    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);
   }
   
 
@@ -714,7 +714,7 @@ export class NetworkComponent implements OnInit {
   }
   public Turn_Off_Physics(options){
     console.log("Turning Physics Off");
-    options.physics = false;
+    options.physics = {wind:{x:0,y:0}};
     this.network.setOptions(options);
   }
   public Turn_Off_Hierarchical(options){

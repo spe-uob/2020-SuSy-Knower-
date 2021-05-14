@@ -8,14 +8,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class ResetButtonComponent implements OnInit {
 
   constructor() { }
-  signal: boolean;
-  @Output() searchEvent = new EventEmitter<boolean>();
+  signal: string;
+  @Output() resetEvent = new EventEmitter<string>();
 
   ngOnInit(): void {
   }
   public send_reset(){
-    var signal = true;
-    this.searchEvent.emit(signal);
+    var signal = "reset";
+    this.resetEvent.emit(signal);
   }
 
 }
