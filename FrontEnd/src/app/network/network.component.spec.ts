@@ -689,6 +689,15 @@ describe('Get_Descendents_Ids', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:9,label:'School of Computer Science'}]);
+    var edges = new DataSet([{from:3, to:9 ,id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
     de = fixture.debugElement;
     fixture.detectChanges();
     units = [
@@ -699,7 +708,7 @@ describe('Get_Descendents_Ids', () => {
     fixture.destroy();
   })
   xit('should get descendents id', () => {
-    expect(component.Get_Descendents_Ids(9, [{from:3, to:9, id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}])).toContain([3,4,6]);
+    expect(component.Get_Descendents_Ids(9,component.edges )).toContain([3,4,6]);
   });
 });
 
@@ -853,10 +862,9 @@ describe('Cluster_Sujects', () => {
     fixture.destroy();
   })
   it('should cluster subjects', () => {
-    expect(component.Cluster_Sujects(["Computer Science (BSc)", "Aerospace Engineering (BEng)",
-      "Civil Engineering (BEng)", "Electrical and Electronic Engineering (BEng)", "Mathematics (MSci)", "Data Science (BSc)",
-      "Physics (BSc)", "Chemical Physics (BSc)", "Philosophy (BA)",
-      "Anthropology (BA)", "English (BA)", "Psychology (BSc)", "Zoology (BSc)", "Honours Law (LLB)", "Management (BSc)"])).toBeTruthy()
+    var spy = spyOn(component, 'Cluster_One_Subject')
+    component.Cluster_Sujects(['Computer Science (Bsc)'])
+    expect(spy).toHaveBeenCalled();
   })
 })
 
@@ -1030,7 +1038,7 @@ describe('Cluster_Faculties', () => {
   })
   it('should cluster faculties', () => {
     var spy = spyOn(component, 'Cluster_One_Faculty')
-    component.Cluster_Schools(['Science','Engineering'])
+    component.Cluster_Faculties(['Science','Engineering'])
     expect(spy).toHaveBeenCalled();
   })
 })
