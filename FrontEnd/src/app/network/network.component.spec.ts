@@ -9,6 +9,7 @@ import { DataSet} from 'vis-data';
 import { NetworkComponent } from './network.component';
 import { Observable, Observer } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Network } from 'vis-network';
 
 
 let mockData = [
@@ -80,6 +81,9 @@ describe('NetworkComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should have a network',() => {
+    component.nodes =new DataSet([]);
+    component.edges = new DataSet([]);
+    component.Load_Vis_Network();
     expect(component.network).toBeTruthy();
   });
   it('should call ngOnInit',() => {
@@ -144,6 +148,7 @@ describe('Set Node Position',()=>{
     TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+
     testBedService = TestBed.inject(UnitService);
     mock_node ={
       id: 1,
@@ -181,7 +186,7 @@ describe('Set Node Position',()=>{
   });
   it('should set node.fixed to true',()=>{
     component.Set_Node_Position(mock_node,component.nodes,0,0);
-    expect(mock_node.fixed).toBeTruthy();
+    expect(component.nodes.get(mock_node.id)).toBeTruthy();
   });
   xit('should call add node to nodes',()=>{
     component.Set_Node_Position(mock_node,component.nodes,0,0);
@@ -214,16 +219,18 @@ describe('Set_Unit_Positions', () => {
     component = fixture.componentInstance;
     testBedService = TestBed.inject(UnitService);
     units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
-    mock_node ={id: 9, lable: 'Algorithms 2',level: 2,}
+    mock_node ={id: 9, label: 'Algorithms 2',level: 2,}
   });
   afterEach(()=>{
     fixture.destroy();
   })
 
   it('should set yOffset to 0 if nodelevel is not equal to current level', () => {
+    var nodes = new DataSet([mock_node]);
+    component.edges = new DataSet([]);
     var yOffset = 0;
     var currentLevel = 1;
-    component.Set_Unit_Positions(units, mock_node)
+    component.Set_Unit_Positions([mock_node.id], nodes )
     expect(currentLevel).not.toEqual(mock_node.level)
     expect(yOffset).toEqual(0);
   })
@@ -367,6 +374,7 @@ describe('Find_Node_Id_From_Label', () => {
     component = null;
   });
   it('should find node id from label', () => {
+    component.nodes = new DataSet([{id: 44, label: 'Combinatorics',level: 2,}])
     expect(component.Find_Node_Id_From_Label('Combinatorics')).toEqual(44)
   })
 })
@@ -681,6 +689,15 @@ describe('Get_Descendents_Ids', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:9,label:'School of Computer Science'}]);
+    var edges = new DataSet([{from:3, to:9 ,id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
     de = fixture.debugElement;
     fixture.detectChanges();
     units = [
@@ -691,7 +708,7 @@ describe('Get_Descendents_Ids', () => {
     fixture.destroy();
   })
   xit('should get descendents id', () => {
-    expect(component.Get_Descendents_Ids(9, [{from:3, to:9, id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}])).toContain([3,4,6]);
+    expect(component.Get_Descendents_Ids(9,component.edges )).toContain([3,4,6]);
   });
 });
 
@@ -773,6 +790,261 @@ describe('Resize Label',()=>{
 })
 
 
+// All below should work fine once network is working
+
+describe('Cluster_One_Subject', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    var nodes = new DataSet([{id:1006,label:'Physics (BSc)'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one subject', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_Subject('Physics (BSc)', 1006)
+    expect(spy).toHaveBeenCalled()
+  })
+})
+
+describe('Cluster_Sujects', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster subjects', () => {
+    var spy = spyOn(component, 'Cluster_One_Subject')
+    component.Cluster_Sujects(['Computer Science (Bsc)'])
+    expect(spy).toHaveBeenCalled();
+  })
+})
+
+describe('Cluster_One_School', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one school', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_School('School of Computer Science', 2000)
+    expect(spy).toHaveBeenCalled()
+  })
+  it('should check if school exists', () => {
+    expect(component.Cluster_One_School('false school', 2000)).toBeFalsy()
+  })
+})
+
+describe('Cluster_Schools', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2001,label:'School of Aerospace Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster schools', () => {
+    var spy = spyOn(component, 'Cluster_One_School')
+    component.Cluster_Schools(['School of Computer Science','School of Aerospace Engineering'])
+    expect(spy).toHaveBeenCalled();
+  })
+})
+
+describe('Cluster_One_Faculty', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    var nodes = new DataSet([{id:3000,label:'Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one faculty', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_Faculty('Engineering', 3000)
+    expect(spy).toHaveBeenCalled()
+  })
+  it('should check if faculty exists', () => {
+    expect(component.Cluster_One_Faculty('false faculty', 3000)).toBeFalsy()
+  })
+})
+
+describe('Cluster_Faculties', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2001,label:'School of Aerospace Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster faculties', () => {
+    var spy = spyOn(component, 'Cluster_One_Faculty')
+    component.Cluster_Faculties(['Science','Engineering'])
+    expect(spy).toHaveBeenCalled();
+  })
+})
+
+// Uncluster
+
 describe('Cluster_All' , () => {
   let component: NetworkComponent;
   let service: MockedUnitService;
@@ -785,7 +1057,7 @@ describe('Cluster_All' , () => {
     service = null;
     component = null;
   });
-  xit('should cluster all nodes back', () => {
+  it('should cluster all nodes', () => {
     let subjects = ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
       "Mathematics (MSci)"
       ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
@@ -793,10 +1065,12 @@ describe('Cluster_All' , () => {
     let schools = ['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
       'School of Management', 'University of Bristol Law School'];
     let faculties = ['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences'];
-    let nodes = component.nodes;
-    let edges = component.edges
-    spyOn(component,'Cluster_All');
-    component.Cluster_All(subjects,schools,faculties,nodes,edges);
-    expect(component.Cluster_All(subjects,schools,faculties,nodes,edges)).toHaveBeenCalled();
+    // var spySubject = spyOn(component.Cluster_All(subjects,schools,faculties),'Cluster_Sujects');
+    // var spySchool = spyOn(component.Cluster_All(subjects,schools,faculties), 'Cluster_Schools');
+    // var spyFaculty = spyOn(component.Cluster_All(subjects,schools,faculties), 'Cluster_Faculties');
+    // component.Cluster_All(subjects,schools,faculties);
+    // expect(spySubject).toHaveBeenCalled();
+    // expect(spySchool).toHaveBeenCalled();
+    // expect(spyFaculty).toHaveBeenCalled();
   })
 })

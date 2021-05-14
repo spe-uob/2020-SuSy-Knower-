@@ -9,6 +9,7 @@ import { DataSet} from 'vis-data';
 import { option } from 'vis-util/esnext';
 import { assertNotNull } from '@angular/compiler/src/output/output_ast';
 import { useAnimation } from '@angular/animations';
+import { convertToObject } from 'typescript';
 
 declare var vis:any;
 
@@ -41,6 +42,7 @@ export class NetworkComponent implements OnInit {
   public current_max_units_per_tb:number;
   public initital_View_Position:any;
   public initial_View_scale:any;
+  public clusters:any[];
 
   public unit_width:number;
   public unit_height:number;
@@ -56,6 +58,7 @@ export class NetworkComponent implements OnInit {
   constructor(private unitService: UnitService) { }
 
   ngOnInit() {
+    this.clusters=[];
     this.current_max_tb=0;
     this.current_max_units_per_tb=0;
     this.unit_width=150;
@@ -128,7 +131,7 @@ export class NetworkComponent implements OnInit {
             },
       physics:
               { enabled: true,barnesHut:{gravitationalConstant:-4000,centralGravity:0.5},maxVelocity:4,
-              
+
 
               //wind:{x:1,y:0},
              },
@@ -165,9 +168,10 @@ export class NetworkComponent implements OnInit {
   //Once data has been recieved from database, organise it into the original view
   public Format_Loaded_Data(nodes,edges){
     this.Run_Network_Events(nodes,edges);
-    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
+    this.Cluster_All(this.subjects,this.schools,this.faculties);//
     this.initial_View_scale = this.network.getScale();
     this.initital_View_Position = this.network.getViewPosition();
+
   }
 
 
@@ -177,6 +181,8 @@ export class NetworkComponent implements OnInit {
   public Run_Network_Events(nodes,edges){
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
+    this.network.once("stabilizationIterationsDone", function() {
+   });
     this.network.on("beforeDrawing", function(ctx) {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
@@ -447,7 +453,7 @@ export class NetworkComponent implements OnInit {
   }
 
 
-   
+
   public Search($event){
     if($event!=''){
         var searched_id = this.Find_Node_Id_From_Label($event);
@@ -469,8 +475,11 @@ export class NetworkComponent implements OnInit {
     console.log("Resetting...")
     this.Turn_Off_Physics(this.network.options);
     this.mode = Mode.FACULTY;
-    this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
+    this.Cluster_All(this.subjects,this.schools,this.faculties);//
     this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
+    this.clusters.forEach(cluster_id => {
+      this.network.clustering.updateClusteredNode(cluster_id,{x:0,y:0});
+    });
   }
 
 
@@ -569,7 +578,7 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-  
+
 
 
 
@@ -602,7 +611,7 @@ export class NetworkComponent implements OnInit {
     });
 
   }
-  public Cluster_One_School(school,id,nodes,edges){
+  public Cluster_One_School(school, id){
     console.log("Clustering One School");
     var joinCon = function (nodeOptions) {
       return nodeOptions.school == school;
@@ -631,11 +640,11 @@ export class NetworkComponent implements OnInit {
 
     });
   }
-  public Cluster_Schools(schools,nodes,edges){
+  public Cluster_Schools(schools){
     console.log("Clustering Many Schools");
     var id = 2000;
     schools.forEach(school => {
-      this.Cluster_One_School(school,id,nodes,edges);
+      this.Cluster_One_School(school,id);
       id++
     });
 
@@ -658,6 +667,10 @@ export class NetworkComponent implements OnInit {
       allowSingleNodeCluster: true,
       fixed:false,
     };
+    if(!this.clusters.includes(id)){
+      this.clusters.push(id);
+    }
+    console.log(this.clusters);
     this.network.cluster({joinCondition: joinCon, clusterNodeProperties: properties});
 
   }
@@ -697,9 +710,9 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-  public Cluster_All(subjects,schools,faculties,nodes,edges){
+  public Cluster_All(subjects,schools,faculties){
     this.Cluster_Sujects(subjects);
-    this.Cluster_Schools(schools,nodes,edges);
+    this.Cluster_Schools(schools);
     this.Cluster_Faculties(faculties);
   }
 
@@ -737,20 +750,22 @@ export class NetworkComponent implements OnInit {
   public Fit_To_Selection(node_Ids){
     console.log(node_Ids)
     this.network.fit({nodes:node_Ids,animation:true});
-    //this.network.options.
+    //var pos = this.network.getViewPosition();
+    //this.network.moveTo({position:{x:pos.x,y:pos.y}})
+    //this.network.moveTo
   }
   public Set_Node_Position(node,nodes,x:number,y:number){
     node.x = x;
     node.y = y;
     nodes.update(node);
   }
-  public Set_Unit_Positions(units,nodes){
+  public Set_Unit_Positions(node_ids,nodes){
     var y = 0;
     var currentLevel =-1;
     var xOffset = -375; // should be number of levels+1/2 *150
     var yValues = [];
 
-    units.forEach(unit => {
+    node_ids.forEach(unit => {
       var node = nodes.get(unit);
 
 
@@ -770,11 +785,11 @@ export class NetworkComponent implements OnInit {
           else{
             yValues[node.level]=0;
           }
-         
+
         }
         y = 0//yValues[node.level];
         currentLevel = node.level;
-        
+
         console.log(yValues)
       }
       else{
@@ -791,7 +806,7 @@ export class NetworkComponent implements OnInit {
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
 
-  
+
 
 
 
