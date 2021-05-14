@@ -148,6 +148,7 @@ describe('Set Node Position',()=>{
     TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+
     testBedService = TestBed.inject(UnitService);
     mock_node ={
       id: 1,
@@ -185,7 +186,7 @@ describe('Set Node Position',()=>{
   });
   it('should set node.fixed to true',()=>{
     component.Set_Node_Position(mock_node,component.nodes,0,0);
-    expect(mock_node.fixed).toBeTruthy();
+    expect(component.nodes.get(mock_node.id)).toBeTruthy();
   });
   xit('should call add node to nodes',()=>{
     component.Set_Node_Position(mock_node,component.nodes,0,0);
