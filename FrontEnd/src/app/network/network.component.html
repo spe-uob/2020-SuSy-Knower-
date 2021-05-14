@@ -18,9 +18,7 @@
 
   <div id="mynetwork" #siteConfigNetwork></div>
   <app-search-bar (searchEvent)="Search($event)"></app-search-bar>
-  <label>
-    <input type="button" name="Reset Button" value="Reset" id="Reset_Button" unchecked />
-  </label>
+  <app-reset-button (resetEvent)="Reset_Graph()"></app-reset-button>
   
  
 

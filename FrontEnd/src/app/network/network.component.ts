@@ -125,7 +125,8 @@ export class NetworkComponent implements OnInit {
               selectionWidth: node_size/3, //function (width) {return width*2;}
             },
       physics:
-              { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
+              { enabled: true,barnesHut:{gravitationalConstant:-4000,centralGravity:0.5},maxVelocity:4,
+              
 
               //wind:{x:1,y:0},
              },
@@ -147,11 +148,10 @@ export class NetworkComponent implements OnInit {
   }
   public Get_Network_Data(units: Unit[],nodes,edges){
     units.forEach(unit => {
-
       var prerequisites = this.Find_Prerequisites(unit);
       nodes.add({id:unit.id, label: this.Resize_Label(unit.name), subject:unit.programme,
-        topic: unit.topic, level: this.Find_Level(unit),
-       type:Mode.UNIT,url:unit.url,group:unit.topic});
+        topic: this.Check_Topic(unit.topic), level: this.Find_Level(unit),
+       type:Mode.UNIT,url:unit.url,group:this.Check_Topic(unit.topic)});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
       });
@@ -169,21 +169,17 @@ export class NetworkComponent implements OnInit {
 
 
 
+
   //Handles click zoom and drawing events
   public Run_Network_Events(nodes,edges){
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
     this.network.on("beforeDrawing", function(ctx) {
-      //that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
-      //that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
-    })
-    this.network.on("afterDrawing", function(ctx) {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
       if(that.mode == Mode.UNIT){
 
         for (let i = 0; i < that.current_max_tb; i++) {
-          console.log(that.current_max_units_per_tb)
           if(i % 2 == 0){
             that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*that.current_max_units_per_tb)
 
@@ -194,6 +190,9 @@ export class NetworkComponent implements OnInit {
         that.Draw_Sub_Title(that.current_Subject,ctx,0,-130);
         that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-80);
       }
+    })
+    this.network.on("afterDrawing", function(ctx) {
+
     })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
@@ -316,6 +315,14 @@ export class NetworkComponent implements OnInit {
 
 //FINDING DATA
 
+  public Check_Topic(topic){
+    if(topic){
+      return topic;
+    }
+    else{
+      return "1";
+    }
+  }
   public Find_Prerequisites(unit: Unit): number[]{
     var prereqStr= unit.prerequisites;
     var prereqChar = [];
@@ -339,21 +346,6 @@ export class NetworkComponent implements OnInit {
       }
     });
     return node_id;
-  }
-  public Search($event){
-    var searched_id = this.Find_Node_Id_From_Label($event);
-    if(searched_id!= -1){
-      var pathway = this.network.findNode(searched_id);
-      for (let i = 0; i < pathway.length-1; i++) {
-      const cluster = pathway[i];
-      //this.network.selectNodes([pathway[i]]);
-      this.Uncluster(cluster);
-      }
-      this.network.selectNodes([searched_id]);
-    }
-    else{
-      console.log("No such Unit");
-    }
   }
   public Get_Subject_List(){
   this.unitService.getSubjects().subscribe(
@@ -449,6 +441,30 @@ export class NetworkComponent implements OnInit {
     else{
       return "Faculty of Engineering";
     }
+  }
+
+
+   
+  public Search($event){
+    if($event!=''){
+        var searched_id = this.Find_Node_Id_From_Label($event);
+        if(searched_id!= -1){
+          var pathway = this.network.findNode(searched_id);
+          for (let i = 0; i < pathway.length-1; i++) {
+          const cluster = pathway[i];
+          //this.network.selectNodes([pathway[i]]);
+          this.Uncluster(cluster);
+          }
+          this.network.selectNodes([searched_id]);
+        }
+        else{
+          console.log("No such Unit");
+        }
+      }
+    }
+  public Reset_Graph(){
+    console.log("Resetting...")
+    //this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
   }
 
 
@@ -553,6 +569,7 @@ export class NetworkComponent implements OnInit {
   public Reset_Nodes(nodes,edges){
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);
   }
+  
 
 
 
@@ -692,7 +709,7 @@ export class NetworkComponent implements OnInit {
 
   public Turn_On_Physics(options){
     console.log("Turning Physics On");
-    options.physics = {wind: { x: 0, y: 1 }};
+    options.physics = {wind: { x: 0, y: 2 }};
     this.network.setOptions(options);
   }
   public Turn_Off_Physics(options){
@@ -735,7 +752,6 @@ export class NetworkComponent implements OnInit {
 
     units.forEach(unit => {
       var node = nodes.get(unit);
-      console.log(node.level)
 
 
       if(node.level > this.current_max_tb){
@@ -748,7 +764,13 @@ export class NetworkComponent implements OnInit {
           yValues[node.level] += 1;
         }
         else{
-          yValues[node.level]=0;
+          if(yValues[node.level]==0){
+            yValues[node.level] += 1;
+          }
+          else{
+            yValues[node.level]=0;
+          }
+         
         }
         y = 0//yValues[node.level];
         currentLevel = node.level;
@@ -768,6 +790,8 @@ export class NetworkComponent implements OnInit {
   }
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
+
+  
 
 
 
