@@ -926,7 +926,7 @@ describe('Cluster_Schools', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
-    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2000,label:'School of Aerospace Engineering'}]);
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2001,label:'School of Aerospace Engineering'}]);
     var edges = new DataSet([]);
     var options =       {nodes:{shape: "dot",
     level:0,
@@ -942,7 +942,9 @@ describe('Cluster_Schools', () => {
     fixture.destroy();
   })
   it('should cluster schools', () => {
-    expect(component.Cluster_Schools(["School of Computer Science", "School of Aerospace Engineering"])).toBeTruthy()
+    var spy = spyOn(component, 'Cluster_One_School')
+    component.Cluster_Schools(['School of Computer Science','School of Aerospace Engineering'])
+    expect(spy).toHaveBeenCalled();
   })
 })
 
@@ -1012,6 +1014,14 @@ describe('Cluster_Faculties', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2001,label:'School of Aerospace Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
     de = fixture.debugElement;
     fixture.detectChanges();
   });
@@ -1019,7 +1029,9 @@ describe('Cluster_Faculties', () => {
     fixture.destroy();
   })
   it('should cluster faculties', () => {
-    expect(component.Cluster_Faculties(["Engineering", "Science", "Arts", "Life Sciences", "Social Sciences and Law"])).toBeTruthy()
+    var spy = spyOn(component, 'Cluster_One_Faculty')
+    component.Cluster_Schools(['Science','Engineering'])
+    expect(spy).toHaveBeenCalled();
   })
 })
 
