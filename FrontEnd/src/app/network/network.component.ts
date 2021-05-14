@@ -65,6 +65,7 @@ export class NetworkComponent implements OnInit {
     this.unit_height=100;
     this.done = 0;
     this.mode = Mode.FACULTY;
+    this.current_subject_nodes =[];
     this.current_Subject= "No Subject";
     this.current_pre_reqs=[];
     this.current_post_reqs=[];
@@ -274,6 +275,7 @@ export class NetworkComponent implements OnInit {
 
   }
   public Click(params,nodes,edges){
+    console.log(this.current_subject_nodes)
   //console.log(nodes[0]);
   if(this.mode == Mode.UNIT){
       this.current_subject_nodes.forEach(id => {
@@ -295,6 +297,7 @@ export class NetworkComponent implements OnInit {
       else{
         var node = nodes.get(clicked_node_id);
         if(node.type == Mode.UNIT){
+
           var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,edges);
           this.Style_Ancestors(ancestors_Ids,nodes);
           var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,edges);
@@ -474,6 +477,16 @@ export class NetworkComponent implements OnInit {
   public Reset_Graph($event){
     console.log("Resetting...")
     this.Turn_Off_Physics(this.network.options);
+    console.log(this.current_subject_nodes)
+    this.current_subject_nodes.forEach(id => {
+      var node = this.nodes.get(id);
+      console.log(node);
+      this.Reset_Style(node.topic,this.nodes,node.id)
+    });
+    this.current_subject_nodes =[];
+    this.current_Subject= "No Subject";
+    this.current_pre_reqs=[];
+    this.current_post_reqs=[];
     this.mode = Mode.FACULTY;
     this.Cluster_All(this.subjects,this.schools,this.faculties);//
     this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
@@ -565,8 +578,9 @@ export class NetworkComponent implements OnInit {
     }
     var gr = this.network.groups._defaultGroups[topic];
     gr.id = node_id;
-    nodes.update(gr);
-    console.log(gr);
+    nodes.update({id:node_id,color:{background:gr.background,border:gr.border,highlight:gr.highlight}});
+
+
   }
   public Resize_Label(label): String{
     if(label.length < 17){
@@ -692,6 +706,10 @@ export class NetworkComponent implements OnInit {
         this.current_subject_nodes = nodes_in_cluster;
         this.network.openCluster(cluster_id);
         this.Set_Unit_Positions(nodes_in_cluster,this.nodes);
+        nodes_in_cluster.forEach(id => {
+          var node = this.nodes.get(id);
+          this.Reset_Style(node.topic,this.nodes,node.id)
+        });
         this.Fit_To_Selection(nodes_in_cluster);
         this.mode = Mode.UNIT;
         this.Turn_On_Physics(this.network.options);
@@ -790,7 +808,6 @@ export class NetworkComponent implements OnInit {
         y = 0//yValues[node.level];
         currentLevel = node.level;
 
-        console.log(yValues)
       }
       else{
         yValues[node.level] += 1;
