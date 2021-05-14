@@ -8,6 +8,9 @@
 	display: inline-block;
 	border: none;
 	transition: all 0.4s ease 0s;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 .button:hover {
 	background: #434343;
