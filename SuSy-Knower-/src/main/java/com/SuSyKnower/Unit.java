@@ -9,7 +9,6 @@ import java.util.Arrays;
 @Table(name = "units")
 public class Unit {
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;

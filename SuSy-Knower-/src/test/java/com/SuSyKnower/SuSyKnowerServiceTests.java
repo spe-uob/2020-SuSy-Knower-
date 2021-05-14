@@ -9,15 +9,6 @@ import jdk.jfr.Timestamp;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
-//write unit tests for each kind of test case
-//run by writing "mvn test" in the terminal
-
-//mocking???
-//this seems to be a partial integration test already, the UnitService is not a mock. I can try
-//do the same thing for unit controller, 
-//and mock tests for the same thing
-
-//change to SuSyKnowerServiceTests maybe?
 @SpringBootTest
 class SuSyKnowerServiceTests {
 	@Autowired
@@ -38,6 +29,7 @@ class SuSyKnowerServiceTests {
 		assertEquals("Unit{id=1, name='Imperative and Functional Programming', programme='Computer Science (BSc)', faculty='Engineering', school='School of Computer Science', topics='1', link='https://www.bris.ac.uk/unit-programme-catalogue/UnitDetails.jsa?ayrCode=21%2F22&unitCode=COMS10016', prerequisites=null'}", unit1.toString());
 	}
 
+
 	@Test
 	public void testGetPrereqs() {
 		Unit unit84 = testUnitService.getUnit(84).get();
@@ -54,6 +46,20 @@ class SuSyKnowerServiceTests {
 
 	}
 
+	@Test
+	public void testGetOnePrereq() {
+		Unit unit10 = testUnitService.getUnit(10).get();
+		List<String>ExpectedPrereqs = new ArrayList<>();
+		ExpectedPrereqs.add(testUnitService.getUnit(6).get().toString());
+		List<Unit> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPrereqs(unit10));
+		List<String> ActualPrereqsString = new ArrayList<>();
+		for(int i = 0; i < ActualPrereqs.size(); i++) {
+			ActualPrereqsString.add(ActualPrereqs.get(i).toString());
+		}
+		assertEquals(ExpectedPrereqs.toString(), ActualPrereqsString.toString());
+
+	}
 
 	@Test
 	public void testGetPrereqsEmpty() {
@@ -78,31 +84,26 @@ class SuSyKnowerServiceTests {
 		List<Integer> ActualPrereqs = new ArrayList<>();
 		ActualPrereqs.addAll(testUnitService.getPrereqsInt(unit84));
 		assertEquals(ExpectedPrereqs, ActualPrereqs);
-
 	}
 
-	/*
-	//empty
-	//actualpostreqsstring is empty, but the getpostreqs function seems to work
-	//fix test
 	@Test
-	public void testGetPostreqs() {
-		Unit unit1 = testUnitService.getUnit(1).get();
-		List<String>ExpectedPostreqs = new ArrayList<>();
-		ExpectedPostreqs.add(testUnitService.getUnit(7).get().toString());
-		ExpectedPostreqs.add(testUnitService.getUnit(8).get().toString());
-		ExpectedPostreqs.add(testUnitService.getUnit(11).get().toString());
-		ExpectedPostreqs.add(testUnitService.getUnit(13).get().toString());
-		List<Unit> ActualPostreqs = new ArrayList<>();
-		ActualPostreqs.addAll(testUnitService.getPostreqs(unit1)); 
-		List<String> ActualPostreqsString = new ArrayList<>();
-		for(int i = 0; i < ActualPostreqs.size(); i++) {
-			ActualPostreqsString.add(ActualPostreqs.get(i).toString());
-		}
-		assertEquals(ExpectedPostreqs.toString(), ActualPostreqsString.toString());
+	public void testGetOnePrereqInt() {
+		Unit unit219 = testUnitService.getUnit(219).get();
+		List<Integer>ExpectedPrereqs = new ArrayList<>();
+		ExpectedPrereqs.add(Integer.valueOf(196));
+		List<Integer> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPrereqsInt(unit219));
+		assertEquals(ExpectedPrereqs, ActualPrereqs);
 	}
-	
-*/
+
+	@Test
+	public void testGetPrereqsIntEmpty() {
+		Unit unit2 = testUnitService.getUnit(2).get();
+		List<Integer> ExpectedPrereqs = new ArrayList<>();
+		List<Integer> ActualPrereqs = new ArrayList<>();
+		ActualPrereqs.addAll(testUnitService.getPrereqsInt(unit2));
+		assertEquals(ExpectedPrereqs, ActualPrereqs);
+	}
 
 	@Test
 	public void testGetAllByProgramme(){
@@ -112,6 +113,18 @@ class SuSyKnowerServiceTests {
 		}
 		List<Unit> ActualUnits = new ArrayList<>();
 		ActualUnits.addAll(testUnitService.getAllByProgramme("Computer Science (BSc)"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
+	public void testGetAllByIncorrectProgramme(){
+		List<String> ExpectedUnits = new ArrayList<>();
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllByProgramme("Wrong"));
 		List<String> ActualUnitsString = new ArrayList<>();
 		for(int i = 0; i < ActualUnits.size(); i++) {
 			ActualUnitsString.add(ActualUnits.get(i).toString());
@@ -130,6 +143,18 @@ class SuSyKnowerServiceTests {
 		}
 		List<Unit> ActualUnits = new ArrayList<>();
 		ActualUnits.addAll(testUnitService.getAllByFaculty("Engineering"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
+	public void testGetAllByIncorrectFaculty(){
+		List<String> ExpectedUnits = new ArrayList<>();
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllByFaculty("the industrial revolution and its consequences has been a disaster for the human race"));
 		List<String> ActualUnitsString = new ArrayList<>();
 		for(int i = 0; i < ActualUnits.size(); i++) {
 			ActualUnitsString.add(ActualUnits.get(i).toString());
@@ -178,6 +203,18 @@ class SuSyKnowerServiceTests {
 		}
 		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
 	}
+
+	@Test
+	public void testGetAllByIncorrectTopic(){
+		List<String> ExpectedUnits = new ArrayList<>();
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllByTopic("n"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
 	
 	@Test
 	public void testGetAllBySchool() {
@@ -195,11 +232,41 @@ class SuSyKnowerServiceTests {
 	}
 
 	@Test
+	public void testGetAllByIncorrectSchool() {
+		List<String> ExpectedUnits = new ArrayList<>();
+		List<Unit> ActualUnits = new ArrayList<>();
+		ActualUnits.addAll(testUnitService.getAllBySchool("Wrong"));
+		List<String> ActualUnitsString = new ArrayList<>();
+		for(int i = 0; i < ActualUnits.size(); i++) {
+			ActualUnitsString.add(ActualUnits.get(i).toString());
+		}
+		assertEquals(ExpectedUnits.toString(), ActualUnitsString.toString());
+	}
+
+	@Test
 	public void testGetAllProgrammesInSchool() {
 		List<String>ExpectedProgrammes = new ArrayList<String>();
 		List<String>ActualProgrammes = new ArrayList<String>();
 		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Computer Science"));
 		ExpectedProgrammes.add("Computer Science (BSc)");
+		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
+	}
+
+	@Test
+	public void testGetAllMultipleProgrammesInSchool() {
+		List<String>ExpectedProgrammes = new ArrayList<String>();
+		List<String>ActualProgrammes = new ArrayList<String>();
+		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("School of Mathematics"));
+		ExpectedProgrammes.add("Mathematics (MSci)");
+		ExpectedProgrammes.add("Data Science (BSc)");
+		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
+	}
+
+	@Test
+	public void testGetAllProgrammesInIncorrectSchool() {
+		List<String>ExpectedProgrammes = new ArrayList<String>();
+		List<String>ActualProgrammes = new ArrayList<String>();
+		ActualProgrammes.addAll(testUnitService.getAllProgrammesInSchool("Wrong"));
 		assertEquals(ExpectedProgrammes.toString(), ActualProgrammes.toString());
 	}
 
@@ -216,6 +283,15 @@ class SuSyKnowerServiceTests {
 	}
 
 	@Test
+	public void testGetAllSchoolsInIncorrectFaculty() {
+		List<String>ExpectedSchools = new ArrayList<String>();
+		List<String>ActualSchools = new ArrayList<String>();
+		ActualSchools.addAll(testUnitService.getAllSchoolsInFaculty("Wrong"));
+		assertEquals(ExpectedSchools.toString(), ActualSchools.toString());
+	}
+//only nulls
+
+	@Test
 	public void testGetAllTopicsInProgramme() {
 		List<String>ExpectedTopics = new ArrayList<String>();
 		List<String>ActualTopics = new ArrayList<String>();
@@ -226,6 +302,23 @@ class SuSyKnowerServiceTests {
 		ExpectedTopics.add("4");
 		ExpectedTopics.add("5");
 		ExpectedTopics.add("6");
+		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
+	}
+
+	@Test
+	public void testGetAllTopicsInIncorrectProgramme() {
+		List<String>ExpectedTopics = new ArrayList<String>();
+		List<String>ActualTopics = new ArrayList<String>();
+		ActualTopics.addAll(testUnitService.getAllTopicsInProgramme("Wrong"));
+		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
+	}
+
+	@Test
+	public void testGetAllTopicsInProgrammeEmpty() {
+		List<String>ExpectedTopics = new ArrayList<String>();
+		List<String>ActualTopics = new ArrayList<String>();
+		ActualTopics.addAll(testUnitService.getAllTopicsInProgramme("Zoology (BSc)"));
+		ExpectedTopics.add(null);
 		assertEquals(ExpectedTopics.toString(), ActualTopics.toString());
 	}
 	

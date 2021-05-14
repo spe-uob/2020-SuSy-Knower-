@@ -28,13 +28,4 @@ public class CustomizedExceptionHandler {
         return entity;
     }
 
-   /* @ExceptionHandler(IOException.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)   //(1)
-    public Object exceptionHandler(IOException e, HttpServletRequest request) {
-        if (StringUtils.containsIgnoreCase(ExceptionUtils.getRootCauseMessage(e), "Broken pipe")) {   //(2)
-            return null;        //(2)	socket is closed, cannot return any response    
-        } else {
-            return new HttpEntity<>(e.getMessage());  //(3)
-        }   
-    }*/
 }

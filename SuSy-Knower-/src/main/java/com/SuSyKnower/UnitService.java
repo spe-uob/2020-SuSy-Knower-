@@ -68,35 +68,6 @@ public class UnitService {
         return prerequisites;
     }
 
-    //NumberFormat For input string:...
-    //slow
-    public List<Unit> getPostreqs(Unit unit) {
-        List<Unit> tempUnits = new ArrayList<Unit>();
-        tempUnits = findAllUnits();
-        List<Unit> postrequisites = new ArrayList<Unit>();
-        for(int i = 0; i < getNumberOfUnits(); i++) {
-            List<Unit> currentPrereqs = new ArrayList<Unit>();
-            //currentPrereqs.addAll(getPrereqs(getUnit(i).get()));
-            try {
-                currentPrereqs.addAll(getPrereqs(tempUnits.get(i)));
-                if (currentPrereqs.contains(unit)) postrequisites.add(tempUnits.get(i));
-            }
-            catch(NumberFormatException f) {
-            }
-            /*if(getUnit(i).isPresent()) {
-                try {
-                    List<Unit> tryPrereqs = getPrereqs(getUnit(i).get());
-                    currentPrereqs.addAll(getPrereqs(getUnit(i).get()));
-                    if (currentPrereqs.contains(unit)) postrequisites.add(getUnit(i).get());
-                }
-                catch(NullPointerException n) {
-                    // i++;
-                }
-            }*/
-        }
-        return postrequisites;
-    }
-
     public List<Unit> getAllByProgramme(String theProgramme) {
         List<Unit> unitsInProgramme = new ArrayList<Unit>();
         unitsInProgramme = unitRepository.findUnitByProgramme(theProgramme);
