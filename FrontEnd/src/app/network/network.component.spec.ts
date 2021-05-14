@@ -9,6 +9,7 @@ import { DataSet} from 'vis-data';
 import { NetworkComponent } from './network.component';
 import { Observable, Observer } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Network } from 'vis-network';
 
 
 let mockData = [
@@ -871,6 +872,14 @@ describe('Cluster_One_School', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
     de = fixture.debugElement;
     fixture.detectChanges();
   });
@@ -908,6 +917,15 @@ describe('Cluster_Schools', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:2000,label:'School of Computer Science'},{id:2000,label:'School of Aerospace Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
+
     de = fixture.debugElement;
     fixture.detectChanges();
   });
@@ -915,11 +933,7 @@ describe('Cluster_Schools', () => {
     fixture.destroy();
   })
   it('should cluster schools', () => {
-    expect(component.Cluster_Schools(["School of Computer Science", "School of Aerospace Engineering",
-      "School of Mechanical Engineering", "School of Electrical & Electronic Engineering", "School of Mathematics",
-      "School of Physics", "School of Chemistry", "School of Philosophy", "School of Anthropology and Archaeology",
-      "School of English", "School of Psychological Science", "School of Biological Sciences",
-      "University of Bristol Law School", "School of Management"])).toBeTruthy()
+    expect(component.Cluster_Schools(["School of Computer Science", "School of Aerospace Engineering"])).toBeTruthy()
   })
 })
 
@@ -944,6 +958,14 @@ describe('Cluster_One_Faculty', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NetworkComponent);
     component = fixture.componentInstance;
+    var nodes = new DataSet([{id:3000,label:'Engineering'}]);
+    var edges = new DataSet([]);
+    var options =       {nodes:{shape: "dot",
+    level:0,
+    fixed:true,
+    },}
+    var container = document.getElementById("mynetwork");
+    component.network = new Network(container,{nodes:nodes,edges:edges}, options);
     de = fixture.debugElement;
     fixture.detectChanges();
   });
