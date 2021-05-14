@@ -1,3 +1,4 @@
+import { logging } from 'protractor';
 import { UnitService } from './../services/unit.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -54,6 +55,7 @@ export class NetworkComponent implements OnInit {
 
   ngOnInit() {
     this.current_max_tb=0;
+    this.current_max_units_per_tb=0;
     this.unit_width=150;
     this.unit_height=100;
     this.done = 0;
@@ -181,8 +183,9 @@ export class NetworkComponent implements OnInit {
       if(that.mode == Mode.UNIT){
 
         for (let i = 0; i < that.current_max_tb; i++) {
+          console.log(that.current_max_units_per_tb)
           if(i % 2 == 0){
-            that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*3)
+            that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*that.current_max_units_per_tb)
 
           }
           that.Draw_TB_Title(ctx,-225+that.unit_width*i,0,Math.ceil((i+1)/2),(i%2)+1);
@@ -726,11 +729,9 @@ export class NetworkComponent implements OnInit {
   }
   public Set_Unit_Positions(units,nodes){
     var y = 0;
-    var currentLevel =1;
+    var currentLevel =-1;
     var xOffset = -375; // should be number of levels+1/2 *150
     var yValues = [];
-
-
 
     units.forEach(unit => {
       var node = nodes.get(unit);
@@ -743,15 +744,24 @@ export class NetworkComponent implements OnInit {
       }
 
       if(!(node.level == currentLevel)){
+        if(yValues[node.level]){
+          yValues[node.level] += 1;
+        }
+        else{
+          yValues[node.level]=0;
+        }
         y = 0//yValues[node.level];
         currentLevel = node.level;
-        yValues[node.level]=y
+        
         console.log(yValues)
       }
       else{
-        yValues[node.level]= y;
+        yValues[node.level] += 1;
       }
-      this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,y*this.unit_height);
+      if(yValues[node.level]+1>(this.current_max_units_per_tb)){
+        this.current_max_units_per_tb = yValues[node.level]+1;
+      }
+      this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,yValues[node.level]*this.unit_height);
       y++;
 
     });
