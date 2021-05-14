@@ -804,8 +804,43 @@ describe('Cluster_One_Subject', () => {
   })
   it('should cluster one subject', () => {
     var spy = spyOn(component.network, 'cluster')
-    component.Cluster_One_Subject('Computer Science (BSc)', 9)
+    component.Cluster_One_Subject('Physics (BSc)', 1006)
     expect(spy).toHaveBeenCalled()
+  })
+})
+
+describe('Cluster_Sujects', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster subjects', () => {
+    expect(component.Cluster_Sujects(["Computer Science (BSc)", "Aerospace Engineering (BEng)",
+      "Civil Engineering (BEng)", "Electrical and Electronic Engineering (BEng)", "Mathematics (MSci)", "Data Science (BSc)",
+      "Physics (BSc)", "Chemical Physics (BSc)", "Philosophy (BA)",
+      "Anthropology (BA)", "English (BA)", "Psychology (BSc)", "Zoology (BSc)", "Honours Law (LLB)", "Management (BSc)"])).toBeTruthy()
   })
 })
 
@@ -874,9 +909,84 @@ describe('Cluster_Schools', () => {
     fixture.destroy();
   })
   it('should cluster schools', () => {
-    expect(component.Cluster_Schools(['School of Computer Science', 'School of Aerospace Engineering'])).toBeTruthy()
+    expect(component.Cluster_Schools(["School of Computer Science", "School of Aerospace Engineering",
+      "School of Mechanical Engineering", "School of Electrical & Electronic Engineering", "School of Mathematics",
+      "School of Physics", "School of Chemistry", "School of Philosophy", "School of Anthropology and Archaeology",
+      "School of English", "School of Psychological Science", "School of Biological Sciences",
+      "University of Bristol Law School", "School of Management"])).toBeTruthy()
   })
 })
+
+describe('Cluster_One_Faculty', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one faculty', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_Faculty('Engineering', 3000)
+    expect(spy).toHaveBeenCalled()
+  })
+  it('should check if faculty exists', () => {
+    expect(component.Cluster_One_Faculty('false faculty', 3000)).toBeFalsy()
+  })
+})
+
+describe('Cluster_Faculties', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster faculties', () => {
+    expect(component.Cluster_Faculties(["Engineering", "Science", "Arts", "Life Sciences", "Social Sciences and Law"])).toBeTruthy()
+  })
+})
+
+// Uncluster
 
 describe('Cluster_All' , () => {
   let component: NetworkComponent;
@@ -890,7 +1000,7 @@ describe('Cluster_All' , () => {
     service = null;
     component = null;
   });
-  xit('should cluster all nodes back', () => {
+  it('should cluster all nodes', () => {
     let subjects = ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
       "Mathematics (MSci)"
       ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
@@ -898,10 +1008,12 @@ describe('Cluster_All' , () => {
     let schools = ['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
       'School of Management', 'University of Bristol Law School'];
     let faculties = ['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences'];
-    let nodes = component.nodes;
-    let edges = component.edges
-    spyOn(component,'Cluster_All');
-    component.Cluster_All(subjects,schools,faculties,nodes,edges);
-    expect(component.Cluster_All(subjects,schools,faculties,nodes,edges)).toHaveBeenCalled();
+    var spySubject = spyOn(component.Cluster_All(subjects,schools,faculties),'Cluster_Sujects');
+    var spySchool = spyOn(component.Cluster_All(subjects,schools,faculties), 'Cluster_Schools');
+    var spyFaculty = spyOn(component.Cluster_All(subjects,schools,faculties), 'Cluster_Faculties');
+    component.Cluster_All(subjects,schools,faculties);
+    expect(spySubject).toHaveBeenCalled();
+    expect(spySchool).toHaveBeenCalled();
+    expect(spyFaculty).toHaveBeenCalled();
   })
 })

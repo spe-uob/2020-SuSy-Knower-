@@ -168,7 +168,7 @@ export class NetworkComponent implements OnInit {
   //Once data has been recieved from database, organise it into the original view
   public Format_Loaded_Data(nodes,edges){
     this.Run_Network_Events(nodes,edges);
-    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
+    this.Cluster_All(this.subjects,this.schools,this.faculties);//
     this.initial_View_scale = this.network.getScale();
     this.initital_View_Position = this.network.getViewPosition();
 
@@ -182,7 +182,7 @@ export class NetworkComponent implements OnInit {
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
     this.network.once("stabilizationIterationsDone", function() {
-   }); 
+   });
     this.network.on("beforeDrawing", function(ctx) {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
@@ -475,7 +475,7 @@ export class NetworkComponent implements OnInit {
     console.log("Resetting...")
     this.Turn_Off_Physics(this.network.options);
     this.mode = Mode.FACULTY;
-    this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
+    this.Cluster_All(this.subjects,this.schools,this.faculties);//
     this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
     this.clusters.forEach(cluster_id => {
       this.network.clustering.updateClusteredNode(cluster_id,{x:0,y:0});
@@ -710,7 +710,7 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-  public Cluster_All(subjects,schools,faculties,nodes,edges){
+  public Cluster_All(subjects,schools,faculties){
     this.Cluster_Sujects(subjects);
     this.Cluster_Schools(schools);
     this.Cluster_Faculties(faculties);
