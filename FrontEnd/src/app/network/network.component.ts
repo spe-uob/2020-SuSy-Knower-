@@ -91,7 +91,7 @@ export class NetworkComponent implements OnInit {
     if(this.done>=4){
       this.Load_Vis_Network();
       this.Format_Loaded_Data(this.nodes,this.edges);
-      
+
     }
   }
   //Create the network itself
@@ -124,7 +124,7 @@ export class NetworkComponent implements OnInit {
             },
       physics:
               { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
-            
+
               //wind:{x:1,y:0},
              },
       layout:{
@@ -162,7 +162,7 @@ export class NetworkComponent implements OnInit {
   public Format_Loaded_Data(nodes,edges){
     this.Run_Network_Events(nodes,edges);
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
-    
+
   }
 
 
@@ -183,11 +183,11 @@ export class NetworkComponent implements OnInit {
         for (let i = 0; i < that.current_max_tb; i++) {
           if(i % 2 == 0){
             that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*3)
-            
+
           }
           that.Draw_TB_Title(ctx,-225+that.unit_width*i,0,Math.ceil((i+1)/2),(i%2)+1);
         }
-        
+
         that.Draw_Sub_Title(that.current_Subject,ctx,0,-130);
         that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-80);
       }
@@ -287,7 +287,7 @@ export class NetworkComponent implements OnInit {
           var ancestors_Ids = this.Get_Ancestors_Ids(clicked_node_id,edges);
           this.Style_Ancestors(ancestors_Ids,nodes);
           var descendents_Ids = this.Get_Descendents_Ids(clicked_node_id,edges);
-          this.Style_Descendents(descendents_Ids,nodes,edges);
+          this.Style_Descendents(descendents_Ids,nodes);
           var relatives = ancestors_Ids.concat(descendents_Ids);
           var non_relatives =[];
           this.current_subject_nodes.forEach(id => {
@@ -413,7 +413,7 @@ export class NetworkComponent implements OnInit {
     }
     else if(subject == "Management (BSc)"){
       return "School of Management";
-    }    
+    }
     else if(subject == "English (BA)"){
       return "School of English";
     }
@@ -503,15 +503,13 @@ export class NetworkComponent implements OnInit {
       nodes.update(parent);
     });
   }
-  public Style_Descendents(descendent_Ids,nodes,edges){
+  public Style_Descendents(descendent_Ids,nodes){
     descendent_Ids.forEach(descendent_Id => {
       var descendent = nodes.get(descendent_Id);
       descendent.color = {background:"lightgreen"}
       nodes.update(descendent);
     });
   }
-
-
 
 //STYLING
   public Style_Node(node,style){
@@ -546,7 +544,7 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-  
+
 
 
   public Reset_Nodes(nodes,edges){
@@ -677,7 +675,7 @@ export class NetworkComponent implements OnInit {
       this.network.openCluster(cluster_id);
       //this.Fit_To_Selection(nodes_in_cluster)
     }
-    
+
   }
   public Cluster_All(subjects,schools,faculties,nodes,edges){
     this.Cluster_Sujects(subjects);
@@ -731,19 +729,19 @@ export class NetworkComponent implements OnInit {
     var currentLevel =1;
     var xOffset = -375; // should be number of levels+1/2 *150
     var yValues = [];
-    
+
 
 
     units.forEach(unit => {
       var node = nodes.get(unit);
       console.log(node.level)
-      
+
 
       if(node.level > this.current_max_tb){
         this.current_max_tb= node.level;
-        
+
       }
-      
+
       if(!(node.level == currentLevel)){
         y = 0//yValues[node.level];
         currentLevel = node.level;
@@ -751,7 +749,7 @@ export class NetworkComponent implements OnInit {
         console.log(yValues)
       }
       else{
-        yValues[node.level]= y; 
+        yValues[node.level]= y;
       }
       this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,y*this.unit_height);
       y++;
