@@ -217,7 +217,7 @@ describe('Set_Unit_Positions', () => {
     component = fixture.componentInstance;
     testBedService = TestBed.inject(UnitService);
     units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
-    mock_node ={id: 9, lable: 'Algorithms 2',level: 2,}
+    mock_node ={id: 9, label: 'Algorithms 2',level: 2,}
   });
   afterEach(()=>{
     fixture.destroy();
@@ -372,6 +372,7 @@ describe('Find_Node_Id_From_Label', () => {
     component = null;
   });
   it('should find node id from label', () => {
+    component.nodes = new DataSet([{id: 44, label: 'Combinatorics',level: 2,}])
     expect(component.Find_Node_Id_From_Label('Combinatorics')).toEqual(44)
   })
 })
