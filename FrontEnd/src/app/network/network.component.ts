@@ -1,3 +1,4 @@
+import { logging } from 'protractor';
 import { UnitService } from './../services/unit.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -38,6 +39,8 @@ export class NetworkComponent implements OnInit {
   public current_post_reqs: number[];
   public current_max_tb: number;
   public current_max_units_per_tb:number;
+  public initital_View_Position:any;
+  public initial_View_scale:any;
 
   public unit_width:number;
   public unit_height:number;
@@ -54,6 +57,7 @@ export class NetworkComponent implements OnInit {
 
   ngOnInit() {
     this.current_max_tb=0;
+    this.current_max_units_per_tb=0;
     this.unit_width=150;
     this.unit_height=100;
     this.done = 0;
@@ -123,7 +127,8 @@ export class NetworkComponent implements OnInit {
               selectionWidth: node_size/3, //function (width) {return width*2;}
             },
       physics:
-              { enabled: true,repulsion:{nodeDistance:300},maxVelocity:2,
+              { enabled: true,barnesHut:{gravitationalConstant:-4000,centralGravity:0.5},maxVelocity:4,
+              
 
               //wind:{x:1,y:0},
              },
@@ -145,11 +150,10 @@ export class NetworkComponent implements OnInit {
   }
   public Get_Network_Data(units: Unit[],nodes,edges){
     units.forEach(unit => {
-
       var prerequisites = this.Find_Prerequisites(unit);
       nodes.add({id:unit.id, label: this.Resize_Label(unit.name), subject:unit.programme,
-        topic: unit.topic, level: this.Find_Level(unit),
-       type:Mode.UNIT,url:unit.url,group:unit.topic});
+        topic: this.Check_Topic(unit.topic), level: this.Find_Level(unit),
+       type:Mode.UNIT,url:unit.url,group:this.Check_Topic(unit.topic)});
       prerequisites.forEach(prereq => {
         edges.add({from: prereq ,to: unit.id});
       });
@@ -162,8 +166,10 @@ export class NetworkComponent implements OnInit {
   public Format_Loaded_Data(nodes,edges){
     this.Run_Network_Events(nodes,edges);
     this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);//
-
+    this.initial_View_scale = this.network.getScale();
+    this.initital_View_Position = this.network.getViewPosition();
   }
+
 
 
 
@@ -172,17 +178,13 @@ export class NetworkComponent implements OnInit {
     var that = this;
     var canvas = this.network.canvas.frame.canvas;
     this.network.on("beforeDrawing", function(ctx) {
-      //that.Draw_Title("SuSy- Knower Knowlege Maps",ctx,0,-canvas.height/6);
-      //that.Draw_Sub_Title("Computer Science BSc",ctx,0,-40);
-    })
-    this.network.on("afterDrawing", function(ctx) {
       that.Draw_Title("University of Bristol: Knowlege Map",ctx,0,-canvas.height/6);
       that.Draw_Body("Double click to navigate",ctx,0,-canvas.height/6+50);
       if(that.mode == Mode.UNIT){
 
         for (let i = 0; i < that.current_max_tb; i++) {
           if(i % 2 == 0){
-            that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*3)
+            that.Draw_Teaching_Block(ctx,-225+i*that.unit_width,20-that.unit_height/2,that.unit_width,that.unit_height*that.current_max_units_per_tb)
 
           }
           that.Draw_TB_Title(ctx,-225+that.unit_width*i,0,Math.ceil((i+1)/2),(i%2)+1);
@@ -191,6 +193,9 @@ export class NetworkComponent implements OnInit {
         that.Draw_Sub_Title(that.current_Subject,ctx,0,-130);
         that.Draw_Body("Click to a unit to see requirements, Double click to open its webpage",ctx,0,-80);
       }
+    })
+    this.network.on("afterDrawing", function(ctx) {
+
     })
     this.network.on("initRedraw", function(){})
     this.network.on('click', function(params){
@@ -313,6 +318,14 @@ export class NetworkComponent implements OnInit {
 
 //FINDING DATA
 
+  public Check_Topic(topic){
+    if(topic){
+      return topic;
+    }
+    else{
+      return "1";
+    }
+  }
   public Find_Prerequisites(unit: Unit): number[]{
     var prereqStr= unit.prerequisites;
     var prereqChar = [];
@@ -336,21 +349,6 @@ export class NetworkComponent implements OnInit {
       }
     });
     return node_id;
-  }
-  public Search($event){
-    var searched_id = this.Find_Node_Id_From_Label($event);
-    if(searched_id!= -1){
-      var pathway = this.network.findNode(searched_id);
-      for (let i = 0; i < pathway.length-1; i++) {
-      const cluster = pathway[i];
-      //this.network.selectNodes([pathway[i]]);
-      this.Uncluster(cluster);
-      }
-      this.network.selectNodes([searched_id]);
-    }
-    else{
-      console.log("No such Unit");
-    }
   }
   public Get_Subject_List(){
   this.unitService.getSubjects().subscribe(
@@ -449,6 +447,33 @@ export class NetworkComponent implements OnInit {
   }
 
 
+   
+  public Search($event){
+    if($event!=''){
+        var searched_id = this.Find_Node_Id_From_Label($event);
+        if(searched_id!= -1){
+          var pathway = this.network.findNode(searched_id);
+          for (let i = 0; i < pathway.length-1; i++) {
+          const cluster = pathway[i];
+          //this.network.selectNodes([pathway[i]]);
+          this.Uncluster(cluster);
+          }
+          this.network.selectNodes([searched_id]);
+        }
+        else{
+          console.log("No such Unit");
+        }
+      }
+    }
+  public Reset_Graph($event){
+    console.log("Resetting...")
+    this.Turn_Off_Physics(this.network.options);
+    this.mode = Mode.FACULTY;
+    this.Cluster_All(this.subjects,this.schools,this.faculties,this.nodes,this.edges);//
+    this.network.moveTo({position:this.initital_View_Position,scale: this.initial_View_scale})
+  }
+
+
 
 
 //GETTING PRE/POST REQUITSITE IDS
@@ -544,12 +569,7 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-
-
-
-  public Reset_Nodes(nodes,edges){
-    this.Cluster_All(this.subjects,this.schools,this.faculties,nodes,edges);
-  }
+  
 
 
 
@@ -689,12 +709,12 @@ export class NetworkComponent implements OnInit {
 
   public Turn_On_Physics(options){
     console.log("Turning Physics On");
-    options.physics = {wind: { x: 0, y: 1 }};
+    options.physics = {wind: { x: 0, y: 2 }};
     this.network.setOptions(options);
   }
   public Turn_Off_Physics(options){
     console.log("Turning Physics Off");
-    options.physics = false;
+    options.physics = {wind:{x:0,y:0}};
     this.network.setOptions(options);
   }
   public Turn_Off_Hierarchical(options){
@@ -726,15 +746,12 @@ export class NetworkComponent implements OnInit {
   }
   public Set_Unit_Positions(units,nodes){
     var y = 0;
-    var currentLevel =1;
+    var currentLevel =-1;
     var xOffset = -375; // should be number of levels+1/2 *150
     var yValues = [];
 
-
-
     units.forEach(unit => {
       var node = nodes.get(unit);
-      console.log(node.level)
 
 
       if(node.level > this.current_max_tb){
@@ -743,21 +760,38 @@ export class NetworkComponent implements OnInit {
       }
 
       if(!(node.level == currentLevel)){
+        if(yValues[node.level]){
+          yValues[node.level] += 1;
+        }
+        else{
+          if(yValues[node.level]==0){
+            yValues[node.level] += 1;
+          }
+          else{
+            yValues[node.level]=0;
+          }
+         
+        }
         y = 0//yValues[node.level];
         currentLevel = node.level;
-        yValues[node.level]=y
+        
         console.log(yValues)
       }
       else{
-        yValues[node.level]= y;
+        yValues[node.level] += 1;
       }
-      this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,y*this.unit_height);
+      if(yValues[node.level]+1>(this.current_max_units_per_tb)){
+        this.current_max_units_per_tb = yValues[node.level]+1;
+      }
+      this.Set_Node_Position(node,nodes,this.unit_width*node.level+xOffset,yValues[node.level]*this.unit_height);
       y++;
 
     });
   }
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
+
+  
 
 
 

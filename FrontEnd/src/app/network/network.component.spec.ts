@@ -90,7 +90,7 @@ describe('NetworkComponent', () => {
 
 });
 
-describe("Get_Network_Data",()=>{
+describe('Get_Network_Data',()=>{
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
@@ -258,7 +258,27 @@ describe('Set_Unit_Positions', () => {
 })
 
 
-//FINDING DATA
+// FINDING DATA
+
+describe('Check_Topic', () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  })
+  it('should return topic', () => {
+    expect(component.Check_Topic('1,2,3')).toEqual('1,2,3');
+  })
+  it('should return 1 for unknown', () => {
+    expect(component.Check_Topic('')).toEqual('1');
+  });
+})
 
 describe('Find_Prerequisites', () => {
   let component: NetworkComponent;
@@ -528,7 +548,7 @@ describe('Find_Faculty', () => {
 });
 
 
-//GETTING PRE/POST REQUITSITE IDS
+// GETTING PRE/POST REQUITSITE IDS
   // Next 4 tests should work fine once .getConnectedNodes works
 
 describe('Get_Parents_Ids', () => {
@@ -730,7 +750,7 @@ describe('Style_Descendents', () => {
 })
 
 
-//STYLING
+// STYLING
 
 describe('Resize Label',()=>{
   let component: NetworkComponent;

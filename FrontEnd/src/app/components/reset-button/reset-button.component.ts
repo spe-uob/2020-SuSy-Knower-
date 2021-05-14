@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-reset-button',
@@ -8,8 +8,14 @@ import { Component, OnInit } from '@angular/core';
 export class ResetButtonComponent implements OnInit {
 
   constructor() { }
+  signal: string;
+  @Output() resetEvent = new EventEmitter<string>();
 
   ngOnInit(): void {
+  }
+  public send_reset(){
+    var signal = "reset";
+    this.resetEvent.emit(signal);
   }
 
 }
