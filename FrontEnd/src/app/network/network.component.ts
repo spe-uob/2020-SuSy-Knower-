@@ -131,7 +131,7 @@ export class NetworkComponent implements OnInit {
             },
       physics:
               { enabled: true,barnesHut:{gravitationalConstant:-4000,centralGravity:0.5},maxVelocity:4,
-              
+
 
               //wind:{x:1,y:0},
              },
@@ -453,7 +453,7 @@ export class NetworkComponent implements OnInit {
   }
 
 
-   
+
   public Search($event){
     if($event!=''){
         var searched_id = this.Find_Node_Id_From_Label($event);
@@ -578,7 +578,7 @@ export class NetworkComponent implements OnInit {
     }
 
   }
-  
+
 
 
 
@@ -611,7 +611,7 @@ export class NetworkComponent implements OnInit {
     });
 
   }
-  public Cluster_One_School(school,id,nodes,edges){
+  public Cluster_One_School(school, id){
     console.log("Clustering One School");
     var joinCon = function (nodeOptions) {
       return nodeOptions.school == school;
@@ -640,11 +640,11 @@ export class NetworkComponent implements OnInit {
 
     });
   }
-  public Cluster_Schools(schools,nodes,edges){
+  public Cluster_Schools(schools){
     console.log("Clustering Many Schools");
     var id = 2000;
     schools.forEach(school => {
-      this.Cluster_One_School(school,id,nodes,edges);
+      this.Cluster_One_School(school,id);
       id++
     });
 
@@ -712,7 +712,7 @@ export class NetworkComponent implements OnInit {
   }
   public Cluster_All(subjects,schools,faculties,nodes,edges){
     this.Cluster_Sujects(subjects);
-    this.Cluster_Schools(schools,nodes,edges);
+    this.Cluster_Schools(schools);
     this.Cluster_Faculties(faculties);
   }
 
@@ -785,11 +785,11 @@ export class NetworkComponent implements OnInit {
           else{
             yValues[node.level]=0;
           }
-         
+
         }
         y = 0//yValues[node.level];
         currentLevel = node.level;
-        
+
         console.log(yValues)
       }
       else{
@@ -806,7 +806,7 @@ export class NetworkComponent implements OnInit {
   public Position_Subjects(){}//Or a general one for clusters
   public Clean_Up_Unseleected(){};
 
-  
+
 
 
 
