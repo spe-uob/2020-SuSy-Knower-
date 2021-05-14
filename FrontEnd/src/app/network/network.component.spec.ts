@@ -129,53 +129,6 @@ describe("Get_Network_Data",()=>{
 
 })
 
-describe('Resize Label',()=>{
-  let component: NetworkComponent;
-  let service: MockedUnitService;
-
-  beforeEach(() => {
-    service = new MockedUnitService(null);
-    component = new NetworkComponent(service);
-  });
-  afterEach(()=>{
-    service = null;
-    component = null;
-  })
-  it('should not affect small strings',()=>{
-    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
-  })
-  it('should add a newline to a string if large',()=>{
-    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
-  })
-
-})
-
-xdescribe('Get_Parents',()=>{
-  let component: NetworkComponent;
-  let service: MockedUnitService;
-  let fixture: ComponentFixture<NetworkComponent>;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [ NetworkComponent ],
-      imports: [ HttpClientTestingModule,],
-      providers:[{provide: UnitService, useClass: MockedUnitService}]
-    })
-
-    fixture = TestBed.createComponent(NetworkComponent);
-    component = fixture.componentInstance;
-    service = TestBed.inject(MockedUnitService);
-  });
-
-
-  it('should call',()=>{
-    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
-  })
-  it('should add a newline to a string if large',()=>{
-    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
-  })
-})
-
 describe('Set Node Position',()=>{
   let component: NetworkComponent;
   let testBedService: UnitService;
@@ -304,11 +257,13 @@ describe('Set_Unit_Positions', () => {
   // })
 })
 
+
+//FINDING DATA
+
 describe('Find_Prerequisites', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
-  let service: MockedUnitService;
   let units: Unit[];
 
   beforeEach(async () => {
@@ -336,7 +291,7 @@ describe('Find_Prerequisites', () => {
   })
   it('should find pre-requisites', () => {
     units.forEach(unit => {
-    expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
+      expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
     })
   });
 });
@@ -378,20 +333,36 @@ describe('Find_Level', () => {
   });
 });
 
-describe('Find_Faculty', () => {
+  // Should work absolutely fine
+describe('Find_Node_Id_From_Label', () => {
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(() => {
+    service = null;
+    component = null;
+  });
+  it('should find node id from label', () => {
+    expect(component.Find_Node_Id_From_Label('Combinatorics')).toEqual(44)
+  })
+})
+
+describe('Get_Subject_List', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
-  let service: MockedUnitService;
-  let units: Unit[];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NetworkComponent ],
+      declarations: [NetworkComponent],
       imports: [
         HttpClientTestingModule,
       ],
-      providers:[
+      providers: [
         {provide: UnitService, useClass: MockedUnitService}
       ]
     })
@@ -403,21 +374,95 @@ describe('Find_Faculty', () => {
     component = fixture.componentInstance;
     de = fixture.debugElement;
     fixture.detectChanges();
-    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
   });
-  afterEach(() =>{
+  afterEach(() => {
     fixture.destroy();
   })
-  it('should find faculty', () => {
-    expect(component.Find_Faculty('SCEEM')).toEqual('Faculty of Engineering');
+
+  it('should be called', () => {
+    spyOn(component, 'Get_Subject_List');
+    component.Get_Subject_List();
+    expect(component.Get_Subject_List).toHaveBeenCalled()
+  })
+  xit('should call All_Data_Loaded_Check')
+})
+
+describe('Get_School_List', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
   });
-});
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+
+  it('should be called', () => {
+    spyOn(component, 'Get_School_List');
+    component.Get_School_List();
+    expect(component.Get_School_List).toHaveBeenCalled()
+  })
+  xit('should call All_Data_Loaded_Check')
+})
+
+describe('Get_Faculty_List', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+
+  it('should be called', () => {
+    spyOn(component, 'Get_Faculty_List');
+    component.Get_Faculty_List();
+    expect(component.Get_Faculty_List).toHaveBeenCalled()
+  })
+  xit('should call Format_Loaded_Data')
+})
 
 describe('Find_School', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
-  let service: MockedUnitService;
   let units: Unit[];
 
   beforeEach(async () => {
@@ -448,46 +493,43 @@ describe('Find_School', () => {
   });
 });
 
-describe('Get Lists', () => {
+describe('Find_Faculty', () => {
   let component: NetworkComponent;
-  let service: MockedUnitService;
-  let mock_node;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
 
   beforeEach(() => {
-    service = new MockedUnitService(null);
-    component = new NetworkComponent(service);
-    mock_node ={
-      id: 1,
-      name: "Object Orientated",
-      programme: "Computer Science",
-      school: "SCEEM",
-      topic: "Algortihms",
-      url: "googl.com",
-      prereqs: "1,2,3,4",
-      tb: 2,
-    }
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
   });
-  afterEach(() => {
-    service = null;
-    component = null;
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  it('should find faculty', () => {
+    expect(component.Find_Faculty('SCEEM')).toEqual('Faculty of Engineering');
   });
-  // it('should get subjects list', () => {
-  //   expect(component.Get_Subject_List()).toEqual(["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
-  //     "Mathematics (MSci)"
-  //     ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
-  //     "Chemical Physics (BSc)","Management (BSc)","Honours Law (LLB)","English (BA)","Zoology (BSc)"
-  //   ]);
-  // });
-  // it('should get school list', () => {
-  //   expect(component.Get_School_List()).toEqual(['SCEEM', 'SAME', 'School of Physics', 'School of Arts', 'School of Psychological Science', 'School of Mathematics',
-  //     'School of Management', 'University of Bristol Law School']);
-  // });
-  // it('should get faculty list', () => {
-  //   expect(component.Get_Faculty_List()).toEqual(['Faculty of Engineering', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Social Sciences', 'Faculty of Life Sciences']);
-  // });
 });
 
-// Next 4 tests should work fine once .getConnectedNodes works
+
+//GETTING PRE/POST REQUITSITE IDS
+  // Next 4 tests should work fine once .getConnectedNodes works
 
 describe('Get_Parents_Ids', () => {
   let component: NetworkComponent;
@@ -521,7 +563,7 @@ describe('Get_Parents_Ids', () => {
     fixture.destroy();
   })
   xit('should get parents id', () => {
-      expect(component.Get_Parents_Ids(5, [{from:5, to:8, id:"5-8"}, {from:5, to:11, id:"5-11"}])).toEqual([8, 11]);
+    expect(component.Get_Parents_Ids(5, [{from:5, to:8, id:"5-8"}, {from:5, to:11, id:"5-11"}])).toEqual([8, 11]);
   });
 });
 
@@ -633,24 +675,6 @@ describe('Get_Descendents_Ids', () => {
   });
 });
 
-// Should work absolutely fine
-describe('Find_Node_Id_From_Label', () => {
-  let component: NetworkComponent;
-  let service: MockedUnitService;
-
-  beforeEach(() => {
-    service = new MockedUnitService(null);
-    component = new NetworkComponent(service);
-  });
-  afterEach(() => {
-    service = null;
-    component = null;
-  });
-  it('should find node id from label', () => {
-    expect(component.Find_Node_Id_From_Label('Combinatorics')).toEqual(44)
-  })
-})
-
 describe('Style_Ancestors', () => {
   let component: NetworkComponent;
   let testBedService: UnitService;
@@ -705,7 +729,31 @@ describe('Style_Descendents', () => {
   })
 })
 
-describe('Reset Nodes' , () => {
+
+//STYLING
+
+describe('Resize Label',()=>{
+  let component: NetworkComponent;
+  let service: MockedUnitService;
+
+  beforeEach(() => {
+    service = new MockedUnitService(null);
+    component = new NetworkComponent(service);
+  });
+  afterEach(()=>{
+    service = null;
+    component = null;
+  })
+  it('should not affect small strings',()=>{
+    expect(component.Resize_Label("Computer Science")).toEqual("Computer Science");
+  })
+  it('should add a newline to a string if large',()=>{
+    expect(component.Resize_Label("Object Orientated Programming")).toContain('\n');
+  })
+})
+
+
+describe('Cluster_All' , () => {
   let component: NetworkComponent;
   let service: MockedUnitService;
 
@@ -717,7 +765,7 @@ describe('Reset Nodes' , () => {
     service = null;
     component = null;
   });
-  it('should cluster all nodes back', () => {
+  xit('should cluster all nodes back', () => {
     let subjects = ["Electrical and Electronic Engineering (BEng)","Aerospace Engineering (BEng)","Computer Science (BSc)",
       "Mathematics (MSci)"
       ,"Civil Engineering (BEng)","Psychology (BSc)","Philosophy (BA)","Physics (BSc)","Data Science (BSc)","Anthropology (BA)",
