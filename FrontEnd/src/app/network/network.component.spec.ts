@@ -773,6 +773,111 @@ describe('Resize Label',()=>{
 })
 
 
+// All below should work fine once network is working
+
+describe('Cluster_One_Subject', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one subject', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_Subject('Computer Science (BSc)', 9)
+    expect(spy).toHaveBeenCalled()
+  })
+})
+
+describe('Cluster_One_School', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster one school', () => {
+    var spy = spyOn(component.network, 'cluster')
+    component.Cluster_One_School('School of Computer Science', 2000)
+    expect(spy).toHaveBeenCalled()
+  })
+  it('should check if school exists', () => {
+    expect(component.Cluster_One_School('false school', 2000)).toBeFalsy()
+  })
+})
+
+describe('Cluster_Schools', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NetworkComponent],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers: [
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+  });
+  afterEach(() => {
+    fixture.destroy();
+  })
+  it('should cluster schools', () => {
+    expect(component.Cluster_Schools(['School of Computer Science', 'School of Aerospace Engineering'])).toBeTruthy()
+  })
+})
+
 describe('Cluster_All' , () => {
   let component: NetworkComponent;
   let service: MockedUnitService;
