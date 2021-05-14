@@ -304,7 +304,7 @@ describe('Set_Unit_Positions', () => {
   // })
 })
 
-describe('Find all', () => {
+describe('Find_Prerequisites', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
@@ -339,14 +339,110 @@ describe('Find all', () => {
     expect(component.Find_Prerequisites(unit)).toEqual([1, 2, 3, 4]);
     })
   });
+});
+
+describe('Find_Level', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let service: MockedUnitService;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
   it('should find level', () => {
     units.forEach(unit => {
       expect(component.Find_Level(unit)).toEqual(1);
     });
   });
+});
+
+describe('Find_Faculty', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let service: MockedUnitService;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
   it('should find faculty', () => {
     expect(component.Find_Faculty('SCEEM')).toEqual('Faculty of Engineering');
   });
+});
+
+describe('Find_School', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let service: MockedUnitService;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [{id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
   it('should find school', () => {
     expect(component.Find_School('Computer Science (BSc)')).toEqual('School of Computer Science');
   });
@@ -391,7 +487,9 @@ describe('Get Lists', () => {
   // });
 });
 
-describe('Get Ids', () => {
+// Next 4 tests should work fine once .getConnectedNodes works
+
+describe('Get_Parents_Ids', () => {
   let component: NetworkComponent;
   let fixture: ComponentFixture<NetworkComponent>;
   let de: DebugElement;
@@ -423,19 +521,119 @@ describe('Get Ids', () => {
     fixture.destroy();
   })
   xit('should get parents id', () => {
-      expect(component.Get_Parents_Ids(5, [{5, 8, "5-8"}, {5, 11, "5-11"}])).toEqual([8, 11]);
-  });
-  xit('should get ancestors id', () => {
-    expect(component.Get_Ancestors_Ids(5, [{5, 8, "5-8"}, {5, 11, "5-11"}])).toContain([8, 11]);
-  });
-  xit('should get children id', () => {
-    expect(component.Get_Children_Ids(9, [{3, 9, "3-9"}, {4, 9, "4-9"}, {6, 9, "6-9"}])).toEqual([3,4,6]);
-  });
-  xit('should get descendents id', () => {
-    expect(component.Get_Descendents_Ids(9, [{3, 9, "3-9"}, {4, 9, "4-9"}, {6, 9, "6-9"}])).toContain([3,4,6]);
+      expect(component.Get_Parents_Ids(5, [{from:5, to:8, id:"5-8"}, {from:5, to:11, id:"5-11"}])).toEqual([8, 11]);
   });
 });
 
+describe('Get_Ancestors_Ids', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [
+      {id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}
+    ]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  xit('should get ancestors id', () => {
+    expect(component.Get_Ancestors_Ids(5, [{from:5, to:8, id:"5-8"}, {from:5, to:11, id:"5-11"}])).toContain([8, 11]);
+  });
+});
+
+describe('Get_Children_Ids', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [
+      {id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}
+    ]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  xit('should get children id', () => {
+    expect(component.Get_Children_Ids(9, [{from:3, to:9, id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}])).toEqual([3,4,6]);
+  });
+});
+
+describe('Get_Descendents_Ids', () => {
+  let component: NetworkComponent;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let de: DebugElement;
+  let units: Unit[];
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [
+        HttpClientTestingModule,
+      ],
+      providers:[
+        {provide: UnitService, useClass: MockedUnitService}
+      ]
+    })
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement;
+    fixture.detectChanges();
+    units = [
+      {id:1234, name:"mock unit", programme:"Computer Science",topic: '0',url:"google.com",school:"SCEEM",prerequisites:"1,2,3,4",tb:1}
+    ]
+  });
+  afterEach(() =>{
+    fixture.destroy();
+  })
+  xit('should get descendents id', () => {
+    expect(component.Get_Descendents_Ids(9, [{from:3, to:9, id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}])).toContain([3,4,6]);
+  });
+});
+
+// Should work absolutely fine
 describe('Find_Node_Id_From_Label', () => {
   let component: NetworkComponent;
   let service: MockedUnitService;
@@ -453,7 +651,7 @@ describe('Find_Node_Id_From_Label', () => {
   })
 })
 
-describe('Style', () => {
+describe('Style_Ancestors', () => {
   let component: NetworkComponent;
   let testBedService: UnitService;
   let fixture: ComponentFixture<NetworkComponent>;
@@ -473,11 +671,37 @@ describe('Style', () => {
   afterEach(()=>{
     fixture.destroy();
   })
-  xit('should color parent red', () => {
-    expect(component.Style_Ancestors)
+  it('should color parent red', () => {
+    spyOn(component,'Style_Ancestors')
+    component.Style_Ancestors([5],[{from:5, to:8, id:"5-8"}, {from:5, to:11, id:"5-11"}]);
+    expect(component.Style_Ancestors).toHaveBeenCalled();
   })
-  xit('should color descendent green', () => {
-    expect(component.Style_Descendents)
+})
+
+describe('Style_Descendents', () => {
+  let component: NetworkComponent;
+  let testBedService: UnitService;
+  let fixture: ComponentFixture<NetworkComponent>;
+  let mock_node;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ NetworkComponent ],
+      imports: [ HttpClientTestingModule,],
+      providers:[UnitService],
+    })
+    TestBed.overrideComponent(NetworkComponent,{set:{providers:[{provide: UnitService, useClass:MockedUnitService}]}})
+    fixture = TestBed.createComponent(NetworkComponent);
+    component = fixture.componentInstance;
+    testBedService = TestBed.inject(UnitService);
+  });
+  afterEach(()=>{
+    fixture.destroy();
+  })
+  it('should color descendent green', () => {
+    spyOn(component,'Style_Descendents')
+    component.Style_Descendents([5],[{from:3, to:9, id:"3-9"}, {from:4, to:9, id:"4-9"}, {from:6, to:9, id:"6-9"}]);
+    expect(component.Style_Descendents).toHaveBeenCalled();
   })
 })
 
