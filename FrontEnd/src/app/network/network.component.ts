@@ -759,13 +759,13 @@ export class NetworkComponent implements OnInit {
     node.y = y;
     nodes.update(node);
   }
-  public Set_Unit_Positions(units,nodes){
+  public Set_Unit_Positions(node_ids,nodes){
     var y = 0;
     var currentLevel =-1;
     var xOffset = -375; // should be number of levels+1/2 *150
     var yValues = [];
 
-    units.forEach(unit => {
+    node_ids.forEach(unit => {
       var node = nodes.get(unit);
 
 
